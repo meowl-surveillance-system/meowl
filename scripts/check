@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+#######################################
+# Outputs a message if a dependency of the service does not exist
+# Globals:
+#   None
+# Arguments:
+#   $1 - Name of the service
+#   $2 - Name of the dependency of $1
+# Returns:
+#   None
+#######################################
+does_cmd_exist_for_service() {
+  command -v $2 >/dev/null 2>&1 || {
+    echo >&2 "check: The dependency $2 for the service $1 does not exist"
+  }
+}
+
+# Checks if the minimal Kubernetes dependencies exist
+does_cmd_exist_for_service kubernetes kubectl
+does_cmd_exist_for_service kubernetes minikube
+does_cmd_exist_for_service kubernetes docker
