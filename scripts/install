@@ -15,7 +15,8 @@ else
       ./lib/install_minikube.sh
       ;;
     kafka)
-      ./lib/install_kafka.sh
+      source ./lib/install_kafka.sh
+      install_kafka
       ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
