@@ -9,12 +9,18 @@ With no arguments, install all required services"
 if [[ $# -eq 0 ]]; then
   source ./lib/install_minikube.sh
   install_kubernetes
+  source ./lib/install_kafka.sh
+  install_kafka
 else
   for arg in "$@"; do
     case ${arg} in
     kubernetes)
       source ./lib/install_minikube.sh
       install_kubernetes
+      ;;
+    kafka)
+      source ./lib/install_kafka.sh
+      install_kafka
       ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
