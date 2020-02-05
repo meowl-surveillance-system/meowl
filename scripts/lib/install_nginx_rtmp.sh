@@ -2,7 +2,7 @@
 #
 
 NGINX_VERSION=1.17.8
-NGINX_DIRECTORY="nginx-$NGINX_VERSION"
+NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
@@ -84,8 +84,8 @@ install_nginx_dependencies() {
 }
 
 download_extract_nginx() {
-  wget http://nginx.org/download/$NGINX_DIRECTORY.tar.gz
-  tar -xf $NGINX_DIRECTORY.tar.gz
+  wget http://nginx.org/download/${NGINX_DIRECTORY}.tar.gz
+  tar -xf ${NGINX_DIRECTORY}.tar.gz
 }
 
 # Install nginx with RTMP module and dependencies
@@ -93,7 +93,7 @@ install_nginx_with_rtmp() {
   download_rtmp_module
   install_nginx_dependencies
   download_extract_nginx
-  cd $NGINX_DIRECTORY/
+  cd ${NGINX_DIRECTORY}/
   ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module
   make
   sudo make install
