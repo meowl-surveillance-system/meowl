@@ -11,6 +11,8 @@ if [[ $# -eq 0 ]]; then
   install_kubernetes
   source ./lib/install_kafka.sh
   install_kafka
+  source ./lib/install_cassandra.sh
+  install_cassandra
 else
   for arg in "$@"; do
     case ${arg} in
