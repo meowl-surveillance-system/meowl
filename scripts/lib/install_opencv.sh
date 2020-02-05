@@ -1,6 +1,6 @@
 #
 # Install opencv and its dependencies
-OPENCV_VERSION='4.2.0'
+OPENCV_VERSION='4.1.0'
 OPENCV_CONTRIB='NO'
 install_opencv() {
   # Update
@@ -36,7 +36,7 @@ install_opencv() {
 
   if [ $OPENCV_CONTRIB = 'NO' ]; then
   cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON \
-        -DWITH_XINE=ON -DENABLE_PRECOMPILED_HEADERS=OFF ..
+        -DWITH_XINE=ON -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_FFMPEG=OFF ..
   fi
 
   if [ $OPENCV_CONTRIB = 'YES' ]; then
