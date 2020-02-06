@@ -11,6 +11,8 @@ if [[ $# -eq 0 ]]; then
   install_kubernetes
   source ./lib/install_kafka.sh
   install_kafka
+  source ./lib/install_nginx_rtmp.sh
+  install_nginx_with_rtmp
 else
   for arg in "$@"; do
     case ${arg} in
