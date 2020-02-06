@@ -10,8 +10,8 @@ install_docker() {
   sudo apt install docker-ce
 }
 
-# Install Kubernetes and all its dependencies
-install_kubernetes() {
+# Install kubectl
+install_kubectl() {
   curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   chmod +x ./kubectl
   sudo mv ./kubectl /usr/local/bin/kubectl
@@ -24,6 +24,9 @@ install_minikube() {
   sudo install minikube /usr/local/bin/
 }
 
-command -v kubectl >/dev/null 2>&1 || { install_kubectl; }
-command -v docker >/dev/null 2>&1 || { install_docker; }
-command -v minikube >/dev/null 2>&1 || { install_minikube; }
+# Install Kubernetes and all its dependencies
+install_kubernetes() {
+  command -v kubectl >/dev/null 2>&1 || { install_kubectl; }
+  command -v docker >/dev/null 2>&1 || { install_docker; }
+  command -v minikube >/dev/null 2>&1 || { install_minikube; }
+}

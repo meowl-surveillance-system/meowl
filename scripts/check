@@ -20,3 +20,4 @@ does_cmd_exist_for_service() {
 does_cmd_exist_for_service kubernetes kubectl
 does_cmd_exist_for_service kubernetes minikube
 does_cmd_exist_for_service kubernetes docker
+does_cmd_exist_for_service kafka java
