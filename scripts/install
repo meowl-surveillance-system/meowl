@@ -11,6 +11,8 @@ if [[ $# -eq 0 ]]; then
   install_kubernetes
   source ./lib/install_kafka.sh
   install_kafka
+  source ./lib/install_opencv.sh
+  install_opencv
 else
   for arg in "$@"; do
     case ${arg} in
@@ -21,6 +23,10 @@ else
     kafka)
       source ./lib/install_kafka.sh
       install_kafka
+      ;;
+    opencv)
+      source ./lib/install_opencv.sh
+      install_opencv
       ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
