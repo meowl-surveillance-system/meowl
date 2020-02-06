@@ -76,7 +76,7 @@ http {
 }
 "
 download_rtmp_module() {
-  git clone https://github.com/sergey-dryabzhinsky/nginx-rtmp-module.git
+  sudo git -C /usr/local/src clone https://github.com/sergey-dryabzhinsky/nginx-rtmp-module.git
 }
 
 install_nginx_dependencies() {
@@ -84,8 +84,8 @@ install_nginx_dependencies() {
 }
 
 download_extract_nginx() {
-  wget http://nginx.org/download/${NGINX_DIRECTORY}.tar.gz
-  tar -xf ${NGINX_DIRECTORY}.tar.gz
+  wget -P /tmp http://nginx.org/download/${NGINX_DIRECTORY}.tar.gz
+  sudo tar -xf /tmp/${NGINX_DIRECTORY}.tar.gz -C /usr/local/src
 }
 
 # Install nginx with RTMP module and dependencies
@@ -93,7 +93,7 @@ install_nginx_with_rtmp() {
   download_rtmp_module
   install_nginx_dependencies
   download_extract_nginx
-  cd ${NGINX_DIRECTORY}/
+  cd /usr/local/src/${NGINX_DIRECTORY}/
   ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module
   make
   sudo make install
