@@ -22,6 +22,10 @@ else
       source ./lib/install_kafka.sh
       install_kafka
       ;;
+    nginx-rtmp)
+      source ./lib/install_nginx_rtmp.sh
+      install_nginx_with_rtmp
+      ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;
