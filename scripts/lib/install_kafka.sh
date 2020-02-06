@@ -34,4 +34,3 @@ install_kafka() {
   enable_topic_deletion
   echo "Kafka successfully installed"
 }
-install_kafka
