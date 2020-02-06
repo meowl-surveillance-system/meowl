@@ -2,6 +2,7 @@
 # Install opencv and its dependencies
 OPENCV_VERSION='4.1.0'
 OPENCV_CONTRIB='NO'
+OPENCV_DIRECTORY='OpenCV'
 install_opencv() {
   # Update
   sudo apt-get -y update
@@ -23,23 +24,23 @@ install_opencv() {
   # Install Library
   wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
   unzip ${OPENCV_VERSION}.zip && rm ${OPENCV_VERSION}.zip
-  mv opencv-${OPENCV_VERSION} OpenCV
+  mv opencv-${OPENCV_VERSION} ${OPENCV_DIRECTORY}
 
-  if [ $OPENCV_CONTRIB = 'YES' ]; then
+  if [[ $OPENCV_CONTRIB = 'YES' ]]; then
     wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip
     unzip ${OPENCV_VERSION}.zip && rm ${OPENCV_VERSION}.zip
     mv opencv_contrib-${OPENCV_VERSION} opencv_contrib
-    mv opencv_contrib OpenCV
+    mv opencv_contrib ${OPENCV_DIRECTORY}
   fi
 
-  cd OpenCV && mkdir build && cd build
+  cd ${OPENCV_DIRECTORY} && mkdir build && cd build
 
-  if [ $OPENCV_CONTRIB = 'NO' ]; then
+  if [[ $OPENCV_CONTRIB = 'NO' ]]; then
   cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON \
         -DWITH_XINE=ON -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_FFMPEG=OFF ..
   fi
 
-  if [ $OPENCV_CONTRIB = 'YES' ]; then
+  if [[ $OPENCV_CONTRIB = 'YES' ]]; then
   cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON \
         -DWITH_XINE=ON -DENABLE_PRECOMPILED_HEADERS=OFF \
         -DOPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules ..
@@ -49,5 +50,3 @@ install_opencv() {
   sudo make install
   sudo ldconfig
 }
-
-command -v opencv > /dev/null 2>&1 || { install_opencv; }
