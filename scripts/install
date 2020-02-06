@@ -23,6 +23,7 @@ else
     kafka)
       source ./lib/install_kafka.sh
       install_kafka
+      ;;
     opencv)
       source ./lib/install_opencv.sh
       install_opencv
