@@ -1,17 +1,18 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config({ path: './keys.env'});
 
 let transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'meowl.notifications@gmail.com',
-        pass: 'Thisisapassword'
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
     }
 });
 
 
 const message = {
     from: 'Meowl Notification Service', // Sender address
-    to: 'haouzeroic@gmail.com',         // List of recipients
+    to: 'recipient@email.com',         // List of recipients
     subject: 'This is a test email', // Subject line
     text: 'If you receive this message, nodemailer works!' // Plain text body
 };
