@@ -3,29 +3,26 @@
 # Reference: https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04
 #
 
+KAFKA_CONFIG_PATH="/usr/local/kafka/config"
+
 # Download and extract kafka files
 download_and_extract_kafka_binaries() {
-  curl "http://mirror.metrocast.net/apache/kafka/2.4.0/kafka_2.12-2.4.0.tgz" -o ~/Downloads/kafka.tgz
-  mkdir ~/kafka && cd ~/kafka
-  tar -xzf ~/Downloads/kafka.tgz --strip 1
+  curl "http://mirror.metrocast.net/apache/kafka/2.4.0/kafka_2.12-2.4.0.tgz" -o /tmp/kafka.tgz
+  sudo mkdir /usr/local/kafka && cd /usr/local/kafka
+  sudo tar -xzf /tmp/kafka.tgz --strip 1
 }
 
 # Install OpenJDK 8
 install_openJDK() {
-  apt install openjdk-8-jdk 
+  sudo apt install openjdk-8-jdk 
 }
 
 # Enables topic deletion 
 enable_topic_deletion() {
-  grep -q "delete.topic.enable = true" ~/kafka/config/server.properties;
+  grep -q "delete.topic.enable = true" ${KAFKA_CONFIG_PATH}/server.properties;
   if [[ $? -eq 1 ]]; then
-    sudo echo "delete.topic.enable = true" >> ~/kafka/config/server.properties
+    echo "delete.topic.enable = true" | sudo tee -a ${KAFKA_CONFIG_PATH}/server.properties
   fi
-}
-
-# Add Kafka to PATH
-add_kafka_to_path() {
-  sudo echo "export PATH=/home/goat/kafka/bin:\$PATH" >> ~/.bashrc
 }
 
 # Complete installation and configuration of Kafka
@@ -35,7 +32,6 @@ install_kafka() {
   download_and_extract_kafka_binaries
   echo "Enabling topic deletion..."
   enable_topic_deletion
-  echo "Adding Kafka to PATH..."
-  add_kafka_to_path
   echo "Kafka successfully installed"
 }
+install_kafka
