@@ -3,34 +3,6 @@
 # Reference: https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04
 #
 
-UNIT_FILE_CONTENT_FOR_ZOOKEEPER="[Unit]
-Requires=network.target remote-fs.target
-After=network.target remote-fs.target
-
-[Service]
-Type=simple
-User=kafka
-ExecStart=/home/kafka/kafka/bin/zookeeper-server-start.sh /home/kafka/kafka/config/zookeeper.properties
-ExecStop=/home/kafka/kafka/bin/zookeeper-server-stop.sh
-Restart=on-abnormal
-
-[Install]
-WantedBy=multi-user.target"
-
-UNIT_FILE_CONTENT_FOR_KAFKA="[Unit]
-Requires=zookeeper.service
-After=zookeeper.service
-
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '/home/kafka/kafka/bin/kafka-server-start.sh /home/kafka/kafka/config/server.properties > /home/kafka/kafka/kafka.log 2>&1'
-ExecStop=/home/kafka/kafka/bin/kafka-server-stop.sh
-Restart=on-abnormal
-
-[Install]
-WantedBy=multi-user.target"
-
 # Download and extract kafka files
 download_and_extract_kafka_binaries() {
   curl "http://mirror.metrocast.net/apache/kafka/2.4.0/kafka_2.12-2.4.0.tgz" -o ~/Downloads/kafka.tgz
@@ -45,22 +17,25 @@ install_openJDK() {
 
 # Enables topic deletion 
 enable_topic_deletion() {
-  echo "\ndelete.topic.enable = true" >> ~/kafka/config/server.properties
+  grep -q "delete.topic.enable = true" ~/kafka/config/server.properties;
+  if [[ $? -eq 1 ]]; then
+    sudo echo "delete.topic.enable = true" >> ~/kafka/config/server.properties
+  fi
 }
 
-
-# Create systemd unit files for Kafka services such as starting, stopping, and restarting Kafka
-# consistently with other services
-create_unit_files() {
-  echo ${UNIT_FILE_CONTENT_FOR_ZOOKEEPER} >> /etc/systemd/system/zookeeper.service
-  echo ${UNIT_FILE_CONTENT_FOR_KAFKA} >> /etc/systemd/system/kafka.service
+# Add Kafka to PATH
+add_kafka_to_path() {
+  sudo echo "export PATH=/home/goat/kafka/bin:\$PATH" >> ~/.bashrc
 }
 
 # Complete installation and configuration of Kafka
 install_kafka() {
   command -v java >/dev/null 2>&1 || { install_openJDK; }
+  echo "Downloading and extracting kafka binaries..."
   download_and_extract_kafka_binaries
+  echo "Enabling topic deletion..."
   enable_topic_deletion
-  create_unit_file_for_zookeeper
-  create_unit_file_for_kafka
+  echo "Adding Kafka to PATH..."
+  add_kafka_to_path
+  echo "Kafka successfully installed"
 }
