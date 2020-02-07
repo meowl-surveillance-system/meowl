@@ -11,7 +11,7 @@ install_node() {
 
 # Install dependencies for notification folder
 init_notif() {
-  cd ../src/notifications && npm install 
+  cd ../src/notifications && npm install && cd -
 }
 
 #Install node and initializes configuration for Node related apps
