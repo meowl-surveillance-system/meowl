@@ -1,0 +1,23 @@
+#!/bin/bash
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+apply_yaml_files(){
+
+}
+
+create_cluster(){
+  sudo systemctl start docker
+  sudo minikube start --vm-driver=none  
+}
+
+main(){
+  if [[ $(./check -A) ]]; then
+    echo $(./check)
+  else
+    start_dependencies
+    apply_yaml_files
+  fi
+  echo ${PARENT_PATH}
+}
+
+main
