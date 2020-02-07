@@ -5,7 +5,7 @@ install_node() {
   command -v node >/dev/null 2>&1 || {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
     source ~/.nvm.sh
-    nvm install node
+    nvm install 12.15.0
   };
 }
 
