@@ -1,6 +1,6 @@
 # Install Node and necessary frameworks/packages
 
-# Install Node.js on Linux as root on RHEL, CentOS, CloudLinux, or Fedora
+# Install Node.js on Arch Linux
 install_node() {
   command -v node >/dev/null 2>&1 || {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
