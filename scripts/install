@@ -24,6 +24,10 @@ else
       source ./lib/install_kafka.sh
       install_kafka
       ;;
+    cassandra)
+      source ./lib/install_cassandra.sh
+      install_cassandra
+      ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;

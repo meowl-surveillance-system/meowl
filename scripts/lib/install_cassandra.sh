@@ -5,13 +5,19 @@
 # Install Java 8 if not installed
 install_java_environment() {
   command -v java >/dev/null 2>&1;
-  if [[$? -eq 1]]; then
+  if [[ $? -eq 1 ]]; then
     echo "Java not installed..."
     echo "Installing java runtime..."
     sudo apt-get -y install openjdk-8-jre
     echo "Installing java development kit..."
     sudo apt-get -y install openjdk-8-jdk
   fi
+}
+
+# Modify server hostname for connection
+modify_server_hostname() {
+  echo "Modifying server hostname..."
+  sudo sed -i 's/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=<public name>"/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=127.0.0.1"' /etc/cassandra/cassandra-env.sh
 }
 
 # Complete Installation for Cassandra
@@ -24,4 +30,6 @@ install_cassandra() {
   sudo apt-get update
   echo "Installing Cassandra..."
   sudo apt-get install -y cassandra
+  modify_server_hostname
 }
+
