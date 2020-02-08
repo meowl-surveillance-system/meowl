@@ -8,8 +8,11 @@ KAFKA_CONFIG_PATH="/usr/local/kafka/config"
 # Download and extract kafka files
 download_and_extract_kafka_binaries() {
   curl "http://mirror.metrocast.net/apache/kafka/2.4.0/kafka_2.12-2.4.0.tgz" -o /tmp/kafka.tgz
+  echo "creating directory /usr/local/kafka and changing into it..."
   sudo mkdir /usr/local/kafka && cd /usr/local/kafka
   sudo tar -xzf /tmp/kafka.tgz --strip 1
+  echo "returning to previous directory..."
+  cd -
 }
 
 # Install OpenJDK 8
