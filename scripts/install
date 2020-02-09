@@ -13,6 +13,12 @@ if [[ $# -eq 0 ]]; then
   install_kafka
   source ./lib/install_cassandra.sh
   install_cassandra
+  source ./lib/install_node.sh
+  install_node_all
+  source ./lib/install_opencv.sh
+  install_opencv
+  source ./lib/install_nginx_rtmp.sh
+  install_nginx_with_rtmp
 else
   for arg in "$@"; do
     case ${arg} in
@@ -27,6 +33,18 @@ else
     cassandra)
       source ./lib/install_cassandra.sh
       install_cassandra
+      ;;
+    node)
+      source ./lib/install_node.sh
+      install_node_all
+      ;;
+    opencv)
+      source ./lib/install_opencv.sh
+      install_opencv
+      ;;
+    nginx-rtmp)
+      source ./lib/install_nginx_rtmp.sh
+      install_nginx_with_rtmp
       ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
