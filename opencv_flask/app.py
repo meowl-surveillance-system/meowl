@@ -3,16 +3,13 @@ import cv2
 import numpy as np
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
 @app.route('/display')
 def display_vid():
+    # Displays a video from the file_name query parameter
     file_name = request.args.get('file_name', default = '', type = str)
     cap = cv2.VideoCapture(file_name)
     if (cap.isOpened()== False): 
-        print("Error opening video stream or file")
+        print("OpenCV failed to open video stream or file")
     while(cap.isOpened()):
         # Capture frame-by-frame
         ret, frame = cap.read()
@@ -20,7 +17,7 @@ def display_vid():
             # Display the resulting frame
             cv2.imshow('Frame',frame)
 
-            # Press Q on keyboard to  exit
+            # Press Q on keyboard to exit
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
 
@@ -34,3 +31,4 @@ def display_vid():
     # Closes all the frames
     cv2.destroyAllWindows()
 
+    print("Finished Displaying Video")
