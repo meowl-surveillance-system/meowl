@@ -14,8 +14,13 @@ init_notif() {
   cd ../src/notifications && npm install && cd -
 }
 
+init_react() {
+  cd ../src/web/client && npm install && cd -
+}
+
 #Install node and initializes configuration for Node related apps
 install_node_all() {
   install_node;
   init_notif;
+  init_react;
 }
