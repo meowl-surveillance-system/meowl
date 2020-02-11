@@ -7,10 +7,18 @@ install_java_environment() {
   command -v java >/dev/null 2>&1;
   if [[ $? -eq 1 ]]; then
     echo "Java not installed..."
-    echo "Installing java runtime..."
-    sudo apt-get -y install openjdk-8-jre
     echo "Installing java development kit..."
     sudo apt-get -y install openjdk-8-jdk
+  fi
+}
+
+# Install Curl if not installed
+install_curl() {
+  command -v curl > /dev/null 2>&1;
+  if [[$? -eq 1 ]]; then
+    echo "Curl not installed"
+    echo "Installing Curl..."
+    sudo apt-get -y install curl
   fi
 }
 
@@ -23,6 +31,7 @@ modify_server_hostname() {
 # Complete Installation for Cassandra
 install_cassandra() {
   install_java_environment;
+  install_curl;
   echo "Adding Cassandra repository to system..."
   echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
   echo "Adding the Apache Cassandra repository keys..."
