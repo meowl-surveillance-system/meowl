@@ -22,4 +22,5 @@ init_react() {
 install_node_all() {
   install_node;
   init_notif;
+  init_react;
 }
