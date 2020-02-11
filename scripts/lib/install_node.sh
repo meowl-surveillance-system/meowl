@@ -15,7 +15,7 @@ init_notif() {
 }
 
 init_react() {
-  cd ../src/web && npm install && cd -
+  cd ../src/web/client && npm install && cd -
 }
 
 #Install node and initializes configuration for Node related apps
