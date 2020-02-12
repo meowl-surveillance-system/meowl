@@ -120,12 +120,13 @@ create_server_key_cert() {
 
 # Install stunnel as a server with a configuration to work with nginx rtmp
 install_stunnel_server() {
-  sudo apt install stunnel
+  sudo apt install -y stunnel4
   create_server_key_cert
   echo "${STUNNEL_SERVER_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
 }
 
 install_nginx_rtmp_all() {
+  sudo apt install update
   install_nginx_with_rtmp
   install_stunnel_server
 }
