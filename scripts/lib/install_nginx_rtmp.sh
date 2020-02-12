@@ -79,13 +79,15 @@ http {
 SERVER_KEY_CERT_PATH="/etc/stunnel/meowl"
 STUNNEL_SERVER_CONF_FILE="
 pid = /run/stunnel-meowl.pid
-foreground = yes # remove this for daemon
+# remove this for daemon
+foreground = yes
 debug = 5
 
 [meowl-nginx-server]
 cert = ${SERVER_KEY_CERT_PATH}.crt
 key = ${SERVER_KEY_CERT_PATH}.key
-accept = 19350 # change such that it is on same port as rtmp without binding error
+# change such that it is on same port as rtmp without binding error
+accept = 19350
 connect = localhost:${NGINX_RTMP_PORT}
 "
 download_rtmp_module() {
