@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Playback component renders Playback component 1`] = `
+<div>
+  <form
+    data-testid="form"
+  >
+    <input
+      data-testid="url"
+      type="text"
+      value=""
+    />
+    <button
+      type="submit"
+    >
+      Enter URL
+    </button>
+  </form>
+  <div
+    style="width: 640px; height: 360px;"
+  />
+</div>
+`;
