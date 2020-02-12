@@ -117,6 +117,7 @@ install_nginx_with_rtmp() {
 }
 
 create_server_key_cert() {
+  sudo openssl rand -writerand ~/.rnd
   sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout ${SERVER_KEY_CERT_PATH}.key -out ${SERVER_KEY_CERT_PATH}.crt
 }
 
