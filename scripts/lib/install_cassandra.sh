@@ -15,7 +15,7 @@ install_java_environment() {
 # Install Curl if not installed
 install_curl() {
   command -v curl > /dev/null 2>&1;
-  if [[$? -eq 1 ]]; then
+  if [[ $? -eq 1 ]]; then
     echo "Curl not installed"
     echo "Installing Curl..."
     sudo apt-get -y install curl
@@ -25,13 +25,13 @@ install_curl() {
 # Modify server hostname for connection
 modify_server_hostname() {
   echo "Modifying server hostname..."
-  sudo sed -i 's/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=<public name>"/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=127.0.0.1"' /etc/cassandra/cassandra-env.sh
+  sudo sed -i 's/<public name>/127.0.0.1/' /etc/cassandra/cassandra-env.sh
 }
 
 # Complete Installation for Cassandra
 install_cassandra() {
-  install_java_environment;
-  install_curl;
+  install_java_environment
+  install_curl
   echo "Adding Cassandra repository to system..."
   echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
   echo "Adding the Apache Cassandra repository keys..."
