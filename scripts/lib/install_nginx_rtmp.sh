@@ -3,6 +3,7 @@
 
 NGINX_VERSION=1.17.8
 NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
+NGINX_RTMP_PORT=1935
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
@@ -21,7 +22,7 @@ events {
 # RTMP configuration
 rtmp {
     server {
-        listen 1935; # Listen on standard RTMP port
+        listen ${NGINX_RTMP_PORT}; # Listen on standard RTMP port
         chunk_size 4000;
 
         application show {
@@ -75,6 +76,18 @@ http {
     }
 }
 "
+SERVER_KEY_CERT_PATH="/etc/stunnel/meowl"
+STUNNEL_SERVER_CONF_FILE="
+pid = /run/stunnel-meowl.pid
+foreground = yes # remove this for daemon
+debug = 5
+
+[meowl-nginx-server]
+cert = ${SERVER_KEY_CERT_PATH}.crt
+key = ${SERVER_KEY_CERT_PATH}.key
+accept = 19350 # change such that it is on same port as rtmp without binding error
+connect = localhost:${NGINX_RTMP_PORT}
+"
 download_rtmp_module() {
   sudo git -C /usr/local/src clone https://github.com/sergey-dryabzhinsky/nginx-rtmp-module.git
 }
@@ -99,4 +112,20 @@ install_nginx_with_rtmp() {
   sudo make install
   cd -
   echo "${NGINX_CONF_FILE}" | sudo tee /usr/local/nginx/conf/nginx.conf
+}
+
+create_server_key_cert() {
+  sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout ${SERVER_KEY_CERT_PATH}.key -out ${SERVER_KEY_CERT_PATH}.crt
+}
+
+# Install stunnel as a server with a configuration to work with nginx rtmp
+install_stunnel_server() {
+  sudo apt install stunnel
+  create_server_key_cert
+  echo "${STUNNEL_SERVER_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
+}
+
+install_nginx_rtmp_all() {
+  install_nginx_with_rtmp
+  install_stunnel_server
 }
