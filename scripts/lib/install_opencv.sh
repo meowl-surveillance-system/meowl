@@ -4,31 +4,30 @@
 install_opencv() {
   # Update
   sudo apt-get -y update
-  
-  # Install pip
+ 
+  # Installing dependencies 
   sudo apt install python3-pip
 
-  # Install venv
   sudo apt install python3-venv
   
-  # Change To Opencv server directory
-  cd ../opencv_flask
+  cd ../src/cv/
 
-  # Create new virtual environment
+  # Setting up new virtual environment
   python3 -m venv venv
   
-  # Running the activate script
   source venv/bin/activate
-  
-  # Install Flask
-  pip install Flask
 
-  # Install OpenCV
-  pip3 install opencv-python
+  pip install -r opencv_requirements.txt
+  
+  #pip install Flask
+
+  #pip3 install opencv-python
 
   # Install Pytest
-  pip install -U pytest
-  pip install mock
-  pip install pytest_mock
+  #pip install -U pytest
+
+  #pip install mock
+
+  #pip install pytest_mock
   
 }
