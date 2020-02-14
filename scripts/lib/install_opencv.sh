@@ -26,4 +26,9 @@ install_opencv() {
   # Install OpenCV
   pip3 install opencv-python
 
+  # Install Pytest
+  pip install -U pytest
+  pip install mock
+  pip install pytest_mock
+  
 }
