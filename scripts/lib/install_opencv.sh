@@ -17,17 +17,7 @@ install_opencv() {
   
   source venv/bin/activate
 
+  # Install opencv requirements
   pip install -r opencv_requirements.txt
-  
-  #pip install Flask
-
-  #pip3 install opencv-python
-
-  # Install Pytest
-  #pip install -U pytest
-
-  #pip install mock
-
-  #pip install pytest_mock
   
 }
