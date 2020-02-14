@@ -3,10 +3,9 @@ import cv2
 import numpy as np
 app = Flask(__name__)
 
-@app.route('/display')
-def display_vid():
+def display_vid(file_name):
     # Displays a video from the file_name query parameter
-    file_name = request.args.get('file_name', default = '', type = str)
+    #file_name = request.args.get('file_name', default = '', type = str)
     cap = cv2.VideoCapture(file_name)
     if (cap.isOpened()== False): 
         print("OpenCV failed to open video stream or file")
