@@ -1,2 +1,2 @@
 source venv/bin/activate
-py.test
+py.test tests.py

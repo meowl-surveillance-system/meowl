@@ -18,6 +18,6 @@ install_opencv() {
   source venv/bin/activate
 
   # Install opencv requirements
-  pip install -r opencv_requirements.txt
+  pip install -r requirements.txt
   
 }
