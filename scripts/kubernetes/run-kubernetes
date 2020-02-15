@@ -1,0 +1,43 @@
+#!/bin/bash
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+create_cluster(){
+  sudo systemctl start docker
+  sudo systemctl start cassandra
+  sudo minikube start --vm-driver=none  
+}
+
+# Creates persistant storage space for Cassandra
+create_cassandra_storage(){
+  sudo kubectl create -f "${PARENT_PATH}/local-volumes.yaml"
+  sudo kubectl create -f "${PARENT_PATH}/statefulset-cassandra.yaml"
+}
+
+# TODO(chc5): Create one pod per app
+create_pods(){
+  echo "Apps not set up yet"
+}
+
+# TODO(chc5): Create one service per pod
+create_services(){
+  sudo kubectl create -f "${PARENT_PATH}/service-cassandra.yaml"
+}
+
+# Deployment
+deploy(){
+  sudo kubectl apply -f "${PARENT_PATH}/deployment.yaml"
+}
+
+main(){
+  if [[ $(./check -A) ]]; then
+    echo $(./check)
+  else
+    create_cluster
+    create_cassandra_storage
+    create_pods
+    create_services
+    deploy
+  fi
+}
+
+main
