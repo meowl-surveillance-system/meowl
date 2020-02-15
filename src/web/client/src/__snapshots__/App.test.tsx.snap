@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders learn react link 1`] = `
+<div
+  class="App"
+>
+  <div>
+    <form
+      data-testid="form"
+    >
+      <input
+        data-testid="url"
+        type="text"
+        value=""
+      />
+      <button
+        type="submit"
+      >
+        Enter URL
+      </button>
+    </form>
+    <div
+      style="width: 640px; height: 360px;"
+    />
+  </div>
+</div>
+`;
