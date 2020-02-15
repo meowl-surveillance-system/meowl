@@ -46,6 +46,10 @@ else
       source ./lib/install_nginx_rtmp.sh
       install_nginx_with_rtmp
       ;;
+    raspberry-pi)
+      source ./lib/install_raspberry_pi.sh
+      install_raspberry_pi
+      ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;
