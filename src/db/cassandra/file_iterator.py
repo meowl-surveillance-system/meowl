@@ -19,3 +19,4 @@ class FileIterator:
       return chunk
     else:
       raise StopIteration
+
