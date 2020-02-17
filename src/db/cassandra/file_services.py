@@ -43,16 +43,14 @@ class FileServices:
       chunk_order += 1
 
 
-  def retrieve_file_bytes(self, filename):
-    """Retrieve the passed in file from the database as a list of bytes
+  def retrieve_file_bytes(self, file_id):
+    """Retrieve the file from the database as a list of bytes with the file_id as lookup
     
     Args:
         filename: string
     Returns:
         bytearray
     """
-    filedata = self.get_bytes_from_file(filename)
-    file_id = self.get_hash_of_filedata(filedata) 
     chunk_ids = self.session.execute(self.select_file_query, (file_id,))
     resulting_file = []
 
