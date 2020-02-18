@@ -1,24 +1,27 @@
 from picamera import PiCamera
 from meowlpi.services.streamer import MeowlPiStreamer
 
-# An interface for the Raspberry Pi Camera for streaming
 class PiStreamingCamera():
-    # Sets the camera and the endpoint where the stream goes to
+    """
+        A Raspberry Pi Camera interface for streaming purposes
+    """
+
     def __init__(self, camera = PiCamera(), endpoint = MeowlPiStreamer()):
+        """Saves the camera and the streaming endpoint"""
         self.__camera = camera
         self.__endpoint = endpoint
 
-    # Stops the camera from streaming and closes it
     def __del__(self):
-        self.stop()
+        """Closes the camera if this class instance is destroyed"""
         if not self.__camera.closed:
             self.__camera.close()
+        self.stop()
 
-    # Starts streaming from the camera
-    def start(self):
-        self.__camera.start_recording(self.__endpoint, 'h264')
+    def start(self, video_format="h264"):
+        """Starts streaming from the camera on to the endpoint"""
+        self.__camera.start_recording(self.__endpoint, video_format)
 
-    # Stops streaming from the camera and closes it
     def stop(self):
+        """Stops streaming from the camera"""
         self.__camera.stop_recording()
         self.__camera.close()
