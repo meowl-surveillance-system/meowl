@@ -6,9 +6,12 @@ class PiStreamingCamera():
         A Raspberry Pi Camera interface for streaming purposes
     """
 
-    def __init__(self, camera = PiCamera(), endpoint = MeowlPiStreamer()):
+    def __init__(self, camera = None, endpoint = MeowlPiStreamer()):
         """Saves the camera and the streaming endpoint"""
-        self.__camera = camera
+        if camera is not None:
+            self.__camera = camera
+        else:
+            self.__camera = PiCamera()
         self.__endpoint = endpoint
 
     def __del__(self):

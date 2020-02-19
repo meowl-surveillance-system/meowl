@@ -10,7 +10,8 @@ def test_picamera_recording(mocker):
     picamera_mock.start_recording.return_value = mocker.Mock()
     picamera_mock.stop_recording.return_value = mocker.Mock()
     picamera_mock.close.return_value = mocker.Mock()
-    picamera_mock.closed = False
+    picamera_mock.closed.return_value = False
+
     endpoint_stub = mocker.stub(name="endpoint_stub")
     camera = PiStreamingCamera(picamera_mock, endpoint_stub)
     camera.start()

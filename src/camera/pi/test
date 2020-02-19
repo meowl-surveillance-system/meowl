@@ -2,5 +2,5 @@
 PARENT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 source ${PARENT_PATH}/venv/bin/activate
 export PYTHONPATH="${PYTHONPATH}:${PARENT_PATH}"
-export RASPBERRY_PI_FLASK_SECRET_KEY = "testing"
+export RASPBERRY_PI_FLASK_SECRET_KEY="testing"
 pytest -s
