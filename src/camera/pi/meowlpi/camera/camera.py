@@ -1,28 +1,30 @@
 from picamera import PiCamera
 from meowlpi.camera.streamer import MeowlPiStreamer
+from time import sleep
 
-class PiStreamingCamera():
+class PiStreamingCamera:
     """
-        A Raspberry Pi Camera interface for streaming purposes
+        A Raspberry Pi Camera class interface for streaming purposes
     """
+    camera = None
+    endpoint = MeowlPiStreamer()
 
-    def __init__(self, camera=None, endpoint=MeowlPiStreamer()):
-        """Saves the camera and the streaming endpoint"""
-        if camera is not None:
-            self.camera = camera
-        else:
-            self.camera = PiCamera()
-        self.__endpoint = endpoint
-
-    def __del__(self):
-        """Closes the camera if this class instance is destroyed"""
-        self.stop()
-
-    def start(self, video_format="h264"):
+    def start(video_format='h264'):
         """Starts streaming from the camera on to the endpoint"""
-        self.camera.start_recording(self.__endpoint, video_format)
+        # Initalizes the camera singleton instance and wait for camera to warm up
+        if not PiStreamingCamera.camera:
+            PiStreamingCamera.camera = PiCamera()
+            sleep(2)
 
-    def stop(self):
+        PiStreamingCamera.camera.start_recording(PiStreamingCamera.endpoint, video_format)
+        return "Successfully started streaming from Raspberry Pi to {0} in video_format:{1}" \
+                .format(str(PiStreamingCamera.endpoint), video_format)
+
+    def stop():
         """Stops streaming from the camera"""
-        self.camera.stop_recording()
-        self.camera.close()
+        if PiStreamingCamera.camera is not None and not PiStreamingCamera.camera.closed:
+            PiStreamingCamera.camera.stop_recording()
+            PiStreamingCamera.camera.close()
+            return "Successfully stopped streaming from Raspberry Pi"
+        else:
+            return "PiCamera did not start streaming"

@@ -2,7 +2,7 @@ import mock
 import pytest
 from pytest_mock import mocker
 from meowlpi.app import create_app
-
+from meowlpi.camera.camera import PiStreamingCamera
 def test_index():
     app = create_app()
     with app.test_client() as client:
@@ -10,10 +10,18 @@ def test_index():
         assert response.status_code == 200
         assert response.get_data().decode() == "Hello world"
 
-# TODO(chc5): Create a test for camera/start route
-def test_camera_start():
-    pass
+def test_camera_start(mocker):
+    with mock.patch.object(PiStreamingCamera, 'start', return_value="Hello") as mock_method:
+        app = create_app()
+        with app.test_client() as client:
+            response = client.get('camera/start')
+            assert response.get_data().decode() == "Hello"
+            mock_method.assert_called_with()
 
-# TODO(chc5): Create a test for camera/stop route
-def test_camera_end():
-    pass
+def test_camera_stop():
+    with mock.patch.object(PiStreamingCamera, 'stop', return_value="World") as mock_method:
+        app = create_app()
+        with app.test_client() as client:
+            response = client.get('camera/stop')
+            assert response.get_data().decode() == "World"
+            mock_method.assert_called_with()

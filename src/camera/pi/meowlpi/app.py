@@ -1,11 +1,11 @@
 import os
-from flask import Flask, session
+from flask import Flask, session, current_app
 from meowlpi.camera.camera import PiStreamingCamera
 
 def create_app(test_config=None):
-    """ Create and configure Meowl app"""
+    """ Create and attach the camera to the Meowl-Pi app"""
     app = Flask(__name__, instance_relative_config=True)
-    pistreamingcamera = PiStreamingCamera()
+    app.pi_streaming_camera = PiStreamingCamera
     if not os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY'):
         print('RASPBERRY_PI_FLASK_SECRET_KEY: not found')
         return None
@@ -19,22 +19,17 @@ def create_app(test_config=None):
 
     @app.route('/camera/start')
     def start_camera_stream():
-        """Starts streaming the camera if it is in the session"""
-        #if 'picamera' not in session:
-        #    session['picamera'] = PiStreamingCamera()
-        pistreamingcamera.start()
-        return 'Raspberry Pi started streaming'
+        """Starts streaming the camera"""
+        return current_app.pi_streaming_camera.start()
 
     @app.route('/camera/stop')
     def stop_camera_stream():
-        """Stops the camera from streaming if it is in the session"""
-        #if 'picamera' not in session:
-        #    return 'PiStreamingCamera is uninitialized'
-        pistreamingcamera.stop()
-        return 'Raspberry Pi stopped streaming'
+        """Stops the camera from streaming"""
+        return current_app.pi_streaming_camera.stop()
     
     return app
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True, host='0.0.0.0')
+    with app.app_context():
+        app.run(debug=True, host='0.0.0.0')
