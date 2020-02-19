@@ -2,8 +2,8 @@ import mock
 import pytest
 from pytest_mock import mocker
 from picamera import PiCamera
-from meowlpi.services.camera import PiStreamingCamera
-from meowlpi.services.streamer import MeowlPiStreamer
+from meowlpi.camera.camera import PiStreamingCamera
+from meowlpi.camera.streamer import MeowlPiStreamer
 
 def test_picamera_recording(mocker):
     picamera_mock = mocker.Mock()

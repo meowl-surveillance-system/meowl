@@ -1,5 +1,5 @@
 from picamera import PiCamera
-from meowlpi.services.streamer import MeowlPiStreamer
+from meowlpi.camera.streamer import MeowlPiStreamer
 
 class PiStreamingCamera():
     """
