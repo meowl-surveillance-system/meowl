@@ -1,8 +1,10 @@
-# TODO(chc5): Convert this h264 buffer to flv and send it
-class MeowlPiStreamer():
-    def write(self, buffer):
-        print(len(buffer))
-        pass
+import subprocess
+import os
 
-    def flush(self):
-        pass
+class MeowlPiStreamer():
+    ffmpeg = subprocess.Popen([
+        'ffmpeg', '-y', '-f', 'h264',
+        '-i', '-', '-c:v', 'copy', '-map',
+        '0:0', '-f', 'flv', os.environ['SERVER_RTMP_URL_LINK']
+        ], stdin=subprocess.PIPE)
+
