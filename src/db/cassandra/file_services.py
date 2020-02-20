@@ -1,6 +1,4 @@
 from cassandra.cluster import Cluster
-from file_iterator import FileIterator
-from hashlib import md5
 from uuid import uuid4
 
 class FileServices:
@@ -23,31 +21,30 @@ class FileServices:
     self.select_chunk_query = self.session.prepare("SELECT chunk FROM files_data WHERE chunk_id = ?")
 
 
-  def store_file(self, filename):
+  def store_file(self, filename, chunk_size=2097152):
     """Store the passed in file as chunks in the database
     
     Args:
         filename: string
+        chunk_size: size of each chunk to be stored. Defaults to 2MB.
     Returns:
         None
     """
-    filedata = self.get_bytes_from_file(filename)
-    iterator = FileIterator(filedata)
-    file_id = self.get_hash_of_filedata(filedata)
+    file_id = str(uuid4())
     chunk_order = 0
-
-    for chunk in iterator:
-      chunk_id = str(uuid4())
-      self.session.execute(self.insert_files_query, (file_id, chunk_order, chunk_id))
-      self.session.execute(self.insert_files_data_query, (chunk_id, bytearray(chunk)))
-      chunk_order += 1
+    with open(filename, 'rb') as f:
+      for chunk in iter(lambda: f.read(chunk_size), b''):
+        chunk_id = str(uuid4())
+        self.session.execute(self.insert_files_query, (file_id, chunk_order, chunk_id))
+        self.session.execute(self.insert_files_data_query, (chunk_id, bytearray(chunk)))
+        chunk_order += 1
 
 
   def retrieve_file_bytes(self, file_id):
     """Retrieve the file from the database as a list of bytes with the file_id as lookup
     
     Args:
-        filename: string
+        file_id: string to lookup file
     Returns:
         bytearray
     """
@@ -61,10 +58,3 @@ class FileServices:
 
     return bytearray(resulting_file)
 
-
-  def get_bytes_from_file(self, filename):
-    return open(filename, 'rb').read()
-
-
-  def get_hash_of_filedata(self, filedata):
-    return md5(filedata).hexdigest()
