@@ -18,7 +18,7 @@ if [[ $# -eq 0 ]]; then
   source ./lib/install_opencv.sh
   install_opencv
   source ./lib/install_nginx_rtmp.sh
-  install_nginx_with_rtmp
+  install_nginx_rtmp_all
 else
   for arg in "$@"; do
     case ${arg} in
@@ -44,7 +44,11 @@ else
       ;;
     nginx-rtmp)
       source ./lib/install_nginx_rtmp.sh
-      install_nginx_with_rtmp
+      install_nginx_rtmp_all
+      ;;
+    raspberry-pi)
+      source ./lib/install_raspberry_pi.sh
+      install_raspberry_pi
       ;;
     raspberry-pi)
       source ./lib/install_raspberry_pi.sh
