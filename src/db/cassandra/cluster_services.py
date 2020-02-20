@@ -1,7 +1,7 @@
 import re
 
 class ClusterServices:
-  """The ClusterServices class provides methods used to initialize a Cassandra connection and to create
+  """The ClusterServices class provides methods used to create the keyspaces and tables 
      for the Meowl application
   
   Attributes:
@@ -32,7 +32,7 @@ class ClusterServices:
 
 
   def create_table_schema(self, table_query):
-    """Create the table needed for the Meowl application"""
+    """Creates a table"""
     self.session.execute(table_query);
 
 
