@@ -9,10 +9,6 @@
 # Returns:
 #   None
 #######################################
-PARENT_PATH=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")"
-  pwd -P
-)
 
 INSTALLATION_HELP_TEXT="Usage: install.sh [SERVICE]...
 Install SERVICE(s) required for Meowl
@@ -21,6 +17,10 @@ With no arguments, install all required services"
 # Installing all the required dependencies based on the arguments provided
 meowl_install() {
   for arg in "$@"; do
+    PARENT_PATH=$(
+      cd "$(dirname "${BASH_SOURCE[0]}")"
+      pwd -P
+    )
     case ${arg} in
     kubernetes)
       source ${PARENT_PATH}/lib/install_minikube.sh
