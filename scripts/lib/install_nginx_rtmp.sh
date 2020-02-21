@@ -129,6 +129,7 @@ install_stunnel_server() {
 }
 
 install_nginx_rtmp_all() {
+  echo "Installing Nginx rtmp..."
   sudo apt update
   install_nginx_with_rtmp
   install_stunnel_server
