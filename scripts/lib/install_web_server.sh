@@ -8,19 +8,12 @@ PARENT_PATH=$(
 )
 
 install_web_server() {
-
+  echo "Installing Web Server"
   sudo apt -y update
-
   sudo apt install -y python3-pip
-
   sudo apt install -y python3-venv
-
   cd ${PARENT_PATH}/../../src/web/server/
-
   python3 -m venv venv
-
   source venv/bin/activate
-
-  pip install -r -y requirements.txt
-
+  pip install -r requirements.txt
 }

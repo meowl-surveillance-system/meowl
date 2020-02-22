@@ -46,6 +46,10 @@ meowl_install() {
       source ${PARENT_PATH}/lib/install_nginx_rtmp.sh
       install_nginx_rtmp_all
       ;;
+    web-server)
+      source ${PARENT_PATH}/lib/install_web_server.sh
+      install_web_server
+      ;;
     server)
       meowl_install kubernetes
       meowl_install kafka
@@ -53,6 +57,7 @@ meowl_install() {
       meowl_install node
       meowl_install opencv
       meowl_install nginx-rtmp
+      meowl_intall web-server
       ;;
     raspberry-pi)
       source ${PARENT_PATH}/lib/install_raspberry_pi.sh
