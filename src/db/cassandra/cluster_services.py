@@ -10,30 +10,30 @@ class ClusterServices:
   """
   def __init__(self, cluster):
     self.cluster = cluster
-    self.session = self.cluster.connect()
+    self.__session = self.cluster.connect()
 
 
   def get_session(self):
-    return self.session
+    return self.__session
 
 
   def create_keyspace(self, keyspace_name):
     """Creates a Cassandra keyspace"""
     create_keyspace_query = "CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }"
     if self.is_valid_keyspace_name(keyspace_name):
-      self.session.execute(create_keyspace_query % (keyspace_name))
+      self.get_session().execute(create_keyspace_query % (keyspace_name))
     else:
       print("Invalid keyspace name")
 
 
   def set_keyspace(self, keyspace_name):
     """Use a Cassandra keyspace"""
-    self.session.set_keyspace(keyspace_name);
+    self.get_session().set_keyspace(keyspace_name);
 
 
   def create_table_schema(self, table_query):
     """Creates a table"""
-    self.session.execute(table_query);
+    self.get_session().execute(table_query);
 
 
   def shutdown_cluster(self):
