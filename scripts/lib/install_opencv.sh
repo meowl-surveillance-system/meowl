@@ -12,5 +12,5 @@ install_opencv() {
   cd ${PARENT_PATH}/../../src/cv/
   python3 -m venv venv
   source venv/bin/activate
-  pip install -r -y requirements.txt
+  pip install -r requirements.txt
 }
