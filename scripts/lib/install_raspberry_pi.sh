@@ -13,5 +13,5 @@ install_raspberry_pi() {
   cd ${PARENT_PATH}/../../src/camera/pi
   python3 -m venv venv
   source ./venv/bin/activate
-  pip install -r requirements.txt
+  pip install -r -y requirements.txt
 }
