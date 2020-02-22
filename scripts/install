@@ -1,53 +1,61 @@
 #!/bin/bash
+#
+#######################################
+# Installs all required dependencies of Meowl based on arguments provided
+# Globals:
+#   None
+# Arguments:
+#   $@ - Name of the service or server to install all server dependencies
+# Returns:
+#   None
+#######################################
 
 INSTALLATION_HELP_TEXT="Usage: install.sh [SERVICE]...
 Install SERVICE(s) required for Meowl
 With no arguments, install all required services"
 
 # Installing all the required dependencies based on the arguments provided
-# If there's no arguments install all the dependencies that Meowl needs
-if [[ $# -eq 0 ]]; then
-  source ./lib/install_minikube.sh
-  install_kubernetes
-  source ./lib/install_kafka.sh
-  install_kafka
-  source ./lib/install_cassandra.sh
-  install_cassandra
-  source ./lib/install_node.sh
-  install_node_all
-  source ./lib/install_opencv.sh
-  install_opencv
-  source ./lib/install_nginx_rtmp.sh
-  install_nginx_rtmp_all
-else
+meowl_install() {
   for arg in "$@"; do
+    PARENT_PATH=$(
+      cd "$(dirname "${BASH_SOURCE[0]}")"
+      pwd -P
+    )
     case ${arg} in
     kubernetes)
-      source ./lib/install_minikube.sh
+      source ${PARENT_PATH}/lib/install_minikube.sh
       install_kubernetes
       ;;
     kafka)
-      source ./lib/install_kafka.sh
+      source ${PARENT_PATH}/lib/install_kafka.sh
       install_kafka
       ;;
     cassandra)
-      source ./lib/install_cassandra.sh
+      source ${PARENT_PATH}/lib/install_cassandra.sh
       install_cassandra
       ;;
     node)
-      source ./lib/install_node.sh
+      source ${PARENT_PATH}/lib/install_node.sh
       install_node_all
       ;;
     opencv)
-      source ./lib/install_opencv.sh
+      source ${PARENT_PATH}/lib/install_opencv.sh
       install_opencv
       ;;
     nginx-rtmp)
-      source ./lib/install_nginx_rtmp.sh
+      source ${PARENT_PATH}/lib/install_nginx_rtmp.sh
       install_nginx_rtmp_all
       ;;
+    server)
+      meowl_install kubernetes
+      meowl_install kafka
+      meowl_install cassandra
+      meowl_install node
+      meowl_install opencv
+      meowl_install nginx-rtmp
+      ;;
     raspberry-pi)
-      source ./lib/install_raspberry_pi.sh
+      source ${PARENT_PATH}/lib/install_raspberry_pi.sh
       install_raspberry_pi
       ;;
     --help | -help | -H)
@@ -58,5 +66,6 @@ else
       ;;
     esac
   done
-fi
-echo "Successfully installed the dependencies"
+}
+
+meowl_install "$@"
