@@ -2,6 +2,9 @@
 # Cassandra Installation Script
 # Reference: http://cassandra.apache.org/download/
 #
+
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P )
+
 # Install Java 8 if not installed
 install_java_environment() {
   command -v java >/dev/null 2>&1;
@@ -25,25 +28,24 @@ install_curl() {
 # Modify server hostname for connection
 modify_server_hostname() {
   echo "Modifying server hostname..."
-  sudo sed -i 's/<public name>/127.0.0.1/' /etc/cassandra/cassandra-env.sh
+  sudo sed -i 's/# JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=<public name>"/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=127.0.0.1"/' /etc/cassandra/cassandra-env.sh
 }
 
-
+# Install python driver
 install_python_driver() {
-  command -v pip3 > /dev/null 2>&1;
-  if [[ $? -eq 1 ]]; then
-    echo "Installing pip..."
-    sudo apt-get -y install python3-pip
-  fi
-  echo "Installing cassandra-driver..."
-  pip install cassandra-driver
+  sudo apt-get install python3-pip
+  sudo apt-get install python3-venv
+  cd ${PARENT_PATH}/../../src/db/cassandra
+  python3 -m venv venv
+  source ./venv/bin/activate
+  pip install -r requirements.txt
 }
 
 # Complete Installation for Cassandra
 install_cassandra() {
+  sudo apt-get update
   install_java_environment
   install_curl
-  sudo apt-get update
   echo "Adding Cassandra repository to system..."
   echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
   echo "Adding the Apache Cassandra repository keys..."
