@@ -58,6 +58,10 @@ meowl_install() {
       source ${PARENT_PATH}/lib/install_raspberry_pi.sh
       install_raspberry_pi
       ;;
+    raspberry-pi)
+      source ./lib/install_raspberry_pi.sh
+      install_raspberry_pi
+      ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;
