@@ -3,3 +3,4 @@ Click==7.0
 geomet==0.1.2
 pkg-resources==0.0.0
 six==1.14.0
+python-librtmp==0.3.0
