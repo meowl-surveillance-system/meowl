@@ -26,10 +26,9 @@ def create_app(test_config=None):
     def stop_camera_stream():
         """Stops the camera from streaming"""
         return current_app.pi_streaming_camera.stop()
-    
     return app
 
 if __name__ == '__main__':
-    app = create_app()
-    with app.app_context():
-        app.run(debug=True, host='0.0.0.0')
+    main_app = create_app()
+    with main_app.app_context():
+        main_app.run(debug=True, host='0.0.0.0')
