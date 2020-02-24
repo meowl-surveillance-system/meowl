@@ -9,8 +9,7 @@ def create_app(test_config=None):
     if not os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY'):
         print('RASPBERRY_PI_FLASK_SECRET_KEY: not found')
         return None
-    else:
-        app.secret_key = os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY')
+    app.secret_key = os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY')
 
     @app.route('/')
     def index():

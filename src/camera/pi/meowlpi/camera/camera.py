@@ -1,6 +1,6 @@
+from time import sleep
 from picamera import PiCamera
 from meowlpi.camera.streamer import MeowlPiStreamer
-from time import sleep
 import settings
 
 class PiStreamingCamera():
@@ -10,6 +10,7 @@ class PiStreamingCamera():
     camera = None
     streamer = None
 
+    @staticmethod
     def start(video_format='h264'):
         """Starts streaming from the camera on to the endpoint"""
         # Initalizes the camera static instance and wait for camera to warm up
@@ -29,12 +30,12 @@ class PiStreamingCamera():
             quality=settings.CAMERA_QUALITY)
         return "Successfully started streaming from Raspberry Pi to {0} in video_format: {1}" \
                 .format("ffmpeg", settings.VIDEO_FORMAT)
-
+    
+    @staticmethod
     def stop():
         """Stops streaming from the camera"""
         if PiStreamingCamera.camera is not None and not PiStreamingCamera.camera.closed:
             PiStreamingCamera.camera.stop_recording()
             PiStreamingCamera.camera.close()
             return "Successfully stopped streaming from Raspberry Pi"
-        else:
-            return "PiCamera did not start streaming"
+        return "PiCamera did not start streaming"

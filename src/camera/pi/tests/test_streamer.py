@@ -1,7 +1,6 @@
 import subprocess
 import mock
 from meowlpi.camera.streamer import MeowlPiStreamer
-import settings
 
 def test_if_subprocess_is_open():
     with mock.patch.object(subprocess, 'Popen') as mock_popen:
