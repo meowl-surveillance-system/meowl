@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Playback component renders Playback component 1`] = `
+<div>
+  <form
+    data-testid="form"
+  >
+    <label>
+      Video URL
+    </label>
+    <input
+      data-testid="url"
+      type="text"
+      value=""
+    />
+    <button
+      type="submit"
+    >
+      Enter URL
+    </button>
+  </form>
+  <form
+    data-testid="retrieve"
+  >
+    <p>
+      Video Retrieval:
+    </p>
+    <label>
+      Start Time
+    </label>
+    <input
+      data-testid=""
+      type="text"
+      value=""
+    />
+    <label>
+      Video Id
+    </label>
+    <input
+      data-testid=""
+      type="text"
+      value=""
+    />
+    <button
+      type="submit"
+    >
+      Retrieve Video
+    </button>
+  </form>
+  <div
+    style="width: 640px; height: 360px;"
+  />
+</div>
+`;
