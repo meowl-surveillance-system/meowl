@@ -7,7 +7,7 @@ class PiStreamingCamera:
         A Raspberry Pi Camera class interface for streaming purposes
     """
     camera = None
-    endpoint = MeowlPiStreamer.ffmpeg.stdin
+    streamer = None
 
     def start(video_format='h264'):
         """Starts streaming from the camera on to the endpoint"""
@@ -15,8 +15,10 @@ class PiStreamingCamera:
         if not PiStreamingCamera.camera:
             PiStreamingCamera.camera = PiCamera(framerate=60, resolution=(1280,720))
             sleep(2)
+        if not PiStreamingCamera.streamer:
+            PiStreamingCamera.streamer = MeowlPiStreamer()
 
-        PiStreamingCamera.camera.start_recording(PiStreamingCamera.endpoint, video_format)
+        PiStreamingCamera.camera.start_recording(PiStreamingCamera.streamer.get_input(), video_format)
         return "Successfully started streaming from Raspberry Pi to {0} in video_format:{1}" \
                 .format("ffmpeg", video_format, bitrate=2000000, intra_period=0)
 
