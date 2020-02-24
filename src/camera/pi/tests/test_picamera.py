@@ -3,6 +3,9 @@ import pytest
 from pytest_mock import mocker
 from picamera import PiCamera
 from meowlpi.camera.camera import PiStreamingCamera
+from meowlpi.camera.streamer import MeowlPiStreamer
+import settings
+import subprocess
 
 def test_picamera_recording(mocker):
     picamera_mock = mocker.Mock()
@@ -10,11 +13,16 @@ def test_picamera_recording(mocker):
     picamera_mock.stop_recording.return_value = mocker.Mock()
     picamera_mock.close.return_value = mocker.Mock()
     picamera_mock.closed.__bool__= mocker.Mock(return_value=False)
-    endpoint_stub = mocker.stub(name="endpoint_stub")
-
-    PiStreamingCamera.camera = picamera_mock
-    PiStreamingCamera.start('h264', endpoint_stub)
-    picamera_mock.start_recording.assert_called_with(endpoint_stub, 'h264')
+    with mock.patch.object(MeowlPiStreamer, 'get_input', return_value="hello") as _, \
+            mock.patch.object(subprocess, 'Popen', return_value=mocker.Mock()) as __:
+        PiStreamingCamera.camera = picamera_mock
+        PiStreamingCamera.start()
+        picamera_mock.start_recording.assert_called_with( \
+                "hello", \
+                settings.VIDEO_FORMAT, \
+                bitrate=settings.BIT_RATE, \
+                intra_period=settings.INTRA_PERIOD, \
+                quality=settings.CAMERA_QUALITY)
     PiStreamingCamera.stop()
     picamera_mock.stop_recording.assert_called_with()
     picamera_mock.close.assert_called_with()
