@@ -21,11 +21,9 @@ class PiStreamingCamera():
             sleep(2)
         if not PiStreamingCamera.streamer:
             PiStreamingCamera.streamer = MeowlPiStreamer()
-
         PiStreamingCamera.camera.start_recording(
             PiStreamingCamera.streamer.get_input(), \
             settings.VIDEO_FORMAT, \
-            intra_period=settings.INTRA_PERIOD, \
             bitrate=settings.BIT_RATE, \
             quality=settings.CAMERA_QUALITY)
         return "Successfully started streaming from Raspberry Pi to {0} in video_format: {1}" \
