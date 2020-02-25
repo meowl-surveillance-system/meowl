@@ -18,7 +18,6 @@ def test_picamera_recording(mocker):
                 "hello", \
                 settings.VIDEO_FORMAT, \
                 bitrate=settings.BIT_RATE, \
-                intra_period=settings.INTRA_PERIOD, \
                 quality=settings.CAMERA_QUALITY)
     PiStreamingCamera.stop()
     picamera_mock.stop_recording.assert_called_with()
