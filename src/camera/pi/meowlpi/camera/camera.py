@@ -14,12 +14,13 @@ class PiStreamingCamera():
     def start(video_format='h264'):
         """Starts streaming from the camera on to the endpoint"""
         # Initalizes the camera static instance and wait for camera to warm up
-        if not PiStreamingCamera.camera:
+        if PiStreamingCamera.camera is None:
             PiStreamingCamera.camera = PiCamera( \
                     framerate=settings.FRAME_RATE, \
                     resolution=settings.CAMERA_RESOLUTION)
+            # Let the Raspberry Pi camera warm up for 2 seconds
             sleep(2)
-        if not PiStreamingCamera.streamer:
+        if PiStreamingCamera.streamer is None:
             PiStreamingCamera.streamer = MeowlPiStreamer()
         PiStreamingCamera.camera.start_recording(
             PiStreamingCamera.streamer.get_input(), \

@@ -6,7 +6,7 @@ def create_app(test_config=None):
     """ Create and attach the camera to the Meowl-Pi app"""
     app = Flask(__name__, instance_relative_config=True)
     app.pi_streaming_camera = PiStreamingCamera
-    if not os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY'):
+    if os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY') is None:
         print('RASPBERRY_PI_FLASK_SECRET_KEY: not found')
         return None
     app.secret_key = os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY')
