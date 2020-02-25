@@ -23,7 +23,8 @@ class ClusterServices:
     if self.is_valid_keyspace_name(keyspace_name):
       self.get_session().execute(create_keyspace_query % (keyspace_name))
     else:
-      print("Invalid keyspace name")
+      raise ValueError:
+        print("Invalid keyspace name")
 
 
   def set_keyspace(self, keyspace_name):
