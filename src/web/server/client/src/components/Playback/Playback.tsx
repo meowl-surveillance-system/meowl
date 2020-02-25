@@ -27,8 +27,9 @@ export default class Playback extends React.Component {
     this.setState({ tmpUrl: "" });
   };
 
-  retrieveVideo = (): void => {
-    fetch(`/api/getVideo/?start=${this.state.startTime}&id=${this.state.vidId}`)
+  retrieveVideo = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    fetch(`http://localhost:8081/api/getVideo/?start=${this.state.startTime}&id=${this.state.vidId}`)
     .then(res => res.blob())
     .then(blob => {
       const vidUrl = URL.createObjectURL(new Blob([blob]));

@@ -7,13 +7,13 @@ app.get('/', function (req, res) {
 
 app.get('/api/getVideo', function (req, res) {
     const spawn = require('child_process').spawn;
-    const pyProc = spawn('python', ['path/script.py', req.query.start, req.query.id])
-    pyProc.stdout.on('vid', function(vid) {
-        res.sendFile(vid)
-        console.log('Sent video back.')
+    const pyProc = spawn('python', ['./sendVid.py'])
+    pyProc.stdout.on('data', function(vid) {
+        res.send(Buffer.from(vid));
+        // console.log('Sent video back.')
     })
 })
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(8081, function () {
+  console.log('Example app listening on port 8081!');
 });
