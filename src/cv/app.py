@@ -1,7 +1,6 @@
 from flask import Flask, request
 import cv2
 import numpy as np
-import server.yolo_video_detect as obj_detector
 import server.stream as stream
 
 app = Flask(__name__)
