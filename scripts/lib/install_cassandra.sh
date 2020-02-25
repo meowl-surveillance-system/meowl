@@ -4,6 +4,37 @@
 #
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P )
+NGINX_RTMP_IP="35.239.238.204"
+NGINX_RTMP_PORT="19350"
+CERT_PATH="/etc/ssl/certs"
+STUNNEL_CONF_FILE="foreground = yes
+debug = 5
+
+[my-encryption-service]
+client = yes
+accept = 1234
+connect = ${NGINX_RTMP_IP}:${NGINX_RTMP_PORT}
+CAfile = ${CERT_PATH}/meowl_nginx.crt
+verify = 3"
+MEOWL_NGINX_CERT="-----BEGIN CERTIFICATE-----
+MIIDKDCCAhCgAwIBAgIUMJnIvEqdHYlvuFesy6WFUMwNHEYwDQYJKoZIhvcNAQEL
+BQAwPjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5ZMSIwIAYDVQQKDBlNZW93bC1T
+dXJ2ZWlsbGFuY2UtU3lzdGVtMB4XDTIwMDIyNTAwNDY1MVoXDTMwMDIyMjAwNDY1
+MVowPjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5ZMSIwIAYDVQQKDBlNZW93bC1T
+dXJ2ZWlsbGFuY2UtU3lzdGVtMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAuAyerHVUxX4nOANv+YuAif1QQEcP4oeO+0VM7eqz00/FWlTsPKe9iTZCgRvS
+1tizTgbkt3jbl8iFSe0+R5f146A7wL+g9kbscVMiFLCl3ZBWK8DZs32180q/FPoS
+c3VgbU7ljh5GKyi3v/vPLJcPxa5grSMM67xAxlUAJHM7pWLGtIei37DdNrSjzONa
+EK0DlJ1Ld5DwODtZlQc8kIVvrAovnmjqY6yghBmii0fbzFszjSUzkbOlGJGT/tGU
+5T4Ea8UORUhaRON58Lp1+TXQnxvadd3OWtTfh237gzi+HBFp8jzI8Ex/2R7h2O3b
+pBYNatiOwx6ySGIfE3s6Kn1MqwIDAQABox4wHDAaBgNVHREEEzARhwR/AAABggls
+b2NhbGhvc3QwDQYJKoZIhvcNAQELBQADggEBAJzdrULgRUCVB3cDvEI+SFjjWnVq
++vrwTnDw5Z+E1vulknqoooUFifyBdhLtd6q2GAr3mf1j4RriksR1HaRXmAiOLf4B
+1nVuPWpNwuJGwXs+VB/G9V8R4QerqfKJTDKWtkikMJAXWENqYqTVBL3Z4M/HATWy
+AktY2R5aCXC2QRhXYkXk6RTmdpecUyLPO39YTLgEeaU1ggAhPWBC9Y3sWKW3Fv/H
+sS+vSZD4u9vFD/cGsUhtMild/xeuz8/tSykzI5pgSS5qVj4Y7G1uif4+4FhbRaLG
+2i8PZECOqKceqcZyyR6AjfV2rSmKgFDCorurHzo3AmHD0rm8dtuJM5mLIA0=
+-----END CERTIFICATE-----"
 
 # Install Java 8 if not installed
 install_java_environment() {
@@ -39,8 +70,18 @@ install_python_driver() {
   cd ${PARENT_PATH}/../../src/db/cassandra
   python3 -m venv venv
   source ./venv/bin/activate
+  pip install --upgrade pip
   pip install -r requirements.txt
 }
+
+create_stunnel_config_file() {
+  echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
+}
+
+copy_cert() {
+  echo "${MEOWL_NGINX_CERT}" | sudo tee ${CERT_PATH}/meowl_nginx.crt 
+}
+
 
 # Complete Installation for Cassandra
 install_cassandra() {
@@ -56,5 +97,7 @@ install_cassandra() {
   sudo apt-get -y install cassandra
   modify_server_hostname
   install_python_driver
+  create_stunnel_config_file
+  copy_cert
 }
 
