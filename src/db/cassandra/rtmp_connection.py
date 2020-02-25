@@ -11,10 +11,12 @@ class RtmpConnection:
     self.bytes_read = 0
     self.previous_read = 0
     self.data = b''
+    self.is_reading = True
 
   def read(self, file_service):
     """Continuously read (chunk_size)MB chunks from RTMP server"""
-    while True:
+    self.is_reading = True
+    while self.is_reading:
       self.data += self.stream.read(self.chunk_size)
       self.bytes_read = len(self.data)
 
@@ -27,6 +29,10 @@ class RtmpConnection:
         self.data = self.data[self.chunk_size:]
 
       self.previous_read = self.bytes_read
+
+  def stop(self):
+    """Stop reading from stream"""
+    self.is_reading = False
 
   def is_last_chunk(self, bytes_read, previous_read):
     """Check if the last chunk is received"""
