@@ -35,6 +35,7 @@ modify_server_hostname() {
 install_python_driver() {
   sudo apt-get -y install python3-pip
   sudo apt-get -y install python3-venv
+  sudo apt-get -y install librtmp-dev
   cd ${PARENT_PATH}/../../src/db/cassandra
   python3 -m venv venv
   source ./venv/bin/activate
