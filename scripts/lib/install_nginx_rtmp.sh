@@ -42,6 +42,12 @@ rtmp {
             hls_playlist_length 60;
             # disable consuming the stream from nginx as rtmp
             deny play all;
+            push rtmp://localhost:1935/view;
+        }
+        application view {
+            live on;
+            allow publish 127.0.0.1;
+            deny publish all;
         }
     }
 }
