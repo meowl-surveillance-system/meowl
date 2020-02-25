@@ -33,8 +33,8 @@ modify_server_hostname() {
 
 # Install python driver
 install_python_driver() {
-  sudo apt-get install python3-pip
-  sudo apt-get install python3-venv
+  sudo apt-get -y install python3-pip
+  sudo apt-get -y install python3-venv
   cd ${PARENT_PATH}/../../src/db/cassandra
   python3 -m venv venv
   source ./venv/bin/activate
@@ -52,7 +52,7 @@ install_cassandra() {
   curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
   sudo apt-get update
   echo "Installing Cassandra..."
-  sudo apt-get install -y cassandra
+  sudo apt-get -y install cassandra
   modify_server_hostname
   install_python_driver
 }
