@@ -21,7 +21,7 @@ class RtmpSaver:
     self.read_thread = threading.Thread(target=self._read, args=(file_service,))
     self.read_thread.start()
 
-  def read(self, file_service):
+  def _read(self, file_service):
     """Continuously read (chunk_size)MB chunks from RTMP server"""
     self.is_reading_lock.acquire()
     while self.is_reading:
@@ -54,6 +54,6 @@ class RtmpSaver:
     self.is_reading_lock.release()
     self.read_thread.join()
 
-  def __is_last_chunk(self, bytes_read, previous_read):
+  def _is_last_chunk(self, bytes_read, previous_read):
     """Check if the last chunk is received"""
     return bytes_read == previous_read and bytes_read != 0
