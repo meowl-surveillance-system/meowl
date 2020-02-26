@@ -3,9 +3,9 @@ import threading
 
 class RtmpSaver:
   """Create a RTMP connection"""
-  def __init__(self, rtmp_ip, port, stream_id, chunk_size=2097152):
+  def __init__(self, ip, port, stream_id, chunk_size=2097152):
     self.stream_id = stream_id
-    self.connection_string = "rtmp://{0}:{1}/view/{2}".format(rtmp_id, port, stream_id)
+    self.connection_string = "rtmp://{0}:{1}/view/{2}".format(ip, port, stream_id)
     self.connection = librtmp.RTMP(self.connection_string, live=True)
     self.connection.connect()
     self.stream = self.connection.create_stream()
