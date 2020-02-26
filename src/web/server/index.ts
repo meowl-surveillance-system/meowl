@@ -1,14 +1,20 @@
+// TODO: Set up the application so that cors is only used for development
+import cors from 'cors';
 import express from 'express';
+
 const app = express();
 const port = process.env.PORT || 8081;
 
+// TODO: Set up the app so that cors is only used for development
+app.use(cors());
 app.get('/', function(req, res) {
   res.send('Hello World!');
 });
 
+// TODO(Akasora39): Fix the buffer stream
 app.get('/api/getVideo', function(req, res) {
   const spawn = require('child_process').spawn;
-  const pyProc = spawn('python', ['./sendVid.py'])
+  const pyProc = spawn('python', ['./sendVid.py']);
   pyProc.stdout.on('data', function(vid) {
     res.send(Buffer.from(vid));
     // console.log('Sent video back.')
