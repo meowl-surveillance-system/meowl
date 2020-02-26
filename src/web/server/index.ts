@@ -14,11 +14,13 @@ app.get('/', function(req, res) {
 // TODO(Akasora39): Fix the buffer stream
 app.get('/api/getVideo', function(req, res) {
   const spawn = require('child_process').spawn;
-  const pyProc = spawn('python', ['./sendVid.py']);
-  pyProc.stdout.on('data', function(vid) {
-    res.send(Buffer.from(vid));
-    // console.log('Sent video back.')
-  })
+  const pyProc = spawn('python', ['./sendVid.py'])
+  pyProc.stdout.pipe(res, {end: true});
+  pyProc.stdin.on('end', function() {
+    console.log('done');
+    res.send();
+    return res.end();
+  });
 })
 
 app.listen(port, function() {
