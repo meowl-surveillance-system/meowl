@@ -10,16 +10,16 @@ describe('Playback component', () => {
 
     test('change input and form submission', () => {
         render(<Playback />);
-        const urlInput = screen.getByTestId('url') as HTMLInputElement;
+        const urlInput = screen.getByTestId('tmpUrl-test') as HTMLInputElement;
         const url = 'testURL';
-        fireEvent.change(urlInput, {target: {value: url}})
+        fireEvent.change(urlInput, { target: { value: url } });
         expect(urlInput.value).toEqual(url);
         const form = screen.getByTestId('form') as HTMLFormElement;
-        fireEvent.submit(form);
+        fireEvent.click(screen.getByText("Retrieve Video"));
         expect(urlInput.value).toEqual('');
     });
 
     test('video retrieval', () => {
-        
+
     })
 });

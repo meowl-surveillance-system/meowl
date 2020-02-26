@@ -1,62 +1,84 @@
-import React, { ComponentState } from 'react';
+import React, { ComponentState, Component, ChangeEvent } from 'react';
 import ReactPlayer from 'react-player';
+import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
 
-type myState = {
+interface Props { }
+
+interface State {
   tmpUrl: string;
   url: string;
   startTime: string;
   vidId: string;
 }
 
-export default class Playback extends React.Component {
-  state: myState = {
-    tmpUrl: "",
-    url: "",
-    startTime: "",
-    vidId: ""
+export default class Playback extends Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      tmpUrl: "",
+      url: "",
+      startTime: "",
+      vidId: ""
+    };
   }
 
-  handleChange = (field: string) => (event: React.FormEvent<HTMLInputElement>): void => {
-    event.preventDefault();
-    this.setState({ [field]: event.currentTarget.value} as ComponentState);
+  handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    let target: HTMLInputElement = (event.target as HTMLInputElement);
+    let label: string = target.name;
+    let value: string = target.value;
+    this.setState({ [label]: value } as ComponentState);
   };
 
-  handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
+  retrieveVideo = (): void => {
     this.setState({ url: this.state.tmpUrl });
     this.setState({ tmpUrl: "" });
-  };
-
-  retrieveVideo = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
     fetch(`http://localhost:8081/api/getVideo/?start=${this.state.startTime}&id=${this.state.vidId}`)
-    .then(res => res.blob())
-    .then(blob => {
-      const vidUrl = URL.createObjectURL(new Blob([blob]));
-      this.setState({ url: vidUrl });
-    })
-      
+      .then(res => res.blob())
+      .then(blob => {
+        const vidUrl = URL.createObjectURL(new Blob([blob]));
+        this.setState({ url: vidUrl });
+      })
+
   }
 
   render() {
-    return(
-      <div>
-        <form onSubmit={this.handleSubmit} data-testid="form">
-          <label>Video URL</label>
-          <input type="text" value={this.state.tmpUrl} onChange={this.handleChange('tmpUrl')} data-testid="url" />
-          <button type="submit">Enter URL</button>
-        </form>
-
-        <form onSubmit={this.retrieveVideo} data-testid="retrieve">
-          <p>Video Retrieval:</p>
-          <label>Start Time</label>
-          <input type="text" value={this.state.startTime} onChange={this.handleChange('startTime')} data-testid="" />
-          <label>Video Id</label>
-          <input type="text" value={this.state.vidId} onChange={this.handleChange('vidId')} data-testid="" />
-          <button type="submit">Retrieve Video</button>
-        </form>
+    return (
+      <Container>
+        <Typography variant="h5" component="h6">Video Retreival Tool</Typography>
+        <FormControl data-testid="form">
+          <TextField
+            id="tmpUrl-input"
+            name="tmpUrl"
+            value={this.state.tmpUrl}
+            onChange={this.handleChange}
+            placeholder="Temporary URL"
+            inputProps={{ "data-testid": "tmpUrl-test" }}
+          />
+          <TextField
+            id="startTime-input"
+            name="startTime"
+            value={this.state.startTime}
+            onChange={this.handleChange}
+            placeholder="Start Time"
+            inputProps={{ "data-testid": "" }}
+          />
+          <TextField
+            id="vidId-input"
+            name="vidId"
+            value={this.state.vidId}
+            onChange={this.handleChange}
+            placeholder="Video ID"
+            inputProps={{ "data-testid": "" }}
+          />
+          <Button
+            onClick={() => this.retrieveVideo()}
+          >
+            Retrieve Video
+          </Button>
+        </FormControl>
         <ReactPlayer url={this.state.url} controls={true} />
-      </div>
+      </Container >
     );
   }
 }

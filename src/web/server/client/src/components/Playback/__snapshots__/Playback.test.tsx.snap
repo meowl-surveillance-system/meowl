@@ -1,52 +1,87 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Playback component renders Playback component 1`] = `
-<div>
-  <form
+<div
+  class="MuiContainer-root MuiContainer-maxWidthLg"
+>
+  <h6
+    class="MuiTypography-root MuiTypography-h5"
+  >
+    Video Retreival Tool
+  </h6>
+  <div
+    class="MuiFormControl-root"
     data-testid="form"
   >
-    <label>
-      Video URL
-    </label>
-    <input
-      data-testid="url"
-      type="text"
-      value=""
-    />
-    <button
-      type="submit"
+    <div
+      class="MuiFormControl-root MuiTextField-root"
     >
-      Enter URL
-    </button>
-  </form>
-  <form
-    data-testid="retrieve"
-  >
-    <p>
-      Video Retrieval:
-    </p>
-    <label>
-      Start Time
-    </label>
-    <input
-      data-testid=""
-      type="text"
-      value=""
-    />
-    <label>
-      Video Id
-    </label>
-    <input
-      data-testid=""
-      type="text"
-      value=""
-    />
-    <button
-      type="submit"
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+      >
+        <input
+          aria-invalid="false"
+          class="MuiInputBase-input MuiInput-input"
+          data-testid="tmpUrl-test"
+          id="tmpUrl-input"
+          name="tmpUrl"
+          placeholder="Temporary URL"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="MuiFormControl-root MuiTextField-root"
     >
-      Retrieve Video
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+      >
+        <input
+          aria-invalid="false"
+          class="MuiInputBase-input MuiInput-input"
+          data-testid=""
+          id="startTime-input"
+          name="startTime"
+          placeholder="Start Time"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="MuiFormControl-root MuiTextField-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+      >
+        <input
+          aria-invalid="false"
+          class="MuiInputBase-input MuiInput-input"
+          data-testid=""
+          id="vidId-input"
+          name="vidId"
+          placeholder="Video ID"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiButton-label"
+      >
+        Retrieve Video
+      </span>
+      <span
+        class="MuiTouchRipple-root"
+      />
     </button>
-  </form>
+  </div>
   <div
     style="width: 640px; height: 360px;"
   />
