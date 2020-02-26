@@ -13,7 +13,7 @@ BIT_RATE = 6000000
 # Streaming Configs for ffmpeg
 STREAM_INPUT_FORMAT = "h264"
 STREAM_OUTPUT_FORMAT = "flv"
-STREAM_OUPUT_URL = os.environ.get('SERVER_RTMP_URL_LINK',
+STREAM_OUTPUT_URL = os.environ.get('SERVER_RTMP_URL_LINK',
   '/tmp/meowl_video_stream.flv')
 
 # Meowl Configs

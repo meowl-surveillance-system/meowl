@@ -35,6 +35,5 @@ class PiStreamingCamera():
         """Stops streaming from the camera"""
         if PiStreamingCamera.camera is not None and not PiStreamingCamera.camera.closed:
             PiStreamingCamera.camera.stop_recording()
-            PiStreamingCamera.camera.close()
             return "Successfully stopped streaming from Raspberry Pi"
         return "PiCamera did not start streaming"
