@@ -1,5 +1,4 @@
 import subprocess
-import os
 import settings
 
 class MeowlPiStreamer():
@@ -13,7 +12,7 @@ class MeowlPiStreamer():
             '-f', settings.STREAM_INPUT_FORMAT,
             '-i', '-', '-c:v', 'copy', '-map',
             '0:0', '-f', settings.STREAM_OUTPUT_FORMAT, 
-            os.environ['SERVER_RTMP_URL_LINK']]
+            settings.STREAM_OUTPUT_URL]
         self.__process = subprocess.Popen(self.__ffmpeg_command, stdin=subprocess.PIPE)
 
     def get_input(self):
