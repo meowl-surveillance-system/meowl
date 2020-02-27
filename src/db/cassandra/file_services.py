@@ -1,3 +1,4 @@
+import sys
 from cassandra.cluster import Cluster
 from uuid import uuid4
 
@@ -52,5 +53,6 @@ class FileServices:
       chunk_of_data = result_set[0].chunk
       resulting_bytes.extend(chunk_of_data)
 
-    return bytearray(resulting_bytes)
+    print(bytearray(resulting_bytes))
+    sys.stdout.flush()
 
