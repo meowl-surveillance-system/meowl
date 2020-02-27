@@ -29,7 +29,7 @@ class RtmpSaver:
       self.data += self.stream.read(self.chunk_size)
       self.bytes_read = len(self.data)
 
-      if self.__is_last_chunk(self.bytes_read, self.previous_read):
+      if self._is_last_chunk(self.bytes_read, self.previous_read):
         file_service.store_bytes(self.stream_id, self.data[:self.bytes_read], datetime.now())
         self.data = self.data[self.bytes_read:]
 
