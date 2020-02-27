@@ -7,7 +7,7 @@ exports[`Playback component renders Playback component 1`] = `
   <h6
     class="MuiTypography-root MuiTypography-h5"
   >
-    Video Retreival Tool
+    Video Retrieval Tool
   </h6>
   <div
     class="MuiFormControl-root"
@@ -31,6 +31,25 @@ exports[`Playback component renders Playback component 1`] = `
         />
       </div>
     </div>
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiButton-label"
+      >
+        Submit URL
+      </span>
+      <span
+        class="MuiTouchRipple-root"
+      />
+    </button>
+  </div>
+  <div
+    class="MuiFormControl-root"
+    data-testid="retrieve"
+  >
     <div
       class="MuiFormControl-root MuiTextField-root"
     >
@@ -40,25 +59,7 @@ exports[`Playback component renders Playback component 1`] = `
         <input
           aria-invalid="false"
           class="MuiInputBase-input MuiInput-input"
-          data-testid=""
-          id="startTime-input"
-          name="startTime"
-          placeholder="Start Time"
-          type="text"
-          value=""
-        />
-      </div>
-    </div>
-    <div
-      class="MuiFormControl-root MuiTextField-root"
-    >
-      <div
-        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
-      >
-        <input
-          aria-invalid="false"
-          class="MuiInputBase-input MuiInput-input"
-          data-testid=""
+          data-testid="vid-db-test"
           id="vidId-input"
           name="vidId"
           placeholder="Video ID"

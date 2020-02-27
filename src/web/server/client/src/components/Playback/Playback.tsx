@@ -7,7 +7,6 @@ interface Props { }
 interface State {
   tmpUrl: string;
   url: string;
-  startTime: string;
   vidId: string;
 }
 
@@ -18,7 +17,6 @@ export default class Playback extends Component<Props, State> {
     this.state = {
       tmpUrl: "",
       url: "",
-      startTime: "",
       vidId: ""
     };
   }
@@ -30,10 +28,13 @@ export default class Playback extends Component<Props, State> {
     this.setState({ [label]: value } as ComponentState);
   };
 
-  retrieveVideo = (): void => {
+  urlSubmit = (): void => {   
     this.setState({ url: this.state.tmpUrl });
     this.setState({ tmpUrl: "" });
-    fetch(`http://localhost:8081/api/getVideo/?start=${this.state.startTime}&id=${this.state.vidId}`)
+  }
+
+  retrieveVideo = (): void => {
+    fetch(`/api/getVideo/?id=${this.state.vidId}`)
       .then(res => res.blob())
       .then(blob => {
         const vidUrl = URL.createObjectURL(new Blob([blob]));
@@ -45,7 +46,7 @@ export default class Playback extends Component<Props, State> {
   render() {
     return (
       <Container>
-        <Typography variant="h5" component="h6">Video Retreival Tool</Typography>
+        <Typography variant="h5" component="h6">Video Retrieval Tool</Typography>
         <FormControl data-testid="form">
           <TextField
             id="tmpUrl-input"
@@ -55,21 +56,16 @@ export default class Playback extends Component<Props, State> {
             placeholder="Temporary URL"
             inputProps={{ "data-testid": "tmpUrl-test" }}
           />
-          <TextField
-            id="startTime-input"
-            name="startTime"
-            value={this.state.startTime}
-            onChange={this.handleChange}
-            placeholder="Start Time"
-            inputProps={{ "data-testid": "" }}
-          />
+          <Button onClick={() => this.urlSubmit()}>Submit URL</Button>
+        </FormControl>
+        <FormControl data-testid="retrieve">
           <TextField
             id="vidId-input"
             name="vidId"
             value={this.state.vidId}
             onChange={this.handleChange}
             placeholder="Video ID"
-            inputProps={{ "data-testid": "" }}
+            inputProps={{ "data-testid": "vid-db-test" }}
           />
           <Button
             onClick={() => this.retrieveVideo()}

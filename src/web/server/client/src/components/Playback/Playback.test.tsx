@@ -15,11 +15,17 @@ describe('Playback component', () => {
         fireEvent.change(urlInput, { target: { value: url } });
         expect(urlInput.value).toEqual(url);
         const form = screen.getByTestId('form') as HTMLFormElement;
-        fireEvent.click(screen.getByText("Retrieve Video"));
+        fireEvent.click(screen.getByText("Submit URL"));
         expect(urlInput.value).toEqual('');
     });
 
-    test('video retrieval', () => {
-
+    test.skip('video retrieval', () => {
+        render(<Playback />);
+        const vidIdInput = screen.getByTestId('vid-db-test') as HTMLInputElement;
+        const vidId = '1';
+        fireEvent.change(vidIdInput, { target: { value: vidId } });
+        expect(vidIdInput.value).toEqual(vidId);
+        const form = screen.getByTestId('retrieve') as HTMLFormElement;
+        fireEvent.click(screen.getByText("Retrieve Video"));
     })
 });
