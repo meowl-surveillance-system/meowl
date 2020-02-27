@@ -17,12 +17,12 @@ download_and_extract_kafka_binaries() {
 
 # Install OpenJDK 8
 install_openJDK() {
-  sudo apt install openjdk-8-jdk 
+  sudo apt install -y openjdk-8-jdk
 }
 
-# Enables topic deletion 
+# Enables topic deletion
 enable_topic_deletion() {
-  grep -q "delete.topic.enable = true" ${KAFKA_CONFIG_PATH}/server.properties;
+  grep -q "delete.topic.enable = true" ${KAFKA_CONFIG_PATH}/server.properties
   if [[ $? -eq 1 ]]; then
     echo "delete.topic.enable = true" | sudo tee -a ${KAFKA_CONFIG_PATH}/server.properties
   fi
