@@ -27,13 +27,13 @@ class PiStreamingCamera():
             settings.VIDEO_FORMAT, \
             bitrate=settings.BIT_RATE, \
             quality=settings.CAMERA_QUALITY)
-        return "Successfully started streaming from Raspberry Pi to {0} in video_format: {1}" \
-                .format("ffmpeg", settings.VIDEO_FORMAT)
+        return 'Successfully started streaming from Raspberry Pi to {0} in video_format: {1}' \
+                .format('ffmpeg', settings.VIDEO_FORMAT)
     
     @staticmethod
     def stop():
         """Stops streaming from the camera"""
         if PiStreamingCamera.camera is not None and not PiStreamingCamera.camera.closed:
             PiStreamingCamera.camera.stop_recording()
-            return "Successfully stopped streaming from Raspberry Pi"
-        return "PiCamera did not start streaming"
+            return 'Successfully stopped streaming from Raspberry Pi'
+        return 'PiCamera did not start streaming'

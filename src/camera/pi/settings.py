@@ -11,10 +11,11 @@ VIDEO_FORMAT = "h264"
 BIT_RATE = 6000000
 
 # Streaming Configs for ffmpeg
-STREAM_INPUT_FORMAT = "h264"
-STREAM_OUTPUT_FORMAT = "flv"
+STREAM_INPUT_FORMAT = 'h264'
+STREAM_OUTPUT_FORMAT = 'flv'
 STREAM_OUTPUT_URL = os.environ.get('SERVER_RTMP_URL_LINK',
   '/tmp/meowl_video_stream.flv')
 
 # Meowl Configs
-SECRET_KEY = os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY')
+SECRET_KEY = os.environ.get('RASPBERRY_PI_FLASK_SECRET_KEY', 'DEBUG')
+DEBUG = SECRET_KEY == 'DEBUG'

@@ -9,7 +9,7 @@ def test_if_subprocess_is_open():
 
 def test_subprocess_pipe(mocker):
     popen_mock = mocker.Mock()
-    popen_mock.stdin = "hello"
+    popen_mock.stdin = 'hello'
     with mock.patch.object(subprocess, 'Popen', return_value=popen_mock):
         streamer = MeowlPiStreamer()
-        assert streamer.get_input() == "hello"
+        assert streamer.get_input() == 'hello'

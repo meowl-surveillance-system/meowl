@@ -5,6 +5,7 @@ PARENT_PATH=$(
 
 # Installs Python, venv and its requirements on Raspberry Pi
 install_raspberry_pi() {
+  echo "Installing Raspberry Pi Meowl App..."
   sudo apt-get -y update
   sudo apt-get -y upgrade
   sudo apt-get -y install ffmpeg

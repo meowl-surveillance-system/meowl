@@ -7,8 +7,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.pi_streaming_camera = PiStreamingCamera
     if settings.SECRET_KEY is None:
-        print('RASPBERRY_PI_FLASK_SECRET_KEY: not found')
-        return None
+        raise Exception('RASPBERRY_PI_FLASK_SECRET_KEY: not found')
     app.secret_key = settings.SECRET_KEY
 
     @app.route('/')
