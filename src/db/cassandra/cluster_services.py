@@ -20,11 +20,10 @@ class ClusterServices:
   def create_keyspace(self, keyspace_name):
     """Creates a Cassandra keyspace"""
     create_keyspace_query = "CREATE KEYSPACE IF NOT EXISTS %s WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }"
-    if self.is_valid_keyspace_name(keyspace_name):
+    if self._is_valid_keyspace_name(keyspace_name):
       self.get_session().execute(create_keyspace_query % (keyspace_name))
     else:
-      raise ValueError:
-        print("Invalid keyspace name")
+      raise Exception("Invalid keyspace name")
 
 
   def set_keyspace(self, keyspace_name):
@@ -42,7 +41,7 @@ class ClusterServices:
     self.cluster.shutdown()
 
 
-  def is_valid_keyspace_name(self, keyspace_name):
+  def _is_valid_keyspace_name(self, keyspace_name):
     """Check if a keyspace name is valid"""
     if keyspace_name == None or not keyspace_name:
       return False

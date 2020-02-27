@@ -1,5 +1,4 @@
 import sys
-from cassandra.cluster import Cluster
 from uuid import uuid4
 
 class FileServices:
@@ -16,7 +15,7 @@ class FileServices:
   def __init__(self, session):
     """Initlialize a Cassandra cluster session and prepare cql queries for file services"""
     self.session = session
-    self.insert_metadata_query = "INSERT INTO metadata (stream_id, time, chunk_id) VALUES (%s, %s, %s);"
+    self.insert_metadata_query = "INSERT INTO metadata (stream_id, chunk_order, chunk_id) VALUES (%s, %s, %s);"
     self.insert_data_query = "INSERT INTO data (chunk_id, chunk) VALUES (%s, %s);"
     self.select_chunk_id_query = self.session.prepare("SELECT chunk_id FROM metadata WHERE stream_id = ?")
     self.select_chunk_query = self.session.prepare("SELECT chunk FROM data WHERE chunk_id = ?")
