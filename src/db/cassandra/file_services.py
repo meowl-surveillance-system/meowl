@@ -53,6 +53,10 @@ class FileServices:
       chunk_of_data = result_set[0].chunk
       resulting_bytes.extend(chunk_of_data)
 
-    print(bytearray(resulting_bytes))
-    sys.stdout.flush()
+    return bytearray(resulting_bytes)
 
+
+  def flush_stream_stdout(self, stream_id):
+    """Flush the retrieved bytes to stdout"""
+    print(self.retrieve_bytes(stream_id))
+    sys.stdout.flush()
