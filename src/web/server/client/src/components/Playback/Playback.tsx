@@ -34,7 +34,7 @@ export default class Playback extends Component<Props, State> {
   }
 
   retrieveVideo = (): void => {
-    fetch(`/api/getVideo/?id=${this.state.vidId}`)
+    fetch(`http://localhost:8081/api/getVideo/${this.state.vidId}`)
       .then(res => res.blob())
       .then(blob => {
         const vidUrl = URL.createObjectURL(new Blob([blob]));

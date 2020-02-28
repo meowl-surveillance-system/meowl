@@ -21,17 +21,15 @@ app.get('/', function(req, res) {
 });
 
 // TODO(Akasora39): Fix the buffer stream
-app.get('/api/getVideo/:streamId', function(req, res) {
+app.get('/api/getVideo/:streamId', async function(req, res) {
  const selectChunkId = 'SELECT chunk_id FROM metadata WHERE stream_id = ?';
  const selectChunk = "SELECT chunk FROM data WHERE chunk_id = ?";
- client.execute(selectChunkId, [ req.params.streamId ])
-   .then(result => { 
-     result.rows.forEach(row => 
-       client.execute(selectChunk, [row.chunk_id], { prepare: true })
-         .then(chunk => res.write(chunk.rows[0].chunk))); 
-     res.end();
-   });
-    
+ const chunkIdResults = await client.execute(selectChunkId, [ req.params.streamId ]);
+ for(let chunkId of chunkIdResults.rows.map(row => row.chunk_id)){
+  const chunkResult = await client.execute(selectChunk, [chunkId], { prepare: true });
+  res.write(chunkResult.rows[0].chunk);
+ }
+ res.end();
 });
 
 app.listen(port, function() {
