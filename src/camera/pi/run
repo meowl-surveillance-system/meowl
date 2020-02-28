@@ -3,6 +3,7 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 RANDOM_STRING=$(head /dev/urandom | tr -dc _A-Z-a-z0-9 | head -c 32 ; echo '')
 export RASPBERRY_PI_FLASK_SECRET_KEY=${RANDOM_STRING}
+# export SERVER_RTMP_URL_LINK="rtmp://34.68.144.127:1935/show/stream"
 export PYTHONPATH="${PYTHONPATH}:${PARENT_PATH}"
 
 source ${PARENT_PATH}/venv/bin/activate
