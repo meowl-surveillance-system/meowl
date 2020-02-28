@@ -38,7 +38,7 @@ def store_stream(stream_id):
 def stop_stream(stream_id):
   """Stop reading from stream"""
   running_streams[stream_id].stop()
-  del running_stream[stream_id]
+  del running_streams[stream_id]
 
 if __name__ == '__main__':
   app.run(debug=True)
