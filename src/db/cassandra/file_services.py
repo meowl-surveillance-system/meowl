@@ -1,4 +1,3 @@
-import sys
 from uuid import uuid4
 
 class FileServices:
@@ -8,8 +7,6 @@ class FileServices:
       session: The Cassandra cluster session for execution of queries
       insert_metadata_query: Insert the stream ID, timestamp and chunk ID into the metadata table
       insert_data_query: Insert the chunk of data into the data table
-      select_file_query: Select the chunk IDs of the passed in file hash
-      select_chunk_query: Select the chunks of data based on the Chunk IDs
   """
 
   def __init__(self, session):
@@ -17,8 +14,6 @@ class FileServices:
     self.session = session
     self.insert_metadata_query = "INSERT INTO metadata (stream_id, chunk_order, chunk_id) VALUES (%s, %s, %s);"
     self.insert_data_query = "INSERT INTO data (chunk_id, chunk) VALUES (%s, %s);"
-    self.select_chunk_id_query = self.session.prepare("SELECT chunk_id FROM metadata WHERE stream_id = ?")
-    self.select_chunk_query = self.session.prepare("SELECT chunk FROM data WHERE chunk_id = ?")
 
 
   def store_bytes(self, stream_id, data, timestamp):
@@ -26,7 +21,7 @@ class FileServices:
     
     Args:
         stream_id: unique identifier for a stream
-        data: bytes
+        data: content to be stored
         timestamp: time when stored in DB
     Returns:
         None
@@ -35,27 +30,3 @@ class FileServices:
     self.session.execute(self.insert_metadata_query, (stream_id, timestamp, chunk_id))
     self.session.execute(self.insert_data_query, (chunk_id, bytearray(data)))
 
-
-  def retrieve_bytes(self, stream_id):
-    """Retrieve the file from the database as a list of bytes with the file_id as lookup
-    
-    Args:
-        stream_id: id for file lookup
-    Returns:
-        bytearray
-    """
-    chunk_ids = self.session.execute(self.select_chunk_id_query, (stream_id,))
-    resulting_bytes = []
-
-    for row in chunk_ids:
-      result_set = self.session.execute(self.select_chunk_query, (row.chunk_id,))
-      chunk_of_data = result_set[0].chunk
-      resulting_bytes.extend(chunk_of_data)
-
-    return bytearray(resulting_bytes)
-
-
-  def flush_stream_stdout(self, stream_id):
-    """Flush the retrieved bytes to stdout"""
-    print(self.retrieve_bytes(stream_id))
-    sys.stdout.flush()
