@@ -16,25 +16,7 @@ accept = 1234
 connect = ${NGINX_RTMP_IP}:${NGINX_RTMP_PORT}
 CAfile = ${CERT_PATH}/meowl_nginx.crt
 verify = 3"
-MEOWL_NGINX_CERT="-----BEGIN CERTIFICATE-----
-MIIDKDCCAhCgAwIBAgIUMJnIvEqdHYlvuFesy6WFUMwNHEYwDQYJKoZIhvcNAQEL
-BQAwPjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5ZMSIwIAYDVQQKDBlNZW93bC1T
-dXJ2ZWlsbGFuY2UtU3lzdGVtMB4XDTIwMDIyNTAwNDY1MVoXDTMwMDIyMjAwNDY1
-MVowPjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5ZMSIwIAYDVQQKDBlNZW93bC1T
-dXJ2ZWlsbGFuY2UtU3lzdGVtMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAuAyerHVUxX4nOANv+YuAif1QQEcP4oeO+0VM7eqz00/FWlTsPKe9iTZCgRvS
-1tizTgbkt3jbl8iFSe0+R5f146A7wL+g9kbscVMiFLCl3ZBWK8DZs32180q/FPoS
-c3VgbU7ljh5GKyi3v/vPLJcPxa5grSMM67xAxlUAJHM7pWLGtIei37DdNrSjzONa
-EK0DlJ1Ld5DwODtZlQc8kIVvrAovnmjqY6yghBmii0fbzFszjSUzkbOlGJGT/tGU
-5T4Ea8UORUhaRON58Lp1+TXQnxvadd3OWtTfh237gzi+HBFp8jzI8Ex/2R7h2O3b
-pBYNatiOwx6ySGIfE3s6Kn1MqwIDAQABox4wHDAaBgNVHREEEzARhwR/AAABggls
-b2NhbGhvc3QwDQYJKoZIhvcNAQELBQADggEBAJzdrULgRUCVB3cDvEI+SFjjWnVq
-+vrwTnDw5Z+E1vulknqoooUFifyBdhLtd6q2GAr3mf1j4RriksR1HaRXmAiOLf4B
-1nVuPWpNwuJGwXs+VB/G9V8R4QerqfKJTDKWtkikMJAXWENqYqTVBL3Z4M/HATWy
-AktY2R5aCXC2QRhXYkXk6RTmdpecUyLPO39YTLgEeaU1ggAhPWBC9Y3sWKW3Fv/H
-sS+vSZD4u9vFD/cGsUhtMild/xeuz8/tSykzI5pgSS5qVj4Y7G1uif4+4FhbRaLG
-2i8PZECOqKceqcZyyR6AjfV2rSmKgFDCorurHzo3AmHD0rm8dtuJM5mLIA0=
------END CERTIFICATE-----"
+MEOWL_NGINX_CERT=""
 
 # Install Java 8 if not installed
 install_java_environment() {
@@ -67,6 +49,7 @@ install_python_driver() {
   sudo apt-get -y install python3-pip
   sudo apt-get -y install python3-venv
   sudo apt-get -y install librtmp-dev
+  sudo apt-get -y install stunnel4
   cd ${PARENT_PATH}/../../src/db/cassandra
   python3 -m venv venv
   source ./venv/bin/activate
