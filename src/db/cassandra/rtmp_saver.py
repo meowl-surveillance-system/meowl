@@ -17,6 +17,7 @@ class RtmpSaver:
     self.is_reading = True
 
   def start(self, file_service):
+    """Create a thread and start reading the stream"""
     self.is_reading_lock = threading.Lock()
     self.read_thread = threading.Thread(target=self._read, args=(file_service,))
     self.read_thread.start()
