@@ -1,7 +1,7 @@
 from cassandra.cluster import Cluster
-from cluster_services import ClusterServices
-from file_services import FileServices
-from rtmp_saver import RtmpSaver
+from src.cluster_services import ClusterServices
+from src.file_services import FileServices
+from src.rtmp_saver import RtmpSaver
 from flask import Flask
 import settings
 
