@@ -37,6 +37,7 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_publish http://localhost/api-https-proxy/;
             # Turn on HLS
             hls on;
             hls_path /mnt/hls/;
@@ -92,6 +93,18 @@ http {
             }
 
             root /mnt/;
+        }
+    }
+    server {
+        listen 80;
+        server_name localhost;
+        location /api-https-proxy {
+            allow 127.0.0.1;
+            deny all;
+            # Strips the api-https-proxy part of
+            # the url, but forward the rest.
+            rewrite  ^/api-https-proxy/(.*) /\$1 break;
+            proxy_pass https://example.com;
         }
     }
 }
