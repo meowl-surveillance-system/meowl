@@ -35,6 +35,8 @@ rtmp {
 
         application show {
             live on;
+            allow publish 127.0.0.1;
+            deny publish all;
             # Turn on HLS
             hls on;
             hls_path /mnt/hls/;
