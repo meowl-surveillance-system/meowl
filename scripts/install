@@ -11,8 +11,7 @@
 #######################################
 
 INSTALLATION_HELP_TEXT="Usage: install.sh [SERVICE]...
-Install SERVICE(s) required for Meowl
-With no arguments, install all required services"
+Install SERVICE(s) required for Meowl"
 
 # Installing all the required dependencies based on the arguments provided
 meowl_install() {
@@ -33,6 +32,10 @@ meowl_install() {
     cassandra)
       source ${PARENT_PATH}/lib/install_cassandra.sh
       install_cassandra
+      ;;
+    mobile)
+      source ${PARENT_PATH}/lib/install_mobile.sh
+      install_mobile_dev
       ;;
     node)
       source ${PARENT_PATH}/lib/install_node.sh
@@ -56,14 +59,6 @@ meowl_install() {
       ;;
     raspberry-pi)
       source ${PARENT_PATH}/lib/install_raspberry_pi.sh
-      install_raspberry_pi
-      ;;
-    raspberry-pi)
-      source ./lib/install_raspberry_pi.sh
-      install_raspberry_pi
-      ;;
-    raspberry-pi)
-      source ./lib/install_raspberry_pi.sh
       install_raspberry_pi
       ;;
     --help | -help | -H)
