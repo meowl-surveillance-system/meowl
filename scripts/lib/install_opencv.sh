@@ -1,23 +1,16 @@
-#
+PARENT_PATH=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  pwd -P
+)
+
 # Install opencv and related dependencies
-
 install_opencv() {
-  # Update
-  sudo apt-get -y update
- 
-  # Installing dependencies 
-  sudo apt install python3-pip
-
-  sudo apt install python3-venv
-  
-  cd ../src/cv/
-
-  # Setting up new virtual environment
+  echo "Installing Meowl OpenCV App..."
+  sudo apt -y update
+  sudo apt install -y python3-pip
+  sudo apt install -y python3-venv
+  cd ${PARENT_PATH}/../../src/cv/
   python3 -m venv venv
-  
   source venv/bin/activate
-
-  # Install opencv requirements
   pip install -r requirements.txt
-  
 }

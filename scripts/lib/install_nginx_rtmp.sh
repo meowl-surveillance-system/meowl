@@ -4,6 +4,14 @@
 NGINX_VERSION=1.17.8
 NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
 NGINX_RTMP_PORT=1935
+KEY_PATH="/etc/ssl/private"
+CERT_PATH="/etc/ssl/certs"
+MEOWL_CA_KEY="${KEY_PATH}/meowl_CA.key"
+MEOWL_CA_CERT="${CERT_PATH}/meowl_CA.pem"
+STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
+STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
+STREAMING_SERVER_IP=127.0.0.1
+STREAMING_SERVER_DNS="localhost"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
@@ -45,8 +53,12 @@ http {
     directio 512;
     default_type application/octet-stream;
 
+    # HTTPS certificate and key
+    ssl_certificate ${STREAMING_SERVER_CERT};
+    ssl_certificate_key ${STREAMING_SERVER_KEY};
+
     server {
-        listen 8080;
+        listen 443 ssl;
 
         location / {
             # Disable cache
@@ -76,7 +88,30 @@ http {
     }
 }
 "
-SERVER_KEY_CERT_PATH="/etc/stunnel/meowl"
+MEOWL_SSL_CONF="
+[ req ]
+default_bits       = 4096
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+
+[ req_distinguished_name ]
+countryName                 = Country Name (2 letter code)
+countryName_default         = US
+stateOrProvinceName         = State or Province Name (full name)
+stateOrProvinceName_default = NY
+localityName                = Locality Name (eg, city)
+organizationName            = Organization Name (eg, company)
+organizationName_default    = Meowl-Surveillance-System
+commonName                  = Common Name (e.g. server FQDN or YOUR name)
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[alt_names]
+# streaming server ip, or any other ip that needs https
+IP.1   = ${STREAMING_SERVER_IP}
+DNS.1  = ${STREAMING_SERVER_DNS}
+"
 STUNNEL_SERVER_CONF_FILE="
 pid = /run/stunnel-meowl.pid
 # remove this for daemon
@@ -84,8 +119,8 @@ foreground = yes
 debug = 5
 
 [meowl-nginx-server]
-cert = ${SERVER_KEY_CERT_PATH}.crt
-key = ${SERVER_KEY_CERT_PATH}.key
+cert = ${STREAMING_SERVER_CERT}
+key = ${STREAMING_SERVER_KEY}
 # change such that it is on same port as rtmp without binding error
 accept = 19350
 connect = localhost:${NGINX_RTMP_PORT}
@@ -116,19 +151,26 @@ install_nginx_with_rtmp() {
   echo "${NGINX_CONF_FILE}" | sudo tee /usr/local/nginx/conf/nginx.conf
 }
 
-create_server_key_cert() {
+create_server_key_certs() {
   sudo openssl rand -writerand ~/.rnd
-  sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout ${SERVER_KEY_CERT_PATH}.key -out ${SERVER_KEY_CERT_PATH}.crt
+  echo "${MEOWL_SSL_CONF}" | sudo tee /tmp/meowl_ssl.cnf
+  sudo openssl genrsa -des3 -out ${MEOWL_CA_KEY} 2048
+  sudo openssl req -x509 -new -nodes -key ${MEOWL_CA_KEY} -sha256 -days 3650 -out ${MEOWL_CA_CERT} -config /tmp/meowl_ssl.cnf
+  sudo openssl genrsa -out ${STREAMING_SERVER_KEY} 2048
+  sudo openssl req -new -key ${STREAMING_SERVER_KEY} -out /tmp/meowl.csr -config /tmp/meowl_ssl.cnf
+  sudo openssl x509 -req -days 3650 -in /tmp/meowl.csr -CA ${MEOWL_CA_CERT} -CAkey ${MEOWL_CA_KEY} -CAcreateserial -out ${STREAMING_SERVER_CERT} -extfile /tmp/meowl_ssl.cnf -extensions req_ext
+
 }
 
 # Install stunnel as a server with a configuration to work with nginx rtmp
 install_stunnel_server() {
   sudo apt install -y stunnel4
-  create_server_key_cert
+  create_server_key_certs
   echo "${STUNNEL_SERVER_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
 }
 
 install_nginx_rtmp_all() {
+  echo "Installing Nginx rtmp..."
   sudo apt update
   install_nginx_with_rtmp
   install_stunnel_server
