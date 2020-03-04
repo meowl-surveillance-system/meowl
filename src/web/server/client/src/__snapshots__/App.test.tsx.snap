@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders learn react link 1`] = `
+<div
+  class="App"
+>
+  <div
+    class="MuiContainer-root MuiContainer-maxWidthLg"
+  >
+    <h6
+      class="MuiTypography-root MuiTypography-h5"
+    >
+      Video Retrieval Tool
+    </h6>
+    <div
+      class="MuiFormControl-root"
+      data-testid="form"
+    >
+      <div
+        class="MuiFormControl-root MuiTextField-root"
+      >
+        <div
+          class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+        >
+          <input
+            aria-invalid="false"
+            class="MuiInputBase-input MuiInput-input"
+            data-testid="tmpUrl-test"
+            id="tmpUrl-input"
+            name="tmpUrl"
+            placeholder="Temporary URL"
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiButton-label"
+        >
+          Submit URL
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div
+      class="MuiFormControl-root"
+      data-testid="retrieve"
+    >
+      <div
+        class="MuiFormControl-root MuiTextField-root"
+      >
+        <div
+          class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+        >
+          <input
+            aria-invalid="false"
+            class="MuiInputBase-input MuiInput-input"
+            data-testid="vid-db-test"
+            id="vidId-input"
+            name="vidId"
+            placeholder="Video ID"
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiButton-label"
+        >
+          Retrieve Video
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div
+      style="width: 640px; height: 360px;"
+    />
+  </div>
+</div>
+`;
