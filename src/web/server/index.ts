@@ -5,15 +5,11 @@ const cassandra = require('cassandra-driver');
 const CassandraStore = require('cassandra-store');
 const session = require('express-session');
 const uuid = require('uuid');
+const auth = require('./routes/auth');
+const client = require('./utils/client');
 
 const app = express();
 const port = process.env.PORT || 8081;
-
-const client = new cassandra.Client({
-  contactPoints: ['127.0.0.1'],
-  localDataCenter: 'datacenter1',
-  keyspace: 'streams'
-});
 
 const cassandraStoreOptions = {
   "table": "sessions",
@@ -30,6 +26,9 @@ const cassandraStoreOptions = {
 
 // TODO: Set up the app so that cors is only used for development
 app.use(cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'likeasomebooody',
@@ -72,7 +71,9 @@ app.get('/api/getVideo/:streamId', async function(req, res) {
   ffProc.stdin.write(chunkResult.rows[0].chunk);
  }
  ffProc.stdin.end();
-});
+ });
+
+app.use(auth);
 
 app.listen(port, function() {
   console.log(`Example app listening on port ${port}!`);
