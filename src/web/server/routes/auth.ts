@@ -15,7 +15,7 @@ app.post('/register', (req, res) => {
       client.execute(query, params, { prepare: true });
     });
   }
-  res.send(sid);
+  res.send('sucessfully registered');
 });
 
 app.post('/login', (req, res) => {});
