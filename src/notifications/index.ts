@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const Email = require('email-templates');
+
 require('dotenv').config({ path: './keys.env'});
 
 let transporter = nodemailer.createTransport({
@@ -9,8 +11,38 @@ let transporter = nodemailer.createTransport({
     }
 });
 
+const email = new Email({
+    message: {
+        from: 'Meowl Notification Service'
+    },
+    transport: transporter,
+    send: true,
+    preview: false
+});
 
-const message = {
+function sendEmail(req) {
+    email.send({
+        template: req.template,
+        message: {
+            to: req.recipient
+        },
+        locals: req.locals
+    })
+    .catch(console.error);
+}
+
+const req1 = {
+    template: 'blacklist',
+    recipient: 'meowl.notifications@gmail.com',
+    locals: {
+        name: 'Andy',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png'
+    }
+}
+
+sendEmail(req1)
+
+/*const message = {
     from: 'Meowl Notification Service', // Sender address
     to: 'recipient@email.com',         // List of recipients
     subject: 'This is a test email', // Subject line
@@ -31,4 +63,4 @@ transporter.sendMail(message, function(err, info) {
     } else {
         console.log(info);
     }
-});
+});*/
