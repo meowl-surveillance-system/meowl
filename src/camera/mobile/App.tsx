@@ -20,6 +20,7 @@ export default class App extends React.Component {
     isRecording: false,
     mute: false,
     quality: "720p",
+    video: null
   }
 
   async componentDidMount() {
@@ -35,8 +36,9 @@ export default class App extends React.Component {
       }
     }
     // Camera Permission
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasPermission: status === 'granted' });
+    const cameraStatus = (await Permissions.askAsync(Permissions.CAMERA)).status;
+    const audioStatus = (await Permissions.askAsync(Permissions.AUDIO_RECORDING)).status;
+    this.setState({ hasPermission: cameraStatus === 'granted' && audioStatus === 'granted' });
   }
 
   handleCameraType = () => {
@@ -59,9 +61,17 @@ export default class App extends React.Component {
     }
   }
 
-  stopRecording() {
+  streamVideoOut = async (video) => {
+    if (video === null) {
+      console.error("Video stream is null");
+    }
+    console.log(video);
+  }
+
+  stopRecording = () => {
     if (this.camera && this.state.isRecording) {
       this.camera.stopRecording();
+      this.streamVideoOut(this.state.video);
       this.setState({ isRecording: false });
     }
   }
@@ -92,8 +102,8 @@ export default class App extends React.Component {
                       }}
                       onPress={() => this.stopRecording()}
                     >
-                      <FontAwesome
-                        name="camera"
+                      <MaterialCommunityIcons
+                        name="videocam-off"
                         style={{ color: "#fff", fontSize: 40 }}
                       />
                     </TouchableOpacity>
@@ -107,8 +117,8 @@ export default class App extends React.Component {
                       }}
                       onPress={() => this.startRecording()}
                     >
-                      <FontAwesome
-                        name="camera"
+                      <MaterialCommunityIcons
+                        name="videocam"
                         style={{ color: "#fff", fontSize: 40 }}
                       />
                     </TouchableOpacity>
@@ -123,7 +133,7 @@ export default class App extends React.Component {
                 onPress={() => this.handleCameraType()}
               >
                 <MaterialCommunityIcons
-                  name="camera-switch"
+                  name="video-switch"
                   style={{ color: "#fff", fontSize: 40 }}
                 />
               </TouchableOpacity>
