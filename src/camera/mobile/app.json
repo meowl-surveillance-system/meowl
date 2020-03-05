@@ -1,7 +1,10 @@
 {
   "expo": {
-    "name": "Blank Template (TypeScript)",
-    "slug": "mobile",
+    "name": "Meowl - Mobile Streaming App",
+    "description": "This app serves to stream from this camera in real-time.",
+    "slug": "meowl-mobile",
+    "backgroundColor": "#000000",
+    "githubUrl": "https://github.com/meowl-surveillance-system/meowl",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
