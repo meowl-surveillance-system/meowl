@@ -20,17 +20,27 @@ const email = new Email({
     preview: false
 });
 
-email.send({
-    template: 'test',
-    message: {
-        to: 'meowl.notifications@gmail.com'
-    },
-    locals: {
-        name: 'Meowl'
-    }
-})
-.catch(console.error);
+function sendEmail(req) {
+    email.send({
+        template: req.template,
+        message: {
+            to: req.recipient
+        },
+        locals: req.locals
+    })
+    .catch(console.error);
+}
 
+const req1 = {
+    template: 'blacklist',
+    recipient: 'meowl.notifications@gmail.com',
+    locals: {
+        name: 'Andy',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png'
+    }
+}
+
+sendEmail(req1)
 
 /*const message = {
     from: 'Meowl Notification Service', // Sender address
