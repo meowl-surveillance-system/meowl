@@ -144,8 +144,8 @@ install_nginx_with_rtmp() {
   install_nginx_dependencies
   download_extract_nginx
   cd /usr/local/src/${NGINX_DIRECTORY}/
-  ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module
-  make
+  sudo ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module
+  sudo make
   sudo make install
   cd -
   echo "${NGINX_CONF_FILE}" | sudo tee /usr/local/nginx/conf/nginx.conf
