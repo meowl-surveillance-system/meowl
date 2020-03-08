@@ -3,7 +3,8 @@ import { Text, View, TouchableOpacity, Platform, SafeAreaView } from 'react-nati
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { RNFFmpeg } from 'react-native-ffmpeg';
 
 /**
  * A mobile application for streaming live to Meowl
@@ -20,7 +21,6 @@ export default class App extends React.Component {
     isRecording: false,
     mute: false,
     quality: "720p",
-    video: null
   }
 
   async componentDidMount() {
@@ -54,8 +54,10 @@ export default class App extends React.Component {
 
   startRecording = async () => {
     if (this.camera && !this.state.isRecording) {
+      this.setState({ isRecording: true });
       const video = await this.camera.recordAsync({ quality: this.state.quality, mute: this.state.mute });
-      this.setState({ isRecording: true, video: video });
+      this.setState({ isRecording: false });
+      this.streamVideoOut(video);
     } else {
       alert("Camera does not have the permissions to open");
     }
@@ -63,16 +65,19 @@ export default class App extends React.Component {
 
   streamVideoOut = async (video) => {
     if (video === null) {
-      console.error("Video stream is null");
+      console.log("Video stream is null");
     }
-    console.log(video);
+    RNFFmpeg.executeWithArguments(['-y',
+      '-f', 'mp4',
+      '-i', video.uri, '-c:v', 'copy', '-map',
+      '0:0', '-f', 'flv',
+      '127.0.0.1:1935/view/stream']);
+    // console.log(video);
   }
 
   stopRecording = () => {
     if (this.camera && this.state.isRecording) {
       this.camera.stopRecording();
-      this.streamVideoOut(this.state.video);
-      this.setState({ isRecording: false });
     }
   }
 
@@ -103,7 +108,7 @@ export default class App extends React.Component {
                       onPress={() => this.stopRecording()}
                     >
                       <MaterialCommunityIcons
-                        name="videocam-off"
+                        name="stop"
                         style={{ color: "#fff", fontSize: 40 }}
                       />
                     </TouchableOpacity>
@@ -118,7 +123,7 @@ export default class App extends React.Component {
                       onPress={() => this.startRecording()}
                     >
                       <MaterialCommunityIcons
-                        name="videocam"
+                        name="video"
                         style={{ color: "#fff", fontSize: 40 }}
                       />
                     </TouchableOpacity>
