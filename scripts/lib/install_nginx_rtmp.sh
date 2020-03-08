@@ -35,6 +35,8 @@ rtmp {
 
         application show {
             live on;
+            allow publish 127.0.0.1;
+            deny publish all;
             # Turn on HLS
             hls on;
             hls_path /mnt/hls/;
@@ -42,6 +44,12 @@ rtmp {
             hls_playlist_length 60;
             # disable consuming the stream from nginx as rtmp
             deny play all;
+            push rtmp://localhost:${NGINX_RTMP_PORT}/view;
+        }
+        application view {
+            live on;
+            allow publish 127.0.0.1;
+            deny publish all;
         }
     }
 }
