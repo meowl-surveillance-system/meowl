@@ -2,12 +2,12 @@ const app = require('express')();
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const client = require('../utils/client');
+const authChecks = require('../middlewares/authChecks');
 
-app.post('/register', (req, res) => {
+app.post('/register', authChecks.isLoggedOut, (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password);
   const sid = req.sessionID;
-  console.log(sid);
+ 
   if(username && password) {
     bcrypt.hash(password, 12, function(err, hash) {
       const query_ID = 'INSERT INTO users_id (user_id, username, password, sid) VALUES (?, ?, ?, ?)';
@@ -16,58 +16,71 @@ app.post('/register', (req, res) => {
       const params = [user_id, username, hash, sid];
       client.execute(query_ID, params, { prepare: true });
       client.execute(query_name, params, { prepare: true });
+      req.session.userId = user_id;
     });
+    res.send('successfully registered');
   }
-  res.send('sucessfully registered');
-});
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const sid = req.sessionID;
-  if(username && password) {
-    const query = 'SELECT user_id, password FROM users_name WHERE username = ?;'
-    client.execute(query, [ username ], function(err, result) {
-      if(err) {
-        console.log(err);
-      }
-      else {
-    
-        const id = result.rows[0].user_id;
-        const hash = result.rows[0].password;
-
-        bcrypt.compare(password, hash, function(error, same) {
-          if(error) {
-	    console.log(error);
-	  }
-	  else if(same) {
-	    const update_sid_ID = 'UPDATE users_id SET sid = ? WHERE user_id = ?'
-	    const update_sid_name = 'UPDATE users_name SET sid = ? WHERE username = ?';
-	    client.execute(update_sid_ID, [ sid, id ], { prepare: true });
-	    client.execute(update_sid_name, [ sid, username ], { prepare: true });
-	    res.send(sid);
-	  }
-          else {
-	    res.send('no match');
-	  }
-        });
-      }
-    });
-  }
   else {
     res.send('bad username or password');
   }
 });
 
-app.post('/logout', (req, res) => {
+app.post('/login', authChecks.isLoggedOut, (req, res) => {
+  const { username, password } = req.body;
+  const sid = req.sessionID;
+
+  if(username && password) {
+    const query = 'SELECT user_id, password FROM users_name WHERE username = ?;'
+    client.execute(query, [ username ], { prepare: true }, function(err, result) {
+      if(err) {
+        console.log(err);
+      }
+
+      else {
+        const id = result.rows[0].user_id;
+        const hash = result.rows[0].password;
+
+        bcrypt.compare(password, hash, function(error, match) {
+          if(error) {
+	    console.log(error);
+	  }
+
+	  else if(match) {
+	    const update_sid_ID = 'UPDATE users_id SET sid = ? WHERE user_id = ?'
+	    const update_sid_name = 'UPDATE users_name SET sid = ? WHERE username = ?';
+	    client.execute(update_sid_ID, [ sid, id ], { prepare: true });
+	    client.execute(update_sid_name, [ sid, username ], { prepare: true });
+	    req.session.userId = id;
+	    res.send('sucessfully logged in');
+	  }
+
+          else {
+	    res.send('Invalid username or password');
+	  }
+        });
+      }
+    });
+  }
+
+  else {
+    res.send('bad username or password');
+  }
+});
+
+app.post('/logout', authChecks.isLoggedIn, (req, res) => {
   req.session.destroy(function(err) {
     if(err) {
       console.log(err);
     }
     else {
-      console.log(req.sessionID);
       res.send('logged out');
     }
   });
+});
+
+app.post('/rtmpAuth', authChecks.isLoggedIn, (req, res) => {
+  res.status(200).send('OK');
 });
 
 module.exports = app;
