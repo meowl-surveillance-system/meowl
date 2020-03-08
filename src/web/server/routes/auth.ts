@@ -18,11 +18,11 @@ app.post('/register', authChecks.isLoggedOut, (req, res) => {
       client.execute(query_name, params, { prepare: true });
       req.session.userId = user_id;
     });
-    res.send('successfully registered');
+    res.status(200).send('successfully registered');
   }
 
   else {
-    res.send('bad username or password');
+    res.status(400).send('bad username or password');
   }
 });
 
@@ -52,11 +52,11 @@ app.post('/login', authChecks.isLoggedOut, (req, res) => {
 	    client.execute(update_sid_ID, [ sid, id ], { prepare: true });
 	    client.execute(update_sid_name, [ sid, username ], { prepare: true });
 	    req.session.userId = id;
-	    res.send('sucessfully logged in');
+	    res.status(200).send('sucessfully logged in');
 	  }
 
           else {
-	    res.send('Invalid username or password');
+	    res.status(400).send('Invalid username or password');
 	  }
         });
       }
@@ -64,7 +64,7 @@ app.post('/login', authChecks.isLoggedOut, (req, res) => {
   }
 
   else {
-    res.send('bad username or password');
+    res.status(400).send('bad username or password');
   }
 });
 
@@ -74,13 +74,9 @@ app.post('/logout', authChecks.isLoggedIn, (req, res) => {
       console.log(err);
     }
     else {
-      res.send('logged out');
+      res.status(200).send('logged out');
     }
   });
-});
-
-app.post('/rtmpAuth', authChecks.isLoggedIn, (req, res) => {
-  res.status(200).send('OK');
 });
 
 module.exports = app;
