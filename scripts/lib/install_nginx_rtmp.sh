@@ -64,6 +64,8 @@ http {
         listen 443 ssl;
 
         location / {
+            set \$auth_request_uri \"http://127.0.0.1/api-https-proxy/\$1\$is_args\$args\";
+            auth_request .auth;
             # Disable cache
             add_header 'Cache-Control' 'no-cache';
 
@@ -80,6 +82,11 @@ http {
                 return 204;
             }
 
+            # Add args to subsequent requests
+            sub_filter .ts .ts\$is_args\$args;
+            sub_filter_once off;
+            sub_filter_types application/vnd.apple.mpegurl;
+
             types {
                 application/dash+xml mpd;
                 application/vnd.apple.mpegurl m3u8;
@@ -87,6 +94,11 @@ http {
             }
 
             root /mnt/;
+        }
+
+        location .auth {
+            internal;
+            proxy_pass \$auth_request_uri;
         }
     }
     server {
@@ -160,7 +172,7 @@ install_nginx_with_rtmp() {
   install_nginx_dependencies
   download_extract_nginx
   cd /usr/local/src/${NGINX_DIRECTORY}/
-  ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module
+  ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module --with-http_auth_request_module --with-http_sub_module
   make
   sudo make install
   cd -
