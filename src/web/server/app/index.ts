@@ -1,25 +1,23 @@
 // TODO: Set up the application so that cors is only used for development
-const cors = require('cors');
-const express = require('express');
-const cassandra = require('cassandra-driver');
-const CassandraStore = require('cassandra-store');
-const session = require('express-session');
-const uuid = require('uuid');
-const routes = require('./routes');
-const client = require('./utils/client');
+import cassandra from 'cassandra-driver';
+import CassandraStore from 'cassandra-store';
+import cors from 'cors';
+import express from 'express';
+import session from 'express-session';
+import uuid from 'uuid';
+import routes from './routes/index';
+import {client} from './utils/client';
 
 const app = express();
 const port = process.env.PORT || 8081;
 
 const cassandraStoreOptions = {
-  "table": "sessions",
-  "client": null,
-  "clientOptions": {
-    "contactPoints": [ "localhost" ],
-    "keyspace": "streams",
-    "queryOptions": {
-      "prepare": true
-    }
+  'table': 'sessions',
+  'client': null,
+  'clientOptions': {
+    'contactPoints': ['localhost'],
+    'keyspace': 'streams',
+    'queryOptions': {'prepare': true}
   }
 };
 
@@ -28,13 +26,11 @@ const cassandraStoreOptions = {
 app.use(cors());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'likeasomebooody',
-  genid: function(req) {
-    return uuid.v4();
-  },
+  genid: (req) => uuid.v4(),
   cookie: {
     maxAge: 60000000,
     secure: process.env.NODE_ENV === 'production',
@@ -45,13 +41,13 @@ app.use(session({
   store: new CassandraStore(cassandraStoreOptions)
 }));
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
 // Mount the routes
 app.use(routes);
 
-app.listen(port, function() {
+app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });

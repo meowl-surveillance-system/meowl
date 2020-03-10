@@ -1,6 +1,8 @@
-const app = require('express')();
+import express from 'express';
+
+const app = express();
 
 app.use('/auth', require('./auth'));
 app.use('/api', require('./api'));
 
-module.exports = app;
+export default app;

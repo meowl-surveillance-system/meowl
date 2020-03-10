@@ -19,6 +19,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cassandra-store": "^5.0.0",
+    "@types/cors": "^2.8.6",
+    "@types/uuid": "^7.0.0",
     "bcrypt": "^4.0.1",
     "cassandra-driver": "^4.4.0",
     "cassandra-store": "^5.0.0",
