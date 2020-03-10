@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/chc/Desktop/meowl/src/camera/mobile/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-watch-v20/values-watch-v20.xml",
+            "map": [
+                {
+                    "source": "/home/chc/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/4524e445cb4ae3506d45c54d6aeda71f/res/values-watch-v20/values-watch-v20.xml",
+                    "from": {
+                        "startLines": "2,5,8",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,214,385",
+                        "endLines": "4,7,10",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "209,380,553"
+                    }
+                }
+            ]
+        }
+    ]
+}

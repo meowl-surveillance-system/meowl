@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Platform, SafeAreaView } from 'react-native';
-import Constants from 'expo-constants';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -18,9 +17,10 @@ export default class App extends React.Component {
   state = {
     hasPermission: null,
     cameraType: Camera.Constants.Type.back,
-    isRecording: false,
+    isStreaming: false,
     mute: false,
     quality: "720p",
+    duration: '1'
   }
 
   async componentDidMount() {
@@ -52,14 +52,20 @@ export default class App extends React.Component {
     })
   }
 
-  startRecording = async () => {
-    if (this.camera && !this.state.isRecording) {
-      this.setState({ isRecording: true });
-      const video = await this.camera.recordAsync({ quality: this.state.quality, mute: this.state.mute });
-      this.setState({ isRecording: false });
-      this.streamVideoOut(video);
-    } else {
+  startStreaming = async () => {
+    if (!this.camera) {
       alert("Camera does not have the permissions to open");
+    }
+    await this.setState({ isStreaming: true });
+    while (this.camera && this.state.isStreaming) {
+      console.log("Streaming....");
+      const video = await this.camera.recordAsync({
+        quality: this.state.quality,
+        mute: this.state.mute,
+        duration: this.state.duration
+      });
+      this.streamVideoOut(video);
+      console.log("Next");
     }
   }
 
@@ -71,13 +77,16 @@ export default class App extends React.Component {
       '-f', 'mp4',
       '-i', video.uri, '-c:v', 'copy', '-map',
       '0:0', '-f', 'flv',
-      '127.0.0.1:1935/view/stream']);
-    // console.log(video);
+      'rtmp://35.202.178.94:1935/show/stream']).then(rc => {
+        // console.log(rc); 
+        console.log("Finished sending...");
+      });
   }
 
-  stopRecording = () => {
-    if (this.camera && this.state.isRecording) {
+  stopStreaming = () => {
+    if (this.camera && this.state.isStreaming) {
       this.camera.stopRecording();
+      this.setState({ isStreaming: false });
     }
   }
 
@@ -89,7 +98,7 @@ export default class App extends React.Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <SafeAreaView style={{ flex: 1, marginTop: Constants.statusBarHeight }}>
+        <SafeAreaView style={{ flex: 1 }}>
           <Camera style={{ flex: 1 }}
             type={this.state.cameraType}
             ref={ref => { this.camera = ref }}
@@ -97,7 +106,7 @@ export default class App extends React.Component {
           >
             <View style={{ flex: 2, flexDirection: "row", justifyContent: "space-between", margin: 30 }}>
               {
-                this.state.isRecording
+                this.state.isStreaming
                   ? (
                     <TouchableOpacity
                       style={{
@@ -105,7 +114,7 @@ export default class App extends React.Component {
                         alignItems: 'center',
                         backgroundColor: 'transparent',
                       }}
-                      onPress={() => this.stopRecording()}
+                      onPress={() => this.stopStreaming()}
                     >
                       <MaterialCommunityIcons
                         name="stop"
@@ -120,7 +129,7 @@ export default class App extends React.Component {
                         alignItems: 'center',
                         backgroundColor: 'transparent',
                       }}
-                      onPress={() => this.startRecording()}
+                      onPress={() => this.startStreaming()}
                     >
                       <MaterialCommunityIcons
                         name="video"
