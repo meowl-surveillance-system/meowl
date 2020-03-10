@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const client = require('../utils/client');
 const { isLoggedIn, isLoggedOut, isValidCred, isUsernameCollide } = require('../middlewares/authChecks');
+const queries = require('../utils/queries');
 
 app.post('/register', [isLoggedOut, isValidCred, isUsernameCollide], (req, res) => {
   const { username, password } = req.body;
@@ -10,11 +11,9 @@ app.post('/register', [isLoggedOut, isValidCred, isUsernameCollide], (req, res) 
   const user_id = uuid.v4();
 
   bcrypt.hash(password, 12, function(err, hash) {
-    const query_ID = 'INSERT INTO users_id (user_id, username, password, sid) VALUES (?, ?, ?, ?)';
-    const query_name = 'INSERT INTO users_name (user_id, username, password, sid) VALUES (?, ?, ?, ?)';
     const params = [user_id, username, hash, sid];
-    client.execute(query_ID, params, { prepare: true });
-    client.execute(query_name, params, { prepare: true });
+    client.execute(queries.INSERT_USERSID, params, { prepare: true });
+    client.execute(queries.INSERT_USERSNAME, params, { prepare: true });
   });
   req.session.userId = user_id;
   res.status(200).send('successfully registered');
@@ -24,8 +23,7 @@ app.post('/login', [isLoggedOut, isValidCred], (req, res) => {
   const { username, password } = req.body;
   const sid = req.sessionID;
 
-  const query = 'SELECT user_id, password FROM users_name WHERE username = ?;'
-  client.execute(query, [ username ], { prepare: true }, function(err, result) {
+  client.execute(queries.SELECT_USERSID_USERID_PASSWORD, [ username ], { prepare: true }, function(err, result) {
     if(err) {
       console.log(err);
       res.status(400).send('Bad request');
@@ -41,10 +39,8 @@ app.post('/login', [isLoggedOut, isValidCred], (req, res) => {
 	}
 
 	else if(match) {
-	  const update_sid_ID = 'UPDATE users_id SET sid = ? WHERE user_id = ?'
-	  const update_sid_name = 'UPDATE users_name SET sid = ? WHERE username = ?';
-	  client.execute(update_sid_ID, [ sid, id ], { prepare: true });
-	  client.execute(update_sid_name, [ sid, username ], { prepare: true });
+	  client.execute(queries.UPDATE_USERSID_SID, [ sid, id ], { prepare: true });
+	  client.execute(queries.UPDATE_USERSNAME_SID, [ sid, username ], { prepare: true });
 	  req.session.userId = id;
 	  res.status(200).send('sucessfully logged in');
 	}
@@ -66,6 +62,23 @@ app.post('/logout', isLoggedIn, (req, res) => {
       res.status(200).send('logged out');
     }
   });
+});
+
+app.post('/rtmpRequest', isLoggedIn, (req, res) => {
+  res.status(200).json({ 
+    sessionID: req.sessionID,
+    userId: req.session.userId
+  });
+});
+
+app.get('/rtmpAuth', async (req, res) => {
+  const result = await client.execute(queries.SELECT_USERSNAME_SID, [req.body.userId], { prepare: true });
+  if(result.rows.length == 0 || result.rows[0].sid !== req.body.sessionID) {
+    res.status(400).send('Nice try kid');
+  }
+  else {
+    res.status(200).send('OK');
+  }
 });
 
 module.exports = app;

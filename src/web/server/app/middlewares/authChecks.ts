@@ -1,18 +1,18 @@
 const client = require('../utils/client'); 
+const queries = require('../utils/queries');
 
 function isLoggedIn(req, res, next) {
-  console.log(req.session);
   if(req.session.userId) {
     return next();
   }
   else {
-    res.status(400).send('Bad request');
+    res.status(400).send('Not logged in');
   }
 }
 
 function isLoggedOut(req, res, next) {
   if(req.session.userId) {
-    res.status(400).send('Bad request');
+    res.status(400).send('Not logged out');
   }
   else {
     return next();
@@ -37,8 +37,7 @@ async function isUsernameCollide(req, res, next) {
 }
 
 async function isCollide(username) {
-  const get_user = 'SELECT user_id FROM users_name WHERE username = ?'
-  const result = await client.execute(get_user, [username], { prepare: true });
+  const result = await client.execute(queries.SELECT_USERSNAME_USERID, [username], { prepare: true });
   return result.rows.length !== 0;
 }
 

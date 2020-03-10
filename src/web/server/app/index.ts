@@ -1,6 +1,6 @@
 // TODO: Set up the application so that cors is only used for development
-import cors from 'cors';
-import express from 'express';
+const cors = require('cors');
+const express = require('express');
 const cassandra = require('cassandra-driver');
 const CassandraStore = require('cassandra-store');
 const session = require('express-session');
