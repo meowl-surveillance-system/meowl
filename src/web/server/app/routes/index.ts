@@ -5,4 +5,4 @@ const app = express();
 app.use('/auth', require('./auth'));
 app.use('/api', require('./api'));
 
-export default app;
+export const routes = app;
