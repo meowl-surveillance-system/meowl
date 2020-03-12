@@ -3,6 +3,7 @@ package com.src;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.blitzmobileapps.reactnativemultithread.RnBgTaskPackage;
 import com.arthenica.reactnative.RNFFmpegPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -26,10 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-  private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(
-    new BasePackageList().getPackageList(),
-    Arrays.<SingletonModule>asList()
-  );
+  private final ReactModuleRegistryProvider mModuleRegistryProvider =
+      new ReactModuleRegistryProvider(new BasePackageList().getPackageList(),
+                                      Arrays.<SingletonModule>asList());
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -41,12 +41,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFFmpegPackage(),
-          new ReanimatedPackage(),
-          new RNGestureHandlerPackage(),
+            new RnBgTaskPackage(), new RNFFmpegPackage(),
+          new ReanimatedPackage(), new RNGestureHandlerPackage(),
           new RNScreensPackage(),
-          new ModuleRegistryAdapter(mModuleRegistryProvider)
-      );
+          new ModuleRegistryAdapter(mModuleRegistryProvider));
     }
 
     @Override

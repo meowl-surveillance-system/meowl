@@ -4,23 +4,25 @@ import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { RNFFmpeg } from 'react-native-ffmpeg';
+import RnBgTask from 'react-native-bg-thread';
 
 /**
  * A mobile application for streaming live to Meowl
  * TODO(chc5): Separate the Camera component inside App into another file
  * TODO(chc5): Convert the video type to flv for streaming via ffmpeg
  * TODO(chc5): Send the video recordings to Meowl via RTMP
+ * Ongoing Bug with Expo Camera: max 
  */
 export default class App extends React.Component {
   camera = null;
-
+  thread = null;
   state = {
     hasPermission: null,
     cameraType: Camera.Constants.Type.back,
     isStreaming: false,
     mute: false,
     quality: "720p",
-    duration: '1'
+    maxDuration: 1
   }
 
   async componentDidMount() {
@@ -62,7 +64,7 @@ export default class App extends React.Component {
       const video = await this.camera.recordAsync({
         quality: this.state.quality,
         mute: this.state.mute,
-        duration: this.state.duration
+        maxDuration: this.state.maxDuration
       });
       this.streamVideoOut(video);
       console.log("Next");
@@ -72,15 +74,17 @@ export default class App extends React.Component {
   streamVideoOut = async (video) => {
     if (video === null) {
       console.log("Video stream is null");
-    }
-    RNFFmpeg.executeWithArguments(['-y',
-      '-f', 'mp4',
-      '-i', video.uri, '-c:v', 'copy', '-map',
-      '0:0', '-f', 'flv',
-      'rtmp://35.202.178.94:1935/show/stream']).then(rc => {
-        // console.log(rc); 
-        console.log("Finished sending...");
+    } else {
+      RnBgTask.runInBackground_withPriority("NORMAL", () => {
+        RNFFmpeg.executeWithArguments(['-y',
+          '-f', 'mp4',
+          '-i', video.uri, '-c:v', 'copy', '-map',
+          '0:0', '-f', 'flv',
+          'rtmp://35.202.178.94:1935/show/stream']).then(rc => {
+            console.log("Finished sending...");
+          });
       });
+    }
   }
 
   stopStreaming = () => {

@@ -48,4 +48,6 @@ target 'src' do
 
   pod 'react-native-ffmpeg', :path => '../node_modules/react-native-ffmpeg'
 
+  pod 'react-native-bg-thread', :path => '../node_modules/react-native-bg-thread'
+
 end

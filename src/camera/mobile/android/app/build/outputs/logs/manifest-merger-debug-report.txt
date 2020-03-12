@@ -4,6 +4,7 @@ ADDED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/Androi
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml:1:1-48:12
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml:1:1-48:12
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml:1:1-48:12
+MERGED from [:react-native-bg-thread] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-bg-thread/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-ffmpeg] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-ffmpeg/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-screens] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-reanimated] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-reanimated/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
@@ -275,6 +276,8 @@ uses-sdk
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml
 INJECTED from /home/chc/Desktop/meowl/src/camera/mobile/android/app/src/main/AndroidManifest.xml
+MERGED from [:react-native-bg-thread] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-bg-thread/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-bg-thread] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-bg-thread/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-ffmpeg] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-ffmpeg/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-ffmpeg] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-ffmpeg/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
 MERGED from [:react-native-screens] /home/chc/Desktop/meowl/src/camera/mobile/node_modules/react-native-screens/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
