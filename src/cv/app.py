@@ -30,10 +30,6 @@ def display_vid(file_name):
 
 @app.route('/process/')
 def process_video():
-    "input": 'car_chase_01.mp4',
-    "output": 'car_chase_01.avi',
-    "confidence": .5,
-    "threshold": .3
     args = {
         "input": request.args.get('input'),
         "output": request.args.get('output'),
