@@ -1,7 +1,12 @@
-from flask import Flask
+from flask import Flask, request
 import cv2
 import numpy as np
+import yolo_video_detect as obj_detector
 app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello World'
 
 def display_vid(file_name):
     cap = cv2.VideoCapture(file_name)
@@ -16,9 +21,23 @@ def display_vid(file_name):
                 break
         else: 
             break
- 
+
     cap.release()
- 
+
     cv2.destroyAllWindows()
 
     print("Finished Displaying Video")
+
+@app.route('/process/')
+def process_video():
+    "input": 'car_chase_01.mp4',
+    "output": 'car_chase_01.avi',
+    "confidence": .5,
+    "threshold": .3
+    args = {
+        "input": request.args.get('input'),
+        "output": request.args.get('output'),
+        "confidence": request.args.get('confidence', default = .5, type = float),
+        "threshold": request.args.get('threshold', default = .3, type = float)
+    }
+    obj_detector.run_object_detection(args)
