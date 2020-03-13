@@ -6,9 +6,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
+    """ Returns Hello World as a String """
     return 'Hello World'
 
 def display_vid(file_name):
+    """ Displays frames from VideoCapture """
     cap = cv2.VideoCapture(file_name)
     if (cap.isOpened()== False): 
         print("OpenCV failed to open video stream or file")
@@ -30,6 +32,7 @@ def display_vid(file_name):
 
 @app.route('/process/')
 def process_video():
+    """ Applies object detection on an input """
     args = {
         "input": request.args.get('input'),
         "output": request.args.get('output'),

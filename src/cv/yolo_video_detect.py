@@ -5,6 +5,7 @@ import os
 import time
 
 def get_configs(args):
+    """ Retrieves the object detector model resources """
     labelsPath = os.environ.get('YOLO_NAMES_PATH')
     labels = open(labelsPath).read().strip().split("\n")
 
@@ -17,6 +18,7 @@ def get_configs(args):
     return labels, colors, weightsPath, configPath
 
 def load_object_detector(configPath, weightsPath):
+    """ Loads the yolo model """
     print("Loading Object Detector")
     net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
     ln = net.getLayerNames()
@@ -24,6 +26,7 @@ def load_object_detector(configPath, weightsPath):
     return net, ln
 
 def init_video_stream(args):
+    """ Obtains the video stream """
     vs = cv2.VideoCapture(args["input"])
     try:
         if imutils.is_cv2():
@@ -40,6 +43,7 @@ def init_video_stream(args):
     return vs, total
 
 def iterate_frames(args, vs, net, ln, colors, labels, total):
+    """ Iterate through each frame and pass it through the net """
     writer = None
     (W, H) = (None, None)
     while True:
@@ -96,11 +100,13 @@ def draw_box(writer, args, start, end, layerOutputs, W, H, frame, colors, labels
     writer.write(frame)
 
 def clean_up(writer, vs):
+    """ Releases the writer and Video Capture """
     print("Cleaning up...")
     writer.release()
     vs.release()
 
 def run_object_detection(args):
+    """ Runs object detection with the configurations in args """
     configs = get_configs(args)
     object_detector = load_object_detector(configs[3], configs[2])
     vs, total = init_video_stream(args)
