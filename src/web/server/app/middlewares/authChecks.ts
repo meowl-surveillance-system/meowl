@@ -1,7 +1,6 @@
 import express from 'express';
 
-import { client } from '../utils/client';
-import { SELECT_USERSNAME_USERID } from '../utils/queries';
+import { isCollideHelper } from './helpers';
 
 export function isLoggedIn(
   req: Express.Request,
@@ -46,19 +45,12 @@ export async function isUsernameCollide(
   next: express.NextFunction
 ) {
   const { username } = req.body;
-  const result = await isCollide(username);
+  const result = await isCollideHelper(username);
   if (!result) {
     return next();
   } else {
     res.status(400).send('Bad username');
   }
-}
-
-export async function isCollide(username: string) {
-  const result = await client.execute(SELECT_USERSNAME_USERID, [username], {
-    prepare: true,
-  });
-  return result.rows.length !== 0;
 }
 
 // export default = {
