@@ -11,6 +11,13 @@ import {
 
 import { client } from '../utils/client';
 
+/**
+ * Store user information in database
+ * @param userId - The userId of the user
+ * @param username - The username of the user
+ * @param sid - The sessionID of the user
+ * @param password - The password of the user
+ */
 export const storeUser = (
   userId: string,
   username: string,
@@ -24,16 +31,31 @@ export const storeUser = (
   });
 };
 
+/**
+ * Retrieve user information from database
+ * @param username - The username used to lookup the user
+ */
 export const retrieveUser = async (username: string) => {
   return client.execute(SELECT_USERSID_USERID_PASSWORD, [username], {
     prepare: true,
   });
 };
 
+/**
+ * Check if the password matches with the hash
+ * @param password - The value that needs to be validated
+ * @param hash - The value that is used to validate the password
+ */
 export const compareHash = async (password: string, hash: string) => {
   return bcrypt.compare(password, hash);
 };
 
+/**
+ * Update the sessionID of the user
+ * @param sid - The sessionID
+ * @param userId - The userId of the user
+ * @param username - The username of the user
+ */
 export const updateSessionId = async (
   sid: any,
   userId: string,
@@ -45,6 +67,10 @@ export const updateSessionId = async (
   });
 };
 
+/**
+ * Retrieve the SessionID using the userId
+ * @param userId - The value used to lookup the sessionID
+ */
 export const retrieveSID = async (userId: string) => {
   return client.execute(SELECT_USERSNAME_SID, [userId], { prepare: true });
 };

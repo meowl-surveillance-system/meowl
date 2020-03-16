@@ -11,6 +11,9 @@ import * as authController from '../controllers/auth';
 
 const app = express();
 
+/**
+ * Register a new user
+ */
 app.post(
   '/register',
   [isLoggedOut, isValidCred, isUsernameCollide],
@@ -19,6 +22,9 @@ app.post(
   }
 );
 
+/**
+ * Login a user
+ */
 app.post(
   '/login',
   [isLoggedOut, isValidCred],
@@ -27,6 +33,9 @@ app.post(
   }
 );
 
+/**
+ * Logout a user
+ */
 app.post(
   '/logout',
   isLoggedIn,
@@ -35,6 +44,9 @@ app.post(
   }
 );
 
+/**
+ * Extract sessionID and userId from cookie and send it back in the response body
+ */
 app.post(
   '/rtmpRequest',
   isLoggedIn,
@@ -43,6 +55,9 @@ app.post(
   }
 );
 
+/**
+ * Authenticate a user for RTMP streaming
+ */
 app.post(
   '/rtmpAuth',
   isLoggedIn,

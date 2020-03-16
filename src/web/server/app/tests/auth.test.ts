@@ -1,7 +1,5 @@
 import * as auth from '../controllers/auth';
 
-import { client } from '../utils/client';
-
 describe('auth', () => {
   describe('rtmpRequest', () => {
     const mockReq: any = () => {

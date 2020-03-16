@@ -2,6 +2,12 @@ import express from 'express';
 
 import { isCollideHelper } from './helpers';
 
+/**
+ * Checks if a user is already logged in
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
 export function isLoggedIn(
   req: Express.Request,
   res: express.Response,
@@ -14,6 +20,12 @@ export function isLoggedIn(
   }
 }
 
+/**
+ * Checks if a user is logged out
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
 export function isLoggedOut(
   req: Express.Request,
   res: express.Response,
@@ -26,6 +38,12 @@ export function isLoggedOut(
   }
 }
 
+/**
+ * Checks is username or password is empty
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
 export function isValidCred(
   req: express.Request,
   res: express.Response,
@@ -39,6 +57,12 @@ export function isValidCred(
   }
 }
 
+/**
+ * Checks if username already exists in database
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to tbe sent
+ * @param next - The next middleware in the chain
+ */
 export async function isUsernameCollide(
   req: express.Request,
   res: express.Response,
@@ -52,10 +76,3 @@ export async function isUsernameCollide(
     res.status(400).send('Bad username');
   }
 }
-
-// export default = {
-//   isLoggedIn,
-//   isLoggedOut,
-//   isValidCred,
-//   isUsernameCollide
-// }
