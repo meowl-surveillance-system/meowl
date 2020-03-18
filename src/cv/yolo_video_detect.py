@@ -3,17 +3,24 @@ import imutils
 import numpy as np
 import os
 import time
+import settings
 
 def get_configs(args):
     """ Retrieves the object detector model resources """
-    labelsPath = os.environ.get('YOLO_NAMES_PATH')
+    if settings.YOLO_NAMES is None:
+        raise Exception("YOLO_NAMES_PATH: not found")
+    labelsPath = settings.YOLO_NAMES
     labels = open(labelsPath).read().strip().split("\n")
 
     np.random.seed(int(time.time()))
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
 
-    weightsPath = os.environ.get('YOLO_WEIGHTS_PATH')
-    configPath = os.environ.get('YOLO_CONFIG_PATH')
+    if settings.WEIGHTS is None:
+        raise Exception("YOLO_WEIGHTS_PATH: not found")
+    weightsPath = settings.WEIGHTS
+    if settings.CONFIGS is None:
+        raise Exception("YOLO_WEIGHTS_PATH: not found")
+    configPath = settings.CONFIGS
 
     return labels, colors, weightsPath, configPath
 
@@ -37,7 +44,7 @@ def init_video_stream(args):
         print("{} total frames in video".format(total))
 
     except:
-        print("Could not determine # of frames in video")
+        raise Exception("Could not determine # of frames in video")
         total = -1
 
     return vs, total
@@ -50,7 +57,8 @@ def iterate_frames(args, vs, net, ln, colors, labels, total):
         (grabbed, frame) = vs.read()
         if writer is None:
             fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-            writer = cv2.VideoWriter(args["output"], fourcc, 30, (frame.shape[1], frame.shape[0]), True)
+            writer = cv2.VideoWriter(args["output"], fourcc, 30,
+                (frame.shape[1], frame.shape[0]), True)
         if not grabbed:
             break
         if W is None or H is None:
@@ -63,11 +71,13 @@ def iterate_frames(args, vs, net, ln, colors, labels, total):
         layerOutputs = net.forward(ln)
         end = time.time()
 
-        draw_box(writer, args, start, end, layerOutputs, W, H, frame, colors, labels, total)
+        draw_box(writer, args, start, end, layerOutputs,
+            W, H, frame, colors, labels, total)
 
     return writer
 
-def draw_box(writer, args, start, end, layerOutputs, W, H, frame, colors, labels, total):
+def draw_box(writer, args, start, end, layerOutputs,
+             W, H, frame, colors, labels, total):
     """ Draws boxes around detected elements in frame and writes the frame"""
     boxes = []
     confidences = []
@@ -87,7 +97,8 @@ def draw_box(writer, args, start, end, layerOutputs, W, H, frame, colors, labels
                  confidences.append(float(confidence))
                  classIDs.append(classID)
 
-    idxs = cv2.dnn.NMSBoxes(boxes, confidences, args["confidence"], args["threshold"])
+    idxs = cv2.dnn.NMSBoxes(boxes, confidences,
+        args["confidence"], args["threshold"])
     if len(idxs) > 0:
         for i in idxs.flatten():
             (x, y) = (boxes[i][0], boxes[i][1])
@@ -96,7 +107,8 @@ def draw_box(writer, args, start, end, layerOutputs, W, H, frame, colors, labels
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             text = "{}: {:.4f}".format(labels[classIDs[i]],
                 confidences[i])
-            cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.putText(frame, text, (x, y - 5),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     writer.write(frame)
 
 def clean_up(writer, vs):
@@ -110,5 +122,6 @@ def run_object_detection(args):
     configs = get_configs(args)
     object_detector = load_object_detector(configs[3], configs[2])
     vs, total = init_video_stream(args)
-    writer = iterate_frames(args, vs, object_detector[0], object_detector[1], configs[1], configs[0], total)
+    writer = iterate_frames(args, vs, object_detector[0], object_detector[1],
+        configs[1], configs[0], total)
     clean_up(writer, vs)
