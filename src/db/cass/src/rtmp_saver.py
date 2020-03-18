@@ -1,5 +1,8 @@
+import json
 import librtmp
+import requests
 import threading
+import urllib
 from datetime import datetime
 
 class RtmpSaver:
@@ -58,3 +61,16 @@ class RtmpSaver:
   def _is_last_chunk(self, bytes_read, previous_read):
     """Check if the last chunk is received"""
     return bytes_read == previous_read and bytes_read != 0
+
+  def _auth_RTMP(rtmpUrl, loginUrl, rtmpRequestUrl, username, password):
+    body = {"username":username, "password":password}
+    loginResponse = requests.post(loginUrl, data=body)
+    if not loginResponse.ok :
+      raise Exception(f"Auth server response not ok : {loginResponse.text}")
+    connectsidCookie = {"connect.sid":loginResponse.cookies["connect.sid"]}
+    rtmpRequestResponse = requests.post(rtmpRequestUrl, cookies=connectsidCookie)
+    if not rtmpRequestResponse.ok :
+      raise Exception(f"Auth server response not ok : {rtmpRequestResponse.text}")
+    rtmpCreds = json.loads(rtmpRequestResponse.text)
+    return rtmpUrl + "?" + urllib.parse.urlencode(rtmpCreds)
+
