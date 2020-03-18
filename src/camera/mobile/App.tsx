@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, TouchableHighlight, Modal, Alert, TextInput, View, Button, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
+import { Modal, Alert, View, Button, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
+import { Text, Input } from 'react-native-elements';
 // @ts-ignore
 import { NodeCameraView } from 'react-native-nodemediaclient';
 
@@ -78,14 +79,20 @@ class App extends React.Component<any, any> {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{ marginTop: 22 }}>
-            <Button
-              onPress={() => {
-                this.setState({ modalVisible: false });
-              }}
-              title="Cancel">
-            </Button>
-          </View>
+          <Text style={{ fontSize: 22 }}>
+            Stream Link:
+          </Text>
+          <Input
+            onChange={(outputLink) => this.setState({ outputLink })}
+            value={this.state.outputLink}
+            placeholder="rtmp://"
+          />
+          <Button
+            onPress={() => {
+              this.setState({ modalVisible: false });
+            }}
+            title="Done"
+          />
         </Modal>
 
         <Button
