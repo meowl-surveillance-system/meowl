@@ -9,9 +9,9 @@ class NotificationProducer(object):
         )
     
     def send_notification(self, json_data):
-        result = self.producer.send("notif", key=b'notif', value=json_data)
+        result = self.producer.send("notif", value=json_data)
         print("kafka send result: {}".format(result.get()))
 
 def send_Notif(data):
-    notif = NotificationProducer.NotificationProducer()
-	notif.send_notification(json.loads(data))
+    notif = NotificationProducer()
+	notif.send_notification(data)
