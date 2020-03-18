@@ -7,7 +7,7 @@ import settings
 
 def get_configs(args):
     """ Retrieves the object detector model resources """
-    if settings.YOLO_NAMES is None:
+    if not os.path.exists(settings.YOLO_NAMES):
         raise Exception("YOLO_NAMES_PATH: not found")
     labelsPath = settings.YOLO_NAMES
     labels = open(labelsPath).read().strip().split("\n")
@@ -15,10 +15,10 @@ def get_configs(args):
     np.random.seed(int(time.time()))
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
 
-    if settings.WEIGHTS is None:
+    if not os.path.exists(settings.WEIGHTS):
         raise Exception("YOLO_WEIGHTS_PATH: not found")
     weightsPath = settings.WEIGHTS
-    if settings.CONFIGS is None:
+    if not os.path.exists(settings.CONFIGS):
         raise Exception("YOLO_WEIGHTS_PATH: not found")
     configPath = settings.CONFIGS
 
