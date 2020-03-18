@@ -29,9 +29,21 @@ export default class Login extends Component<Props, State> {
   loginSubmit = (): void => {
     const requestOptions = {
       method: "POST",
-      body: JSON.stringify({"username":this.state.username, "password":this.state.password})
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username:this.state.username, password:this.state.password})
     };
     fetch(`/auth/login`, requestOptions).then(res => {
+      this.setState({username:"" + res.status});
+    });
+  }
+  logoutSubmit = (): void => {
+    const requestOptions = {
+      method: "POST",
+    };
+    fetch(`/auth/logout`, requestOptions).then(res => {
       this.setState({username:"" + res.status});
     });
   }
@@ -61,6 +73,11 @@ export default class Login extends Component<Props, State> {
             onClick={() => this.loginSubmit()}
           >
             Login
+          </Button>
+          <Button
+            onClick={() => this.logoutSubmit()}
+          >
+            Logout
           </Button>
         </FormControl>
       </Container >
