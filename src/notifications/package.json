@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "testWatch": "jest --coverage --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +15,13 @@
     "email-templates": "^7.0.2",
     "nodemailer": "^6.4.2",
     "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.2",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.7.0",
+    "typescript": "^3.8.3"
   }
 }
