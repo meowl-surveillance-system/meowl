@@ -66,6 +66,7 @@ export default class Login extends Component<Props, State> {
             value={this.state.password}
             onChange={this.handleChange}
             placeholder="Password"
+	    type="password"
             inputProps={{ "data-testid": "password-test" }}
           />
           <Button
