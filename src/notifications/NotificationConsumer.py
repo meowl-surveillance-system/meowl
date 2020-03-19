@@ -1,8 +1,11 @@
-import sys
+import sys, os
+
+sys.path.append(os.path.join((os.path.dirname(os.path.realpath(__file__))), '..', 'db','cass'))
+
+from src.cluster_services import ClusterServices
 from kafka import KafkaConsumer
 from json import loads
 from cassandra.cluster import Cluster
-from ../../db/cass/src.clusterServices import ClusterServices
 from uuid import uuid4
 
 class NotificationConsumer():
