@@ -3,6 +3,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import * as authServices from '../services/auth';
 
+export const isLoggedIn = (req: Request, res: Response) => {
+  if(req.session!.userId) {
+    res.status(200).send();
+  }
+  else {
+    res.status(400).send();
+  }
+};
+
 export const register = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const sid = req.sessionID;
