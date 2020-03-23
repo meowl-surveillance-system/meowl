@@ -30,6 +30,7 @@ class App extends Component<Props, State> {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Playback} />
+            <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} />} />
           </Switch>
         </BrowserRouter>
