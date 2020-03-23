@@ -1,4 +1,5 @@
 import React, { ChangeEvent, Component, ComponentState, FormEvent } from 'react';
+import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
@@ -6,8 +7,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-interface Props {}
+interface Props {
+	isLoggedIn: boolean
+}
 interface State {
+	email: string,
 	username: string,
 	password: string
 }
@@ -16,13 +20,10 @@ export default class Register extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
+			email: "",
 			username: "",
 			password: ""
 		}
-	}
-
-	componentDidMount() {
-		// If user is logged in redirect back to homepage
 	}
 
 	onChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -39,6 +40,7 @@ export default class Register extends Component<Props, State> {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
+				email: this.state.email,
 				username: this.state.username,
 				password: this.state.password,
 			})
@@ -46,6 +48,9 @@ export default class Register extends Component<Props, State> {
 	}
 
 	render() {
+		if(this.props.isLoggedIn) {
+			return <Redirect to='/' />
+		}
 		return (
 			<Container component="main" maxWidth="xs">
       			<Grid
@@ -60,6 +65,15 @@ export default class Register extends Component<Props, State> {
 			    	  Register
 			        </Typography>
 			        <form noValidate onSubmit={this.onSubmit}>
+			          <TextField
+			            variant="outlined"
+			            margin="normal"
+			            required
+			            fullWidth
+			            label="E-mail"
+			            name="email"
+			            onChange={this.onChange}
+			          />
 			          <TextField
 			            variant="outlined"
 			            margin="normal"

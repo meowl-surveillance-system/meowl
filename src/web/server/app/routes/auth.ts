@@ -11,6 +11,10 @@ import * as authController from '../controllers/auth';
 
 const app = express();
 
+app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
+  authController.isLoggedIn(req, res);
+});
+
 /**
  * Register a new user
  */
