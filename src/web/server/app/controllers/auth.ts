@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import * as authServices from '../services/auth';
 
 export const register = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { email, username, password } = req.body;
   const sid = req.sessionID;
   const userId = uuidv4();
-  authServices.storeUser(userId, username, sid, password);
+  authServices.storeUser(userId, email, username, sid, password);
   req.session!.userId = userId;
   res.status(200).send('successfully registered');
 };
