@@ -3,11 +3,14 @@ from sklearn.svm import SVC
 import argparse
 import os
 import pickle
+import settings
 
 def load_configs():
     """ Loading in resources """
     print("[INFO] loading face embeddings...")
-    data = pickle.loads(open(os.environ.get('EMBEDDINGS_PATH'), "rb").read())
+    if not os.path.exists(settings.EMBEDDINGS):
+        raise Exception("EMBEDDINGS_PATH: not found")
+    data = pickle.loads(open(settings.EMBEDDINGS, "rb").read())
     print("[INFO] encoding labels...")
     le = LabelEncoder()
     labels = le.fit_transform(data["names"])

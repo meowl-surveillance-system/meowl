@@ -4,16 +4,27 @@ import imutils
 import pickle
 import cv2
 import os
+import settings
 
 def load_configs():
     """ Loading Configurations """
-    proto_path = os.environ.get('DETECTOR_PROTOTXT_PATH')
-    model_path = os.environ.get('DETECTOR_MODEL_PATH')
+    if not os.path.exists(settings.DETECTOR_PROTOTXT):
+        raise Exception("DETECTOR_PROTOTXT_PATH: not found")
+    proto_path = settings.DETECTOR_PROTOTXT
+    if not os.path.exists(settings.DETECTOR_MODEL):
+        raise Exception("DETECTOR_MODEL_PATH: not found")
+    model_path = settings.DETECTOR_MODEL
     detector = cv2.dnn.readNetFromCaffe(proto_path, model_path)
     print("[INFO] loading face recognizer...")
-    embedder = cv2.dnn.readNetFromTorch(os.environ.get('EMBEDDING_MODEL_PATH'))
-    recognizer = pickle.loads(open(os.environ.get('RECOGNIZER_PATH'), "rb").read())
-    le = pickle.loads(open(os.environ.get('LABEL_ENCODER_PATH'), "rb").read())
+    if not os.path.exists(settings.EMBEDDING_MODEL):
+        raise Exception("EMBEDDING_MODEL_PATH: not found")
+    embedder = cv2.dnn.readNetFromTorch(settings.EMBEDDING_MODEL)
+    if not os.path.exists(settings.RECOGNIZER):
+        raise Exception("RECOGNIZER_PATH: not found")
+    recognizer = pickle.loads(open(settings.RECOGNIZER, "rb").read())
+    if not os.path.exists(settings.LABEL_ENCODER):
+        raise Exception("LABEL_ENCODER_PATH: not found")
+    le = pickle.loads(open(settings.LABEL_ENCODER, "rb").read())
     return detector, embedder, recognizer, le
 
 def iterate_frames(args, detector, embedder, recognizer, le):

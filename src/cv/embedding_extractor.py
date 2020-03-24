@@ -5,18 +5,28 @@ import imutils
 import pickle
 import cv2
 import os
+import settings
 
 def load_configs():
     """ Loads in resources """
     print("Loading Caffe based face detector to localize faces in an image")
-    proto_path = os.environ.get('DETECTOR_PROTOTXT_PATH')
-    model_path = os.environ.get('DETECTOR_MODEL_PATH')
+    if not os.path.exists(settings.DETECTOR_PROTOTXT):
+        raise Exception("DETECTOR_PROTOTXT_PATH: not found")
+    proto_path = settings.DETECTOR_PROTOTXT
+    if not os.path.exists(settings.DETECTOR_MODEL):
+        raise Exception("DETECTOR_MODEL_PATH: not found")
+    model_path = settings.DETECTOR_MODEL
+
     detector = cv2.dnn.readNetFromCaffe(proto_path, model_path)
 
     print("Loading Openface imlementation of Facenet model")
-    embedder = cv2.dnn.readNetFromTorch(os.environ.get('EMBEDDING_MODEL_PATH'))
+    if not os.path.exists(settings.EMBEDDING_MODEL):
+        raise Exception("EMBEDDING__MODEL_PATH: not found")
+    embedder = cv2.dnn.readNetFromTorch(settings.EMBEDDING_MODEL)
 
-    image_paths = list(paths.list_images(os.environ.get('DATASET_PATH')))
+    if not os.path.exists(settings.DATASET):
+        raise Exception("DATASET_PATH: not found")
+    image_paths = list(paths.list_images(settings.DATASET))
     return detector, embedder, image_paths
 
 def detect_images(args, detector, embedder, image_paths):
@@ -65,8 +75,7 @@ def write_embeddings(known_embeddings, known_names):
     """ Writes embeddings """
     print("Writing Embeddings")
     data = {"embeddings": known_embeddings, "names": known_names}
-    #f = open(os.environ.get('EMBEDDINGS__PATH'), "wb")
-    f = open('output/embeddings.pickle', "wb")
+    f = open(settings.EMBEDDINGS, "wb")
     f.write(pickle.dumps(data))
     f.close()
 
