@@ -17,7 +17,7 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS data (chunk_id 
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS sessions (sid text, session text, expires timestamp, PRIMARY KEY (sid))')
 
 # Users table for querying with user_id
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_id text, username text, password text, sid text, PRIMARY KEY(user_id))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_id text, email text, username text, password text, sid text, PRIMARY KEY(user_id))')
 
 # Users table for querying with username
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, username text, password text, sid text, PRIMARY KEY(username))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, email text, username text, password text, sid text, PRIMARY KEY(username))')

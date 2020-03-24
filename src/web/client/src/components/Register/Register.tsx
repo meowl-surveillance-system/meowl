@@ -32,8 +32,7 @@ export default class Register extends Component<Props, State> {
 	}
 
 	onSubmit = (event: FormEvent<HTMLFormElement>): void => {
-		event.preventDefault();
-		fetch('http://localhost:8081/auth/register', {
+		fetch('/auth/register', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -94,8 +93,9 @@ export default class Register extends Component<Props, State> {
 			            onChange={this.onChange}
 			          />
 			          <Button
-			            type="submit"
+			          	href="/"
 			            fullWidth
+			            type="submit"
 			            variant="contained"
 			            color="primary"
 			          >
@@ -103,7 +103,7 @@ export default class Register extends Component<Props, State> {
 			          </Button>
 			          <Grid container>
 			            <Grid item>
-			              <Link href="#" variant="body1">
+			              <Link href="/login" variant="body1">
 			                {"Already have an account? Sign In"}
 			              </Link>
 			            </Grid>

@@ -41,14 +41,6 @@ export default class Login extends Component<Props, State> {
       this.setState({username:"" + res.status});
     });
   }
-  logoutSubmit = (): void => {
-    const requestOptions = {
-      method: "POST",
-    };
-    fetch(`/auth/logout`, requestOptions).then(res => {
-      this.setState({username:"" + res.status});
-    });
-  }
 
   render() {
     if(this.props.isLoggedIn) {
@@ -77,13 +69,9 @@ export default class Login extends Component<Props, State> {
           />
           <Button
             onClick={() => this.loginSubmit()}
+            href="/"
           >
             Login
-          </Button>
-          <Button
-            onClick={() => this.logoutSubmit()}
-          >
-            Logout
           </Button>
         </FormControl>
       </Container >
