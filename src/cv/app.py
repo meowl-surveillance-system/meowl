@@ -35,6 +35,8 @@ def process_video():
     """ Applies object detection on an input """
     args = {
         "input": request.args.get('input'),
+        "camera_id": request.args.get('camera_id'),
+        "stream_id": request.args.get('stream_id'),
         "output": request.args.get('output'),
         "confidence": request.args.get('confidence', default = .5, type = float),
         "threshold": request.args.get('threshold', default = .3, type = float)
