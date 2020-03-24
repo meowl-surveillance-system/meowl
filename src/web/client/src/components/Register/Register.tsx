@@ -93,7 +93,6 @@ export default class Register extends Component<Props, State> {
 			            onChange={this.onChange}
 			          />
 			          <Button
-			          	href="/"
 			            fullWidth
 			            type="submit"
 			            variant="contained"
