@@ -21,3 +21,8 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_
 
 # Users table for querying with username
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, username text, password text, sid text, PRIMARY KEY(username))')
+
+# Tables for storing OpenCV frames
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames_metadata (stream_id text, camera_id text, frame_order timestamp, frame_id text, PRIMARY KEY((stream_id, camera_id), frame_order))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (frame_id text, frame blob, objects_detected blob, PRIMARY KEY(frame_id))')
+
