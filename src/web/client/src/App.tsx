@@ -5,6 +5,7 @@ import './App.css';
 import Playback from './components/Playback/Playback';
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
+import Navbar from './components/Navbar/Navbar';
 
 interface Props {}
 interface State {
@@ -28,11 +29,14 @@ class App extends Component<Props, State> {
     return (
       <div className="App">
         <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={Playback} />
-            <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} />} />
-            <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} />} />
-          </Switch>
+          <div>
+            <Navbar isLoggedIn={this.state.isLoggedIn} />
+            <Switch>
+              <Route exact path="/" component={Playback} />
+              <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} />} />
+              <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} />} />
+            </Switch>
+           </div>
         </BrowserRouter>
       </div>
     )

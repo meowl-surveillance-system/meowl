@@ -1,4 +1,5 @@
 import React, { ComponentState, Component, ChangeEvent } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
 
 interface Props {
