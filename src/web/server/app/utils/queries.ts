@@ -15,3 +15,5 @@ export const SELECT_USERSNAME_SID =
   'SELECT sid FROM users_id WHERE user_id = ?';
 export const SELECT_USERSNAME_USERID =
   'SELECT user_id FROM users_name WHERE username = ?';
+export const SELECT_CAMERAID_STREAMID =
+  'SELECT stream_id FROM camera_streams WHERE camera_id = ?';

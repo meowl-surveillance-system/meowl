@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import express from 'express';
 
 import { client } from '../utils/client';
+import * as apiController from '../controllers/api';
 
 const app = express();
 
@@ -35,6 +36,13 @@ app.get(
       ffProc.stdin.write(chunkResult.rows[0].chunk);
     }
     ffProc.stdin.end();
+  }
+);
+
+app.get(
+  '/getStreamIds/:cameraId',
+  async (req: express.Request, res: express.Response) => {
+    apiController.retrieveStreamIds(req, res);
   }
 );
 

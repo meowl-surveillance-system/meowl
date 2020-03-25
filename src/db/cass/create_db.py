@@ -13,6 +13,12 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS metadata (strea
 # Data table
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS data (chunk_id text, chunk blob, PRIMARY KEY (chunk_id))')
 
+# Camera streamid table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS camera_streams (camera_id text, stream_id text, stream_date timestamp, PRIMARY KEY (camera_id, stream_id))')
+
+# User Camera table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS user_cameras (user_id text, camera_id text, PRIMARY KEY (user_id))')
+
 # Session table
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS sessions (sid text, session text, expires timestamp, PRIMARY KEY (sid))')
 
