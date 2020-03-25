@@ -9,14 +9,9 @@ import React from 'react';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
-import App from '../App';
+import SettingsForm from './SettingsForm';
 
 it('renders correctly', () => {
-  const tree = shallow(<App />).toJSON();
+  const tree = shallow(<SettingsForm />).toJSON();
   expect(tree).toMatchSnapshot();
 });
-
-it('should call flash API',
-   () => {
-
-   });
