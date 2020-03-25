@@ -28,3 +28,17 @@ export const storeStreamId = async (req: Request, res: Response) => {
     res.status(500).send('Server error');
   }
 };
+
+export const retrieveCameraIds = async (req: Request, res: Response) => {
+  const result = await apiServices.retrieveCameraIds();
+  if (result === undefined) {
+    res.status(400).send('Invalid cameraId');
+  } else {
+    const streamIds = result.rows.map((row) => {
+      const key = Object.keys(row)[0];
+      return row[key]; 
+    });
+    console.log(streamIds);
+    res.status(200).send(streamIds);
+  }
+};

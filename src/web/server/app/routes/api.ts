@@ -53,4 +53,11 @@ app.post(
   }
 );
 
+app.get(
+  '/getCameraIds',
+  async (req: express.Request, res: express.Response) => {
+    apiController.retrieveCameraIds(req, res);
+  }
+);
+
 module.exports = app;
