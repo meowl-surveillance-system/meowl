@@ -1,15 +1,16 @@
-import React, { ComponentState, Component, ChangeEvent } from 'react';
-import ReactPlayer from 'react-player';
-import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
+import React, { Component } from 'react';
+import { Container, Typography } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
+
+import ResponsivePlayer from '../ResponsivePlayer/ResponsivePlayer';
+
 interface Props { }
 
 interface State {
   tmpUrl: string;
   url: string;
-  vidId: string;
   cameraId: string;
   streamIds: Array<string>;
 }
@@ -21,7 +22,6 @@ export default class Playback extends Component<Props, State> {
     this.state = {
       tmpUrl: "",
       url: "",
-      vidId: "",
       cameraId: "",
       streamIds: []
     };
@@ -68,8 +68,7 @@ export default class Playback extends Component<Props, State> {
         >
           {this.renderStreamIds()}
         </List>
-       
-        <ReactPlayer url={this.state.url} controls={true} />
+        <ResponsivePlayer url={this.state.url} controls={true} />
       </Container >
     );
   }
