@@ -1,9 +1,12 @@
 import cv2
 import imutils
+import json
 import numpy as np
 import os
 import time
 import settings
+import cv_producer
+import insert_frame
 
 def get_configs(args):
     """ Retrieves the object detector model resources """
@@ -53,6 +56,7 @@ def iterate_frames(args, vs, net, ln, colors, labels, total):
     """ Iterate through each frame and pass it through the net """
     writer = None
     (W, H) = (None, None)
+    frame_id = 1
     while True:
         (grabbed, frame) = vs.read()
         if writer is None:
@@ -71,13 +75,13 @@ def iterate_frames(args, vs, net, ln, colors, labels, total):
         layerOutputs = net.forward(ln)
         end = time.time()
 
-        draw_box(writer, args, start, end, layerOutputs,
-            W, H, frame, colors, labels, total)
+        frame_id += draw_box(writer, args, start, end, layerOutputs,
+            W, H, frame, colors, labels, total, frame_id)
 
     return writer
 
 def draw_box(writer, args, start, end, layerOutputs,
-             W, H, frame, colors, labels, total):
+             W, H, frame, colors, labels, total, frame_id):
     """ Draws boxes around detected elements in frame and writes the frame"""
     boxes = []
     confidences = []
@@ -97,6 +101,7 @@ def draw_box(writer, args, start, end, layerOutputs,
                  confidences.append(float(confidence))
                  classIDs.append(classID)
 
+    objs = {}
     idxs = cv2.dnn.NMSBoxes(boxes, confidences,
         args["confidence"], args["threshold"])
     if len(idxs) > 0:
@@ -107,9 +112,20 @@ def draw_box(writer, args, start, end, layerOutputs,
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             text = "{}: {:.4f}".format(labels[classIDs[i]],
                 confidences[i])
+            key = labels[classIDs[i]]
+            objs[key] = objs.get(key, 0) + 1
             cv2.putText(frame, text, (x, y - 5),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-    writer.write(frame)
+    
+    if len(objs.keys()) > 0:
+        img_str = cv2.imencode('.jpg', frame)[1].tostring()
+        img_str = bytes(img_str)
+        print(type(str(frame_id)))
+        insert_frame.insert_frame(repr(args['camera_id']), repr(args['stream_id']), repr(frame_id), img_str, json.dumps(objs).encode('utf-8'))        
+        time.sleep(5)
+        cv_producer.send_metadata(repr(args['camera_id']), repr(args['stream_id']), repr(str(frame_id)))
+        return 1
+    return 0
 
 def clean_up(writer, vs):
     """ Releases the writer and Video Capture """
