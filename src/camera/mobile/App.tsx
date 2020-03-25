@@ -1,27 +1,28 @@
 import React from 'react';
-import { Modal, Alert, View, Button, StatusBar, StyleSheet, PermissionsAndroid } from 'react-native';
+import { Modal, Alert, View, Button, StatusBar, StyleSheet, PermissionsAndroid, Settings } from 'react-native';
 import { Text, Input, Icon } from 'react-native-elements';
 // @ts-ignore
 import { NodeCameraView } from 'react-native-nodemediaclient';
+import CameraPublisher from './components/camera-publisher/CameraPublisher';
+import SettingsForm from './components/settings-form/SettingsForm';
+import AppBar from './components/app-bar/AppBar';
 
-class App extends React.Component<any, any> {
+interface Props { }
+
+class App extends React.Component<Props, AppState> {
   vb: NodeMediaClientRef | undefined;
-  static navigationOptions = {
-    title: 'Push',
-  };
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      flashEnable: false,
-      publishBtnTitle: "Start Publish",
-      isPublish: false,
-      cameraId: 1,
+      audioBitRate: 128000,
+      flashEnabled: false,
+      fps: 30,
+      isPublishing: false,
+      isViewingFrontCamera: true,
       modalVisible: false,
       outputLink: "rtmp://192.168.1.100/show/stream",
-      videoBitRate: 8000000,
-      audioBitRate: 128000,
-      fps: 30,
+      videoBitRate: 8000000
     };
   }
 
@@ -43,117 +44,44 @@ class App extends React.Component<any, any> {
     }
   }
 
+  updateState(state: any) {
+    this.setState(state);
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#333' }}>
         <StatusBar
           barStyle="dark-content"
         />
-        <NodeCameraView
-          style={{ flex: 10, zIndex: 0 }}
-          ref={(vb: any) => { this.vb = vb }}
-          outputUrl={this.state.outputLink}
-          camera={{ cameraId: 1, cameraFrontMirror: true }}
-          audio={{ bitrate: this.state.audioBitRate, profile: 1, samplerate: 44100 }}
-          video={{ preset: 1, bitrate: this.state.videoBitRate, profile: 1, fps: this.state.fps, videoFrontMirror: false }}
-          smoothSkinLevel={3}
-          autopreview={true}
-        />
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
-          <Text style={{ fontSize: 22 }}>
-            Stream Link:
-          </Text>
-          <Input
-            onChange={(outputLink) => this.setState({ outputLink: outputLink })}
-            value={this.state.outputLink}
-            placeholder="rtmp://"
-          />
-          <Button
-            onPress={() => {
-              this.setState({ modalVisible: false });
-            }}
-            title="Done"
-          />
-        </Modal>
+        <View style={{ flex: 6 }}>
+          <CameraPublisher
+            outputLink={this.state.outputLink}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            audioBitRate={this.state.audioBitRate}
+            videoBitRate={this.state.videoBitRate}
+            fps={this.state.fps}
 
-        <View
-          style={{ flex: 1, flexDirection: "row", justifyContent: "space-evenly", backgroundColor: "navy" }}
-        >
-          {
-            this.state.isPublish
-              ? (
-                <Icon
-                  type="material-community"
-                  name="video-off"
-                  onPress={() => {
-                    this.vb!.stop();
-                    this.setState({ publishBtnTitle: 'Start Publish', isPublish: false });
-                  }}
-                  reverse={true}
-                />
-              )
-              : (
-                <Icon
-                  type="material-community"
-                  name="video"
-                  style={{ backgroundColor: "transparent" }}
-                  onPress={() => {
-                    this.vb!.start();
-                    this.setState({ publishBtnTitle: 'Stop Publish', isPublish: true });
-                  }}
-                  reverse={true}
-                />
-              )
-          }
-          < Icon
-            type="material-community"
-            name="settings"
-            onPress={() => {
-              this.setState({ modalVisible: true });
-            }}
-            reverse={true}
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
           />
-          <Icon
-            type="material-community"
-            name="video-switch"
-            onPress={() => {
-              this.vb!.switchCamera();
-              this.setState({ flashEnable: false });
-            }}
-            reverse={true}
+        </View>
+        <SettingsForm
+          audioBitRate={this.state.audioBitRate}
+          fps={this.state.fps}
+          modalVisible={this.state.modalVisible}
+          outputLink={this.state.outputLink}
+          videoBitRate={this.state.videoBitRate}
+          updateProps={(props: any) => this.updateState(props)}
+        />
+        <View style={{ flex: 1 }}>
+          <AppBar
+            modalVisible={this.state.modalVisible}
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            updateProps={(props: any) => this.updateState(props)}
           />
-          {
-            this.state.flashEnable
-              ? (
-                <Icon
-                  type="material-community"
-                  name="flash-off"
-                  onPress={() => {
-                    this.vb!.flashEnable(!this.state.flashEnable);
-                    this.setState({ flashEnable: !this.state.flashEnable })
-                  }}
-                  reverse={true}
-                  underlayColor="transparent"
-                />
-              )
-              : (
-                <Icon
-                  type="material-community"
-                  name="flash"
-                  onPress={() => {
-                    this.vb!.flashEnable(!this.state.flashEnable);
-                    this.setState({ flashEnable: !this.state.flashEnable })
-                  }}
-                  reverse={true}
-                />
-              )
-          }
         </View>
       </View >
     );
@@ -163,13 +91,5 @@ class App extends React.Component<any, any> {
     this.vb!.stop();
   }
 }
-
-const styles = StyleSheet.create({
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
-  },
-});
 
 export default App;
