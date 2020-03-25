@@ -50,7 +50,7 @@ install_python_driver() {
   sudo apt-get -y install python3-venv
   sudo apt-get -y install librtmp-dev
   sudo apt-get -y install stunnel4
-  cd ${PARENT_PATH}/../../src/db/cassandra
+  cd ${PARENT_PATH}/../../src/db/cass
   python3 -m venv venv
   source ./venv/bin/activate
   pip install --upgrade pip
@@ -74,7 +74,7 @@ install_cassandra() {
   echo "Adding Cassandra repository to system..."
   echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
   echo "Adding the Apache Cassandra repository keys..."
-  curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
+  wget -q -O - https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
   sudo apt-get update
   echo "Installing Cassandra..."
   sudo apt-get -y install cassandra
