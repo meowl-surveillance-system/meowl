@@ -46,4 +46,11 @@ app.get(
   }
 );
 
+app.post(
+  '/storeStreamId',
+  async (req: express.Request, res: express.Response) => {
+    apiController.storeStreamId(req, res);
+  }
+);
+
 module.exports = app;

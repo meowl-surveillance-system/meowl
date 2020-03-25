@@ -17,3 +17,5 @@ export const SELECT_USERSNAME_USERID =
   'SELECT user_id FROM users_name WHERE username = ?';
 export const SELECT_CAMERAID_STREAMID =
   'SELECT stream_id FROM camera_streams WHERE camera_id = ?';
+export const INSERT_CAMERAID_STREAMID =
+  'INSERT into camera_streams (camera_id, stream_id, stream_date) VALUES (?, ?, ?)';
