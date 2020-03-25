@@ -13,7 +13,7 @@ export const retrieveStreamIds = async (req: Request, res: Response) => {
       return row[key]; 
     });
     console.log(streamIds);
-    res.status(200).send(streamIds);
+    res.status(200).json(streamIds);
   }
 };
 

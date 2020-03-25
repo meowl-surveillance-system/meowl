@@ -1,13 +1,17 @@
 import React, { ComponentState, Component, ChangeEvent } from 'react';
 import ReactPlayer from 'react-player';
 import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
 interface Props { }
 
 interface State {
   tmpUrl: string;
   url: string;
   vidId: string;
+  cameraId: string;
+  streamIds: Array<string>;
 }
 
 export default class Playback extends Component<Props, State> {
@@ -17,24 +21,33 @@ export default class Playback extends Component<Props, State> {
     this.state = {
       tmpUrl: "",
       url: "",
-      vidId: ""
+      vidId: "",
+      cameraId: "",
+      streamIds: []
     };
   }
 
-  handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    let target: HTMLInputElement = (event.target as HTMLInputElement);
-    let label: string = target.name;
-    let value: string = target.value;
-    this.setState({ [label]: value } as ComponentState);
-  };
+  componentDidMount() {
+    fetch(`/api/getStreamIds/1`)
+      .then(res => res.json())
+        .then(streamIds => this.setState( { streamIds: streamIds }));
+  }
+
+  renderStreamIds = () => {
+    return this.state.streamIds.map((streamId, index) => {
+      return (
+        <ListItem button onClick={() => this.retrieveVideo(streamId)} key={index}>{streamId}</ListItem>
+      );
+    })
+  }
 
   urlSubmit = (): void => {   
     this.setState({ url: this.state.tmpUrl });
     this.setState({ tmpUrl: "" });
   }
 
-  retrieveVideo = (): void => {
-    fetch(`/api/getVideo/${this.state.vidId}`)
+  retrieveVideo = (streamId: string): void => {
+    fetch(`/api/getVideo/${streamId}`)
       .then(res => res.blob())
       .then(blob => {
         const vidUrl = URL.createObjectURL(new Blob([blob]));
@@ -46,33 +59,16 @@ export default class Playback extends Component<Props, State> {
   render() {
     return (
       <Container>
-        <Typography variant="h5" component="h6">Video Retrieval Tool</Typography>
-        <FormControl data-testid="form">
-          <TextField
-            id="tmpUrl-input"
-            name="tmpUrl"
-            value={this.state.tmpUrl}
-            onChange={this.handleChange}
-            placeholder="Temporary URL"
-            inputProps={{ "data-testid": "tmpUrl-test" }}
-          />
-          <Button onClick={() => this.urlSubmit()}>Submit URL</Button>
-        </FormControl>
-        <FormControl data-testid="retrieve">
-          <TextField
-            id="vidId-input"
-            name="vidId"
-            value={this.state.vidId}
-            onChange={this.handleChange}
-            placeholder="Video ID"
-            inputProps={{ "data-testid": "vid-db-test" }}
-          />
-          <Button
-            onClick={() => this.retrieveVideo()}
-          >
-            Retrieve Video
-          </Button>
-        </FormControl>
+        <List 
+          subheader={
+            <ListSubheader color="inherit">
+              <Typography variant="title">My Streams</Typography>
+            </ListSubheader>
+          }
+        >
+          {this.renderStreamIds()}
+        </List>
+       
         <ReactPlayer url={this.state.url} controls={true} />
       </Container >
     );
