@@ -19,3 +19,5 @@ export const SELECT_CAMERAID_STREAMID =
   'SELECT stream_id FROM camera_streams WHERE camera_id = ?';
 export const INSERT_CAMERAID_STREAMID =
   'INSERT into camera_streams (camera_id, stream_id, stream_date) VALUES (?, ?, ?)';
+export const SELECT_CAMERAID =
+  'SELECT DISTINCT camera_id FROM camera_streams';

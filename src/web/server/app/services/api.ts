@@ -1,4 +1,5 @@
 import {
+  SELECT_CAMERAID,
   SELECT_CAMERAID_STREAMID,
   INSERT_CAMERAID_STREAMID,
 } from '../utils/queries';
@@ -26,4 +27,13 @@ export const storeStreamId = async (
 ) => {
   const params = [cameraId, streamId, Date.now()];
   await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
+};
+
+/**
+ * Retrieve cameraIds from database
+ */
+export const retrieveCameraIds = async () => {
+  return client.execute(SELECT_CAMERAID, [], {
+    prepare: true,
+  });
 };
