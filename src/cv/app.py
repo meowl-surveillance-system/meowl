@@ -1,7 +1,9 @@
 from flask import Flask, request
 import cv2
 import numpy as np
+import add_dataset_resources as add_data
 import embedding_extractor as embed_ex
+import apply_detections
 import train_face_recognizer as trainer
 import recognize_faces as recognizer
 import yolo_video_detect as obj_detector
@@ -32,6 +34,13 @@ def display_vid(file_name):
     cv2.destroyAllWindows()
 
     print("Finished Displaying Video")
+
+'''@app.route('/upload_resources/')
+def retrieve_dataset_res():
+    """ Retrieves the dataset resources """
+    add_data.add_resources(request.args.get("link"), request.args.get("class"))
+    return "Finished adding resources"
+'''
 
 @app.route('/extract_embeddings/')
 def extract_embeddings():
@@ -70,3 +79,16 @@ def process_video():
     }
     obj_detector.run_object_detection(args)
     return "Finished Object Detection"
+
+@app.route('/apply_detections/')
+def process_detections():
+    """ Applies object detection on an input """
+    args = {
+        "input": request.args.get('input'),
+        "output": request.args.get('output'),
+        "confidence": request.args.get('confidence', default = .5, type = float),
+        "threshold": request.args.get('threshold', default = .3, type = float)
+    }
+    apply_detections.process(args)
+    return "Finished Processing detections"
+
