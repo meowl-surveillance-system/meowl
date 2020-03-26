@@ -3,8 +3,12 @@ const nodemail = require('nodemailer');
 
 jest.mock('nodemailer');
 
-const sendMailMock = jest.fn();
-nodemail.createTransport.mockReturnValue({sendMail: sendMailMock});
+let sendMailMock: jest.Mock<any, any>;
+
+beforeEach(() => {
+    sendMailMock = jest.fn();
+    nodemail.createTransport.mockReturnValue({sendMail: sendMailMock});
+})
 
 it('should call nodemailer function', () => {
     const req = {

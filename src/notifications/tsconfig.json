@@ -7,7 +7,7 @@
       "declaration": true,
       "outDir": "dist",
       "sourceMap": true,
-      "types": ["jest", "node"],
+      "types": ["jest", "node", "nodemailer"],
       "typeRoots": ["./types", "./node_modules/@types"]
     },
     "include": ["src/**/*"],

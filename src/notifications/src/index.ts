@@ -1,4 +1,4 @@
-let nodemailer = require('nodemailer');
+import * as nodemailer from 'nodemailer';
 const Email = require('email-templates');
 
 require('dotenv').config({ path: '../keys.env'});
