@@ -62,8 +62,8 @@ app.post(
 /**
  * Authenticate a user for RTMP streaming
  */
-app.post('/rtmpAuth', async (req: express.Request, res: express.Response) => {
-  authController.rtmpAuth(req, res);
+app.post('/rtmpAuthPublish', async (req: express.Request, res: express.Response) => {
+  authController.rtmpAuthPublish(req, res);
 });
 
 module.exports = app;

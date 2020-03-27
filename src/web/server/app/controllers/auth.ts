@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import * as authServices from '../services/auth';
+import * as apiServices from '../services/api';
 
 export const isLoggedIn = (req: Request, res: Response) => {
   if(req.session!.userId) {
@@ -64,7 +65,22 @@ export const rtmpRequest = (req: Request, res: Response) => {
     .json({ sessionID: req.sessionID, userId: req.session!.userId });
 };
 
-export const rtmpAuth = async (req: Request, res: Response) => {
+export const rtmpAuthPlay = async (req: Request, res: Response) => {
+  try {
+    const result = await authServices.retrieveSID(req.body.userId);
+    if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
+      res.status(400).send('Nice try kid');
+    } else {
+      await apiServices.storeStreamId(req.body.cameraId, req.body.name);
+      res.status(200).send('OK');
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).send('Server error');
+  }
+};
+
+export const rtmpAuthPublish = async (req: Request, res: Response) => {
   try {
     const result = await authServices.retrieveSID(req.body.userId);
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
