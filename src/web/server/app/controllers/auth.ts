@@ -71,7 +71,6 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
       res.status(400).send('Nice try kid');
     } else {
-      await apiServices.storeStreamId(req.body.cameraId, req.body.name);
       res.status(200).send('OK');
     }
   } catch (e) {
@@ -86,6 +85,7 @@ export const rtmpAuthPublish = async (req: Request, res: Response) => {
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
       res.status(400).send('Nice try kid');
     } else {
+      await apiServices.storeStreamId(req.body.cameraId, req.body.name);
       res.status(200).send('OK');
     }
   } catch (e) {
