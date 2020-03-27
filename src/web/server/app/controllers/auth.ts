@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { get as HTTPGet } from 'axios';
 
 import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
@@ -79,17 +80,31 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
   }
 };
 
-export const rtmpAuthPublish = async (req: Request, res: Response) => {
+const rtmpAuthPublish = async (req: Request, res: Response, start: bool) => {
   try {
     const result = await authServices.retrieveSID(req.body.userId);
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
       res.status(400).send('Nice try kid');
     } else {
       await apiServices.storeStreamId(req.body.cameraId, req.body.name);
-      res.status(200).send('OK');
+      const saverUrl = "http://localhost:5000/" + (start? "store/" : "stop/") + req.body.name;
+      const saverResponse = await HTTPGet(saverUrl);
+      if (saverResponse.status == 200) {
+        res.status(200).send('OK');
+      }
+      else {
+        res.status(500).send('Server error');
+      }
     }
   } catch (e) {
     console.log(e);
     res.status(500).send('Server error');
   }
+};
+export const rtmpAuthPublishStart = async (req: Request, res: Response) => {
+  await rtmpAuthPublish(req, res, true);
+};
+
+export const rtmpAuthPublishStop = async (req: Request, res: Response) => {
+  await rtmpAuthPublish(req, res, false);
 };

@@ -24,15 +24,28 @@ def hello():
 @app.route("/store/<stream_id>")
 def store_stream(stream_id):
   """Read from stream and store in DB"""
-  rtmp_saver = RtmpSaver(settings.RTMP_IP, settings.PORT, stream_id)
-  running_streams[stream_id] = rtmp_saver
-  rtmp_saver.start(file_services)
+  try :
+    rtmp_saver = RtmpSaver(settings.RTMP_IP, settings.PORT, stream_id)
+  except :
+    return "Error connecting to stream", 400
+  try :
+    running_streams[stream_id] = rtmp_saver
+    rtmp_saver.start(file_services)
+  except :
+    return "Error storing stream", 500
+
+  return "Started storing stream", 200
 
 @app.route("/stop/<stream_id>")
 def stop_stream(stream_id):
   """Stop reading from stream"""
-  running_streams[stream_id].stop()
-  del running_streams[stream_id]
+  try :
+    running_streams[stream_id].stop()
+    del running_streams[stream_id]
+  except :
+    return "Error halting saving of stream", 400
+
+  return "Stopped storing stream", 200
 
 if __name__ == '__main__':
   app.run(debug=True)

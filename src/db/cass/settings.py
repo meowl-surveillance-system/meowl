@@ -1,2 +1,2 @@
 RTMP_IP = "localhost"
-PORT = 1234 
+PORT = 1234

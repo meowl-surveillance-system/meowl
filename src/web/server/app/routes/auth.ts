@@ -60,10 +60,17 @@ app.post(
 );
 
 /**
- * Authenticate a user for RTMP streaming
+ * Authenticate a user for RTMP streaming and start saving
  */
-app.post('/rtmpAuthPublish', async (req: express.Request, res: express.Response) => {
-  authController.rtmpAuthPublish(req, res);
+app.post('/rtmpAuthPublishStart', async (req: express.Request, res: express.Response) => {
+  authController.rtmpAuthPublishStart(req, res);
+});
+
+/**
+ * Authenticate a user for RTMP streaming and stop saving
+ */
+app.post('/rtmpAuthPublishStop', async (req: express.Request, res: express.Response) => {
+  authController.rtmpAuthPublishStop(req, res);
 });
 
 module.exports = app;
