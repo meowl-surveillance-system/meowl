@@ -96,6 +96,14 @@ http {
             root /mnt/;
         }
 
+        location =/meowl_nginx.crt {
+            alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+            alias ${MEOWL_CA_CERT};
+        }
+
         location .auth {
             internal;
             proxy_pass \$auth_request_uri;
@@ -110,8 +118,16 @@ http {
           # Strips the api-https-proxy part of
           # the url, but forward the rest.
           rewrite  ^/api-https-proxy/(.*) /\$1 break;
-          proxy_pass https://example.com/login/;
-       }
+          proxy_pass https://example.com/auth/rtmpAuthPublish;
+        }
+
+        location =/meowl_nginx.crt {
+          alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+          alias ${MEOWL_CA_CERT};
+        }
     }
 
 }
