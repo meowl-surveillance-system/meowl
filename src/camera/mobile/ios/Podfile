@@ -54,6 +54,9 @@ target 'MeowlMobile' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+
+  pod 'react-native-nodemediaclient', :path => '../node_modules/react-native-nodemediaclient'
+
   target 'MeowlMobileTests' do
     inherit! :complete
     # Pods for testing
