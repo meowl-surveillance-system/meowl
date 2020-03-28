@@ -6,11 +6,10 @@ import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
 
 export const isLoggedIn = (req: Request, res: Response) => {
-  if(req.session!.userId) {
-    res.status(200).send();
-  }
-  else {
-    res.status(400).send();
+  if (req.session!.userId) {
+    res.json(true);
+  } else {
+    res.json(false);
   }
 };
 
@@ -80,19 +79,19 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
   }
 };
 
-const rtmpAuthPublish = async (req: Request, res: Response, start: bool) => {
+const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
   try {
     const result = await authServices.retrieveSID(req.body.userId);
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
       res.status(400).send('Nice try kid');
     } else {
       await apiServices.storeStreamId(req.body.cameraId, req.body.name);
-      const saverUrl = "http://localhost:5000/" + (start? "store/" : "stop/") + req.body.name;
+      const saverUrl =
+        'http://localhost:5000/' + (start ? 'store/' : 'stop/') + req.body.name;
       const saverResponse = await HTTPGet(saverUrl);
-      if (saverResponse.status == 200) {
+      if (saverResponse.status === 200) {
         res.status(200).send('OK');
-      }
-      else {
+      } else {
         res.status(500).send('Server error');
       }
     }

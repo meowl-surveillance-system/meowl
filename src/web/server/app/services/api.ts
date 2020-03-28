@@ -21,10 +21,7 @@ export const retrieveStreamIds = async (cameraId: string) => {
  * @param cameraId - The cameraId of the camera that streamed
  * @param streamId - The streamId
  */
-export const storeStreamId = async (
-  cameraId: string,
-  streamId: string,
-) => {
+export const storeStreamId = async (cameraId: string, streamId: string) => {
   const params = [cameraId, streamId, Date.now()];
   await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
 };

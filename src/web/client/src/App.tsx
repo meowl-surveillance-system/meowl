@@ -21,7 +21,8 @@ class App extends Component<Props, State> {
   componentDidMount() {
     // Check if user is logged in by calling an express route. I don't know how well this works yet.
     fetch('/auth/isLoggedIn')
-      .then(res => { this.setState( { isLoggedIn: res.status === 200 ? true : false } )})
+      .then(res => res.json())
+      .then(isLoggedIn => this.setState( { isLoggedIn: isLoggedIn }))
       .catch(e => console.log(e));
   }
 
