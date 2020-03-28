@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<RCTNodeCamera
+  audio={
+    Object {
+      "bitrate": 1234,
+      "profile": 1,
+      "samplerate": 44100,
+    }
+  }
+  autopreview={true}
+  camera={
+    Object {
+      "cameraFrontMirror": false,
+      "cameraId": 1,
+    }
+  }
+  onChange={[Function]}
+  outputUrl=""
+  smoothSkinLevel={3}
+  style={
+    Object {
+      "flex": 10,
+      "zIndex": 0,
+    }
+  }
+  video={
+    Object {
+      "bitrate": 1234,
+      "fps": 1234,
+      "preset": 1,
+      "profile": 1,
+      "videoFrontMirror": false,
+    }
+  }
+/>
+`;
