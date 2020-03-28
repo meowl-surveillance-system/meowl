@@ -1,3 +1,4 @@
+require('dotenv').config({ path: './keys.env'});
 const fs = require("fs");
 const index = require('./index');
 const cassandra = require('cassandra-driver');
@@ -25,14 +26,17 @@ var kafka = require('kafka-node'),
     const getUserID = 'SELECT user_id FROM user_cameras WHERE camera_id = ?';
     const getEmail = 'SELECT email FROM users_id WHERE user_id = ?';
     const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
-    message.list.forEach((person:any) => {
+
+    const getFaces = 'SELECT objects_detected FROM cv_frames WHERE frame_id = ?';
+    const faces = await cassClient.execute(getFaces, [message.frame_id], {prepare:true}).then((result:any) => {return result.rows[0].objects_detected});
+    faces.forEach((person:any) => {
         cassClient.execute(getBlacklisted, [person])
         .then(async function(result: any) {
             if(result.rows.length !== 0)
             {
                 const owner = await cassClient.execute(getUserID, [message.camera_id], {prepare:true}).then((result:any) => {return result.rows[0].user_id;})
                 const userEmail = await cassClient.execute(getEmail, [owner], {prepare:true}).then((result:any) => {return result.rows[0].email;});
-                const img = await cassClient.execute(getImg, [message.frame_id], {prepare:true}).then((result:any) => {return result.rows[0].img});
+                const img = await cassClient.execute(getImg, [message.frame_id], {prepare:true}).then((result:any) => {return result.rows[0].frame});
                 var imageBuffer = img.file.buffer;
                 var imageName = '/img/tmp.jpg';
                 fs.createWriteStream(imageName).write(imageBuffer);
@@ -41,7 +45,7 @@ var kafka = require('kafka-node'),
                     recipient: userEmail,
                     locals: {
                         name: person,
-                        img: message.img
+                        img: imageName
                     }
                 }
                 index.sendEmail(req)
