@@ -85,12 +85,17 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
       res.status(400).send('Nice try kid');
     } else {
-      const canStream = await apiServices.verifyUserCamera(req.body.userId, req.body.cameraId);
+      const canStream = await apiServices.verifyUserCamera(
+        req.body.userId,
+        req.body.cameraId
+      );
       if (canStream) {
         await apiServices.storeStreamId(req.body.cameraId, req.body.name);
         await apiServices.updateCameraLive(req.body.cameraId, start);
         const saverUrl =
-          'http://localhost:5000/' + (start ? 'store/' : 'stop/') + req.body.name;
+          'http://localhost:5000/' +
+          (start ? 'store/' : 'stop/') +
+          req.body.name;
         const saverResponse = await HTTPGet(saverUrl);
         if (saverResponse.status === 200) {
           res.status(200).send('OK');

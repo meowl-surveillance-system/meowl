@@ -3,7 +3,10 @@ import { Request, Response } from 'express';
 import * as apiServices from '../services/api';
 
 export const retrieveStreamIds = async (req: Request, res: Response) => {
-  const canView = await apiServices.verifyUserCamera(req.session!.userId, req.params.cameraId);
+  const canView = await apiServices.verifyUserCamera(
+    req.session!.userId,
+    req.params.cameraId
+  );
   if (canView) {
     const cameraId = req.params.cameraId;
     const result = await apiServices.retrieveStreamIds(cameraId);

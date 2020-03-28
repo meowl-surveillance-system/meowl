@@ -65,7 +65,9 @@ export const updateCameraLive = async (cameraId: string, live: boolean) => {
  * @param userId - The user id of the user that started streaming
  */
 export const verifyUserCamera = async (userId: string, cameraId: string) => {
-  const result = await client.execute(SELECT_USERID_CAMERAID, [cameraId], { prepare: true });
+  const result = await client.execute(SELECT_USERID_CAMERAID, [cameraId], {
+    prepare: true,
+  });
   if (result.rows.length === 0) {
     const params = [userId, cameraId];
     await client.execute(INSERT_USERID_CAMERAID, params, { prepare: true });

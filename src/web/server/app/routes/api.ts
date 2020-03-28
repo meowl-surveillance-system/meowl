@@ -1,9 +1,7 @@
 import { spawn } from 'child_process';
 import express from 'express';
 
-import {
-  isLoggedIn,
-} from '../middlewares/authChecks';
+import { isLoggedIn } from '../middlewares/authChecks';
 
 import { client } from '../utils/client';
 import * as apiController from '../controllers/api';

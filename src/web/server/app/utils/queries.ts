@@ -32,4 +32,5 @@ export const SELECT_CAMERAID_STREAMID_SINGLE =
 export const INSERT_CAMERAID_LIVE =
   'INSERT INTO live_cameras (camera_id, live) VALUES (?, ?)';
 export const SELECT_CAMERAID = 'SELECT DISTINCT camera_id FROM camera_streams';
-export const SELECT_LIVE_CAMERAID = 'SELECT live FROM live_cameras WHERE camera_id = ?';
+export const SELECT_LIVE_CAMERAID =
+  'SELECT live FROM live_cameras WHERE camera_id = ?';
