@@ -46,6 +46,12 @@ rtmp {
             hls_playlist_length 60;
             # disable consuming the stream from nginx as rtmp
             deny play all;
+            push rtmp://localhost:${NGINX_RTMP_PORT}/view;
+        }
+        application view {
+            live on;
+            allow publish 127.0.0.1;
+            deny publish all;
         }
     }
 }
@@ -189,8 +195,8 @@ install_nginx_with_rtmp() {
   install_nginx_dependencies
   download_extract_nginx
   cd /usr/local/src/${NGINX_DIRECTORY}/
-  ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module --with-http_auth_request_module --with-http_sub_module
-  make
+  sudo ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_secure_link_module --with-http_auth_request_module --with-http_sub_module
+  sudo make
   sudo make install
   cd -
   echo "${NGINX_CONF_FILE}" | sudo tee /usr/local/nginx/conf/nginx.conf
