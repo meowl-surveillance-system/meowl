@@ -52,6 +52,7 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_play http://localhost/api-https-proxy/auth/rtmpAuthPlay;
         }
     }
 }
