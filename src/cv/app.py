@@ -14,9 +14,10 @@ def hello_world():
     """ Returns Hello World as a String """
     return 'Hello World'
 
-def display_vid(file_name):
+@app.route('/test_ssl/')
+def display_vid():
     """ Displays frames from VideoCapture """
-    cap = cv2.VideoCapture(file_name)
+    cap = cv2.VideoCapture(request.args.get('input'))
     if (cap.isOpened()== False): 
         print("OpenCV failed to open video stream or file")
     while(cap.isOpened()):
@@ -86,6 +87,8 @@ def process_detections():
     args = {
         "input": request.args.get('input'),
         "output": request.args.get('output'),
+        "camera_id": request.args.get('camera_id'),
+        "stream_id": request.args.get('stream_id'),
         "confidence": request.args.get('confidence', default = .5, type = float),
         "threshold": request.args.get('threshold', default = .3, type = float)
     }

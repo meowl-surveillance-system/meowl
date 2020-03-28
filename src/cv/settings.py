@@ -18,3 +18,10 @@ EMBEDDINGS = os.environ.get('EMBEDDINGS_PATH')
 RECOGNIZER = os.environ.get('RECOGNIZER_PATH')
 LABEL_ENCODER = os.environ.get('LABEL_ENCODER_PATH')
 
+"""
+  Kafka cv topic
+"""
+CV_TOPIC = os.environ.get('CV_PRODUCER_TOPIC')
+KAFKA_BROKER = os.environ.get('KAFKA_BROKER')
+
+

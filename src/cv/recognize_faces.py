@@ -54,6 +54,7 @@ def iterate_frames(args, detector, embedder, recognizer, le):
 
 def analyze_detections(args, embedder, recognizer, le, detections, writer, frame, w, h):
     """ Analyzes each detection and make a prediction"""
+    faces = {}
     for i in range(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
 
@@ -71,7 +72,9 @@ def analyze_detections(args, embedder, recognizer, le, detections, writer, frame
                 (96, 96), (0, 0, 0), swapRB=True, crop=False)
             embedder.setInput(face_blob)
             vec = embedder.forward()
-            predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY)
+            name = predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY)
+            faces[name] = faces.get(name, 0) + 1
+    return faces
 
 def predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY):
     """ Prediction is made and box is applied to frame"""
@@ -85,9 +88,10 @@ def predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY):
     cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 2)
     cv2.putText(frame, text, (startX, y),
         cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-    cv2.imshow('Frame', frame)
-    cv2.waitKey(25)
-    write_frame(writer, frame)
+    #cv2.imshow('Frame', frame)
+    #cv2.waitKey(1)
+    #write_frame(writer, frame)
+    return name
 
 def write_frame(writer, frame):
     """ Frame is written """

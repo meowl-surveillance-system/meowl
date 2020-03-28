@@ -97,6 +97,7 @@ def draw_box(writer, args, start, end, layerOutputs,
                  confidences.append(float(confidence))
                  classIDs.append(classID)
 
+    objs = {}
     idxs = cv2.dnn.NMSBoxes(boxes, confidences,
         args["confidence"], args["threshold"])
     if len(idxs) > 0:
@@ -107,9 +108,12 @@ def draw_box(writer, args, start, end, layerOutputs,
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             text = "{}: {:.4f}".format(labels[classIDs[i]],
                 confidences[i])
+            key = labels[classIDs[i]]
+            objs[key] = objs.get(key, 0) + 1
             cv2.putText(frame, text, (x, y - 5),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-    writer.write(frame)
+    return objs
+    #writer.write(frame)
 
 def clean_up(writer, vs):
     """ Releases the writer and Video Capture """
