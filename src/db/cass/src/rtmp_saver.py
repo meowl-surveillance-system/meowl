@@ -1,12 +1,24 @@
+import json
 import librtmp
+import requests
 import threading
+import urllib
 from datetime import datetime
+import sys
+
 
 class RtmpSaver:
   """Create a RTMP connection"""
-  def __init__(self, ip, port, stream_id, chunk_size=2097152):
+
+  def __init__(self, ip, port, stream_id, auth_options, chunk_size=2097152):
     self.stream_id = stream_id
-    self.connection_string = "rtmp://{0}:{1}/view/{2}".format(ip, port, stream_id)
+    connection_string = "rtmp://{0}:{1}/view/{2}".format(ip, port, stream_id)
+    self.connection_string = self._auth_RTMP(
+      connection_string,
+      auth_options["loginUrl"],
+      auth_options["rtmpRequestUrl"],
+      auth_options["username"],
+      auth_options["password"])
     self.connection = librtmp.RTMP(self.connection_string, live=True)
     self.connection.connect()
     self.stream = self.connection.create_stream()
@@ -19,7 +31,8 @@ class RtmpSaver:
   def start(self, file_service):
     """Create a thread and start reading the stream"""
     self.is_reading_lock = threading.Lock()
-    self.read_thread = threading.Thread(target=self._read, args=(file_service,))
+    self.read_thread = threading.Thread(
+      target=self._read, args=(file_service,))
     self.read_thread.start()
 
   def _read(self, file_service):
@@ -31,15 +44,17 @@ class RtmpSaver:
       self.bytes_read = len(self.data)
 
       if self._is_last_chunk(self.bytes_read, self.previous_read):
-        file_service.store_bytes(self.stream_id, self.data[:self.bytes_read], datetime.now())
+        file_service.store_bytes(
+          self.stream_id, self.data[:self.bytes_read], datetime.now())
         self.data = self.data[self.bytes_read:]
 
       elif self.bytes_read >= self.chunk_size:
-        file_service.store_bytes(self.stream_id, self.data[:self.chunk_size], datetime.now())
+        file_service.store_bytes(
+          self.stream_id, self.data[:self.chunk_size], datetime.now())
         self.data = self.data[self.chunk_size:]
 
       self.previous_read = self.bytes_read
-      
+
       self.is_reading_lock.acquire()
 
     # Store any leftover data
@@ -58,3 +73,24 @@ class RtmpSaver:
   def _is_last_chunk(self, bytes_read, previous_read):
     """Check if the last chunk is received"""
     return bytes_read == previous_read and bytes_read != 0
+
+  def _auth_RTMP(
+    self,
+    rtmpUrl,
+    loginUrl,
+    rtmpRequestUrl,
+    username,
+    password):
+
+    body = {"username": username, "password": password}
+    loginResponse = requests.post(loginUrl, data=body)
+    if not loginResponse.ok:
+      raise Exception(f"Auth server response not ok : {loginResponse.text}")
+    connectsidCookie = {
+      "connect.sid": loginResponse.cookies["connect.sid"]}
+    rtmpRequestResponse = requests.post(
+      rtmpRequestUrl, cookies=connectsidCookie)
+    if not rtmpRequestResponse.ok:
+      raise Exception(f"Auth server response not ok : {rtmpRequestResponse.text}")
+    rtmpCreds = json.loads(rtmpRequestResponse.text)
+    return rtmpUrl + "?" + urllib.parse.urlencode(rtmpCreds)

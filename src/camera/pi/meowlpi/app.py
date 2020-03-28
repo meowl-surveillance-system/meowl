@@ -1,6 +1,10 @@
+import json
+import requests
+import urllib
 from flask import Flask, session, current_app
 from meowlpi.camera.camera import PiStreamingCamera
 import settings
+
 
 def create_app(test_config=None):
     """ Create and attach the camera to the Meowl-Pi app"""
@@ -24,7 +28,25 @@ def create_app(test_config=None):
     def stop_camera_stream():
         """Stops the camera from streaming"""
         return current_app.pi_streaming_camera.stop()
+
+    def auth_RTMP(rtmpUrl, loginUrl, rtmpRequestUrl, username, password, cameraId):
+        body = {"username": username, "password": password}
+        loginResponse = requests.post(loginUrl, data=body)
+        if not loginResponse.ok:
+            raise Exception(f"Auth server response not ok : {loginResponse.text}")
+        connectsidCookie = {
+            "connect.sid": loginResponse.cookies["connect.sid"]}
+
+        rtmpRequestResponse = requests.post(
+            rtmpRequestUrl, cookies=connectsidCookie)
+        if not rtmpRequestResponse.ok:
+            raise Exception(f"Auth server response not ok : {rtmpRequestResponse.text}")
+        rtmpCreds = json.loads(rtmpRequestResponse.text)
+        rtmpCreds["cameraId"] = cameraId
+        return rtmpUrl + "?" + urllib.parse.urlencode(rtmpCreds)
+
     return app
+
 
 if __name__ == '__main__':
     main_app = create_app()
