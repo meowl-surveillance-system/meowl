@@ -17,6 +17,7 @@
     "pug": "^2.0.4"
   },
   "devDependencies": {
+    "@types/email-templates": "^6.0.2",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.2",
     "@types/nodemailer": "^6.4.0",

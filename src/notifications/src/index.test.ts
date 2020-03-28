@@ -1,5 +1,5 @@
-const index = require('./index');
-const nodemail = require('nodemailer');
+import sendEmail from './index';
+import * as nodemailer from 'nodemailer';
 
 jest.mock('nodemailer');
 
@@ -7,14 +7,14 @@ let sendMailMock: jest.Mock<any, any>;
 
 beforeEach(() => {
     sendMailMock = jest.fn();
-    nodemail.createTransport.mockReturnValue({sendMail: sendMailMock});
+    (nodemailer.createTransport as jest.Mock).mockReturnValue({sendMail: sendMailMock});
 })
 
 it('should call nodemailer function', () => {
     const req = {
         'test': 'dummy'
     }
-    index.sendEmail(req);
+    sendEmail(req);
     expect(sendMailMock).toHaveBeenCalled;
 
 });
