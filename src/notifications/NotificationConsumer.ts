@@ -1,7 +1,7 @@
 require('dotenv').config({ path: './keys.env'});
-const fs = require("fs");
-const index = require('./index');
-const cassandra = require('cassandra-driver');
+import fs from "fs";
+import sendEmail from './src/index';
+import cassandra from 'cassandra-driver';
 var kafka = require('kafka-node'),
     Consumer = kafka.Consumer,
     client = new kafka.KafkaClient(),
@@ -48,7 +48,7 @@ var kafka = require('kafka-node'),
                         img: imageName
                     }
                 }
-                index.sendEmail(req)
+                sendEmail(req)
             }
         })
     });

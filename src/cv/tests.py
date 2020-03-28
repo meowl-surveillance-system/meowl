@@ -11,4 +11,3 @@ def test_display(mocker):
     mock_cv2.return_value = mocked_vid_capture
     app.display_vid('abc')
     mocked_vid_capture.isOpened.assert_called()
-

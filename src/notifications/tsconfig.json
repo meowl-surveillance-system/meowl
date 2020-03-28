@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "lib": ["es2015"],
+      "strict": true,
+      "declaration": true,
+      "outDir": "dist",
+      "sourceMap": true,
+      "types": ["jest", "node", "nodemailer"],
+      "typeRoots": ["./types", "./node_modules/@types"]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+  }

@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node-dev index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev ./app/index.ts",
+    "test": "jest",
+    "test-server": "npm test ./app/tests/*",
     "dev": "concurrently \"npm run start\" \"cd client && npm start\"",
-    "check": "gts check",
+    "check": "tslint --config ./tslint.json --project ./tsconfig.json --force",
     "clean": "gts clean",
     "compile": "tsc -p .",
     "fix": "gts fix",
@@ -19,17 +20,28 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "cassandra-driver": "^4.4.0",
+    "cassandra-store": "^5.0.0",
     "express": "^4.17.1",
-    "typescript": "^3.8.2"
+    "express-session": "^1.17.0",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cassandra-store": "^5.0.0",
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
+    "@types/jest": "^25.1.4",
     "@types/node": "^13.7.6",
+    "@types/uuid": "^7.0.0",
     "concurrently": "^5.1.0",
     "cors": "^2.8.5",
     "gts": "^1.1.2",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "~3.7.0"
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
   }
 }

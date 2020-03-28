@@ -16,6 +16,16 @@ export DATASET_PATH=${PARENT}/${DATA_SET}
 export EMBEDDINGS_PATH=${PARENT}/${EMBEDDINGS}
 export RECOGNIZER_PATH=${PARENT}/${RECOGNIZER}
 export LABEL_ENCODER_PATH=${PARENT}/${LABEL_ENCODER}
+YOLO_NAMES='coco.names'
+YOLO_CONFIG='yolov3.cfg'
+YOLO_WEIGHTS='yolov3.weights'
+
+PARENT=$(pwd)
+YOLO='yolo-coco'
+export YOLO_NAMES_PATH=${PARENT}/${YOLO}/${YOLO_NAMES}
+export YOLO_CONFIG_PATH=${PARENT}/${YOLO}/${YOLO_CONFIG}
+export YOLO_WEIGHTS_PATH=${PARENT}/${YOLO}/${YOLO_WEIGHTS}
+
 
 # Run Opencv Server
 source venv/bin/activate
