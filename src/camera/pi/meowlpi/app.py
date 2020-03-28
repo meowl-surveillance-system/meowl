@@ -29,7 +29,7 @@ def create_app(test_config=None):
         """Stops the camera from streaming"""
         return current_app.pi_streaming_camera.stop()
 
-    def auth_RTMP(rtmpUrl, loginUrl, rtmpRequestUrl, username, password):
+    def auth_RTMP(rtmpUrl, loginUrl, rtmpRequestUrl, username, password, cameraId):
         body = {"username": username, "password": password}
         loginResponse = requests.post(loginUrl, data=body)
         if not loginResponse.ok:
@@ -42,6 +42,7 @@ def create_app(test_config=None):
         if not rtmpRequestResponse.ok:
             raise Exception(f"Auth server response not ok : {rtmpRequestResponse.text}")
         rtmpCreds = json.loads(rtmpRequestResponse.text)
+        rtmpCreds["cameraId"] = cameraId
         return rtmpUrl + "?" + urllib.parse.urlencode(rtmpCreds)
 
     return app
