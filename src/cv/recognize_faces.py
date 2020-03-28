@@ -54,7 +54,7 @@ def iterate_frames(args, detector, embedder, recognizer, le):
 
 def analyze_detections(args, embedder, recognizer, le, detections, writer, frame, w, h):
     """ Analyzes each detection and make a prediction"""
-    faces = {}
+    faces = []
     for i in range(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
 
@@ -73,7 +73,7 @@ def analyze_detections(args, embedder, recognizer, le, detections, writer, frame
             embedder.setInput(face_blob)
             vec = embedder.forward()
             name = predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY)
-            faces[name] = faces.get(name, 0) + 1
+            faces.append(name)
     return faces
 
 def predict(vec, recognizer, le, writer, frame, startX, startY, endX, endY):

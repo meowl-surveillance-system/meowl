@@ -14,8 +14,8 @@ import insert_frame
 
 def init_video_stream(args):
     """ Obtains the video stream """
-    #stream = cv2.VideoCapture(args["input"])
-    stream = cv2.VideoCapture(0)
+    stream = cv2.VideoCapture(args["input"])
+    #stream = cv2.VideoCapture(0)
     try:
         if imutils.is_cv2():
             prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT

@@ -1,7 +1,7 @@
 from flask import Flask, request
 import cv2
 import numpy as np
-import add_dataset_resources as add_data
+#import add_dataset_resources as add_data
 import embedding_extractor as embed_ex
 import apply_detections
 import train_face_recognizer as trainer
