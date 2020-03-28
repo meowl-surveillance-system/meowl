@@ -57,7 +57,7 @@ export default class Register extends Component<Props, State> {
 			else {
 				console.log(msg);
 				this.props.onAuthChange(true);
-				this.props.history.push('/');
+				this.props.history.push('/streams');
 			}
 		})
 		.catch(e => console.log(e))
