@@ -1,11 +1,12 @@
-import React, { ComponentState, Component, ChangeEvent } from 'react';
+import React, { ComponentState, Component, ChangeEvent, FormEvent } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
+import { Container, FormControl, TextField, Button, Grid, Typography } from '@material-ui/core';
 
 interface Props {
-  isLoggedIn: boolean
+  isLoggedIn: boolean;
+  history: any;
+  onAuthChange: (authState: boolean) => void;
 }
-
 interface State {
   username: string;
   password: string;
@@ -22,13 +23,15 @@ export default class Login extends Component<Props, State> {
   }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    event.preventDefault();
     let target: HTMLInputElement = (event.target as HTMLInputElement);
     let label: string = target.name;
     let value: string = target.value;
     this.setState({ [label]: value } as ComponentState);
   };
 
-  loginSubmit = (): void => {
+  loginSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
     const requestOptions = {
       method: "POST",
       headers: {
@@ -37,20 +40,38 @@ export default class Login extends Component<Props, State> {
       },
       body: JSON.stringify({username:this.state.username, password:this.state.password})
     };
-    fetch(`/auth/login`, requestOptions).then(res => {
-      this.setState({username:"" + res.status});
-    });
+    fetch(`/auth/login`, requestOptions)
+      .then(res => res.text())
+      .then(msg => {
+        if(msg === 'successfully logged in') {
+          this.props.onAuthChange(true);
+          this.props.history.push('/streams');
+        }
+        else {
+          console.log(msg);
+        }
+      })
+      .catch(e => console.log(e));
   }
 
   render() {
-    if(this.props.isLoggedIn) {
-      return <Redirect to="/" />
-    }
     return (
-      <Container>
+      <Container component="main" maxWidth="xs">
+            <Grid
+          container
+          spacing={2}
+          direction="column"
+          alignItems="center"
+          justify="center"
+          style={{ minHeight: '100vh' }}
+        >
         <Typography variant="h5" component="h6">Login</Typography>
-        <FormControl data-testid="form">
+        <form noValidate onSubmit={this.loginSubmit}>
           <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="username-input"
             name="username"
             value={this.state.username}
@@ -59,6 +80,10 @@ export default class Login extends Component<Props, State> {
             inputProps={{ "data-testid": "username-test" }}
           />
           <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="password-input"
             name="password"
             value={this.state.password}
@@ -68,12 +93,15 @@ export default class Login extends Component<Props, State> {
             inputProps={{ "data-testid": "password-test" }}
           />
           <Button
-            onClick={() => this.loginSubmit()}
-            href="/"
+            fullWidth
+            type="submit"
+            variant="contained"
+            color="primary"
           >
             Login
           </Button>
-        </FormControl>
+        </form>
+        </Grid>
       </Container >
     );
   }

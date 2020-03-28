@@ -6,6 +6,7 @@ import Playback from './components/Playback/Playback';
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import Navbar from './components/Navbar/Navbar';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 interface Props {}
 interface State {
@@ -18,11 +19,17 @@ class App extends Component<Props, State> {
     this.state = { isLoggedIn: false }
   }
 
+  // To be passed as a callback to handle authentication changes
+  onAuthChange = (authState: boolean) => {
+    this.setState({ isLoggedIn: authState });
+  }
+
   componentDidMount() {
-    // Check if user is logged in by calling an express route. I don't know how well this works yet.
     fetch('/auth/isLoggedIn')
       .then(res => res.json())
-      .then(isLoggedIn => this.setState( { isLoggedIn: isLoggedIn }))
+      .then(isLoggedIn => {
+        this.setState( { isLoggedIn: isLoggedIn })
+        console.log(this.state.isLoggedIn)})
       .catch(e => console.log(e));
   }
 
@@ -31,11 +38,18 @@ class App extends Component<Props, State> {
       <div className="App">
         <BrowserRouter>
           <div>
-            <Navbar isLoggedIn={this.state.isLoggedIn} />
+            <Navbar 
+              isLoggedIn={this.state.isLoggedIn}
+              onAuthChange={this.onAuthChange} />
             <Switch>
-              <Route exact path="/" component={Playback} />
-              <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} />} />
-              <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} />} />
+              <ProtectedRoute
+                exact
+                path="/streams"
+                component={Playback}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/" />
+              <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} onAuthChange={this.onAuthChange} />} />
+              <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} onAuthChange={this.onAuthChange} />} />
             </Switch>
            </div>
         </BrowserRouter>

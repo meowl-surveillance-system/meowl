@@ -1,5 +1,5 @@
 import React, { ChangeEvent, Component, ComponentState, FormEvent } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link as RouterLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
@@ -8,7 +8,9 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
 interface Props {
-	isLoggedIn: boolean
+	isLoggedIn: boolean;
+	history: any;
+	onAuthChange: (authState: boolean) => void;
 }
 interface State {
 	email: string,
@@ -32,6 +34,7 @@ export default class Register extends Component<Props, State> {
 	}
 
 	onSubmit = (event: FormEvent<HTMLFormElement>): void => {
+		event.preventDefault();
 		fetch('/auth/register', {
 			method: 'POST',
 			headers: {
@@ -43,7 +46,21 @@ export default class Register extends Component<Props, State> {
 				username: this.state.username,
 				password: this.state.password,
 			})
-		}).then(res => console.log(res));
+		})
+		.then(res => res.text())
+		.then(msg => {
+			// Did not Successfully register
+			if(msg === 'Bad username') {
+				console.log('no good');
+			}
+			// Successfully registered
+			else {
+				console.log(msg);
+				this.props.onAuthChange(true);
+				this.props.history.push('/streams');
+			}
+		})
+		.catch(e => console.log(e))
 	}
 
 	render() {
@@ -102,8 +119,10 @@ export default class Register extends Component<Props, State> {
 			          </Button>
 			          <Grid container>
 			            <Grid item>
-			              <Link href="/login" variant="body1">
-			                {"Already have an account? Sign In"}
+			              <Link variant="body1">
+			              	<RouterLink to="/login">
+			                	{"Already have an account? Sign In"}
+			              	</RouterLink>
 			              </Link>
 			            </Grid>
 			          </Grid>

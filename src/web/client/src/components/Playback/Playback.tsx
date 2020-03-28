@@ -6,8 +6,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 import ResponsivePlayer from '../ResponsivePlayer/ResponsivePlayer';
 
-interface Props { }
-
+interface Props {}
 interface State {
   tmpUrl: string;
   url: string;
