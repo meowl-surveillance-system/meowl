@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 const index = require('./index');
 const cassandra = require('cassandra-driver');
 var kafka = require('kafka-node'),
@@ -14,25 +14,25 @@ var kafka = require('kafka-node'),
         }
     );
 
-consumer.on('message', function(message){
-    console.log(message);
+    consumer.on('message', async function(message:any){
+    message = JSON.parse(message.value);
     const cassClient = new cassandra.Client({
         contactPoints: ['127.0.0.1'],
         localDataCenter: 'datacenter1',
         keyspace: 'streams',
     });
-    const getBlacklisted = 'SELECT name FROM blacklist WHERE key = ?';
+    const getBlacklisted = 'SELECT * FROM blacklist WHERE name = ?';
     const getUserID = 'SELECT user_id FROM user_cameras WHERE camera_id = ?';
     const getEmail = 'SELECT email FROM users_id WHERE user_id = ?';
     const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
-    message.list.array.forEach(person => {
-        client.execute(getBlacklisted, [person])
-        .then(result => {
+    message.list.forEach((person:any) => {
+        cassClient.execute(getBlacklisted, [person])
+        .then(async function(result: any) {
             if(result.rows.length !== 0)
             {
-                const owner = client.execute(getUserID, [message.camera_id]).then(result => {return result});
-                const userEmail = client.execute(getEmail, [owner]).then(result => {return result});
-                const img = client.execute(getImg, [message.frame_id]).then(result => {return result});
+                const owner = await cassClient.execute(getUserID, [message.camera_id], {prepare:true}).then((result:any) => {return result.rows[0].user_id;})
+                const userEmail = await cassClient.execute(getEmail, [owner], {prepare:true}).then((result:any) => {return result.rows[0].email;});
+                const img = await cassClient.execute(getImg, [message.frame_id], {prepare:true}).then((result:any) => {return result.rows[0].img});
                 var imageBuffer = img.file.buffer;
                 var imageName = '/img/tmp.jpg';
                 fs.createWriteStream(imageName).write(imageBuffer);
@@ -49,5 +49,3 @@ consumer.on('message', function(message){
         })
     });
 })
-
-    
