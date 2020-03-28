@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
@@ -78,7 +77,7 @@ export default class Navbar extends Component<Props, State> {
             to="/"
             style={{ color: "inherit", textDecoration: "none" }}
           >
-            <Typography variant="title">Meowl</Typography>
+            <Typography variant="inherit">Meowl</Typography>
           </RouterLink>
           <Grid
             container

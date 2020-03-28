@@ -65,7 +65,7 @@ export default class Playback extends Component<Props, State> {
         <List
           subheader={
             <ListSubheader color="inherit">
-              <Typography variant="title">My Streams</Typography>
+              <Typography variant="inherit">My Streams</Typography>
             </ListSubheader>
           }
         >
