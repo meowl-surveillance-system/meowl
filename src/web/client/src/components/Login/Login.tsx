@@ -2,10 +2,7 @@ import React, { ComponentState, Component, ChangeEvent } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Container, FormControl, TextField, Button, Typography } from '@material-ui/core';
 
-interface Props {
-  isLoggedIn: boolean
-}
-
+interface Props {}
 interface State {
   username: string;
   password: string;
@@ -43,9 +40,6 @@ export default class Login extends Component<Props, State> {
   }
 
   render() {
-    if(this.props.isLoggedIn) {
-      return <Redirect to="/" />
-    }
     return (
       <Container>
         <Typography variant="h5" component="h6">Login</Typography>

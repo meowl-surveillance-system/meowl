@@ -37,6 +37,7 @@ export default class Navbar extends Component<Props, State> {
 						Meowl
 						</Typography>
 						<Grid container alignItems="flex-start" justify="flex-end" direction="row">
+							<Link href="/streams" color="inherit" style={{ textDecoration: 'none' }}>Streams</Link>
 							<Link href="/login" color="inherit" style={{ textDecoration: 'none' }}>Login</Link>
 						</Grid>
 					</Toolbar>

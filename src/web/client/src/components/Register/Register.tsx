@@ -7,9 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-interface Props {
-	isLoggedIn: boolean
-}
+interface Props {}
 interface State {
 	email: string,
 	username: string,
@@ -47,9 +45,6 @@ export default class Register extends Component<Props, State> {
 	}
 
 	render() {
-		if(this.props.isLoggedIn) {
-			return <Redirect to='/' />
-		}
 		return (
 			<Container component="main" maxWidth="xs">
       			<Grid
