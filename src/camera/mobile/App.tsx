@@ -1,58 +1,88 @@
 import React from 'react';
-import { PermissionsAndroid } from 'react-native';
-import { NodeCameraView } from 'react-native-nodemediaclient';
+import { View, StatusBar } from 'react-native';
+// @ts-ignore
+import CameraPublisher from './components/camera-publisher/CameraPublisher';
+import SettingsForm from './components/settings-form/SettingsForm';
+import AppBar from './components/app-bar/AppBar';
+
+interface Props { }
 
 /**
  * The overall application component for Meowl Mobile
  * 
  * TODO(chc5): Create unit tests for App component
- * TODO(chc5): Break the application up into multiple components
  */
-
-interface Props { }
-
-interface State { }
-class App extends React.Component<Props, State> {
+class App extends React.Component<Props, AppState> {
+  /**
+   * Sets default state of the App Component
+   * @param props 
+   */
   constructor(props: Props) {
     super(props);
+    this.state = {
+      audioBitRate: 128000,
+      flashEnabled: false,
+      fps: 30,
+      isPublishing: false,
+      isViewingFrontCamera: true,
+      settingsFormVisible: false,
+      outputLink: "rtmp://[ENTER_RTMP_URL]/show/stream",
+      videoBitRate: 8000000
+    };
   }
 
   /**
-   * Asks the user for camera, audio, storage permissions
-   */
-  async componentDidMount() {
-    try {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-      ]);
-      if (Object.keys(granted)
-        .every((permission) => (granted as any)[permission] === PermissionsAndroid.RESULTS.GRANTED)) {
-        console.log('You can use the camera');
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
-
-  /**
-   * Renders NodeCameraView that will serve as a streaming camera
+   * Updates the state of the App Component
+   * @param state - State to be updated
    * 
-   * TODO(chc5): Make important NodeCameraView properties customizable in settings
+   * This method is mainly used to pass down as 
+   * a property method for child components.
+   */
+  updateState(state: object) {
+    this.setState(state);
+  }
+
+  /**
+   * Renders the App component that contains several main components
+   * 
+   * These main components include CameraPublisher, SettingsForm and AppBar
    */
   render() {
     return (
-      <NodeCameraView
-        style={{ flex: 1, zIndex: 0 }}
-        outputUrl={"rtmp://192.168.0.10/live/stream"}
-        camera={{ cameraId: 1, cameraFrontMirror: true }}
-        audio={{ bitrate: 32000, profile: 1, samplerate: 44100 }}
-        video={{ preset: 12, bitrate: 400000, profile: 1, fps: 15, videoFrontMirror: false }}
-        autopreview={true}
-      />
+      <View style={{ flex: 1, backgroundColor: '#333' }}>
+        <StatusBar
+          barStyle="dark-content"
+        />
+        <View style={{ flex: 6 }}>
+          <CameraPublisher
+            outputLink={this.state.outputLink}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            audioBitRate={this.state.audioBitRate}
+            videoBitRate={this.state.videoBitRate}
+            fps={this.state.fps}
+
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
+          />
+        </View>
+        <SettingsForm
+          audioBitRate={this.state.audioBitRate}
+          fps={this.state.fps}
+          settingsFormVisible={this.state.settingsFormVisible}
+          outputLink={this.state.outputLink}
+          videoBitRate={this.state.videoBitRate}
+          updateProps={(props: any) => this.updateState(props)}
+        />
+        <View style={{ flex: 1 }}>
+          <AppBar
+            settingsFormVisible={this.state.settingsFormVisible}
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            updateProps={(props: any) => this.updateState(props)}
+          />
+        </View>
+      </View >
     );
   }
 }
