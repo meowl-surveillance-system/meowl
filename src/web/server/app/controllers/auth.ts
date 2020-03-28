@@ -7,9 +7,9 @@ import * as apiServices from '../services/api';
 
 export const isLoggedIn = (req: Request, res: Response) => {
   if (req.session!.userId) {
-    res.status(200).send();
+    res.status(200).json(true);
   } else {
-    res.status(400).send();
+    res.status(400).json(false);
   }
 };
 
@@ -79,7 +79,7 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
   }
 };
 
-const rtmpAuthPublish = async (req: Request, res: Response, start: bool) => {
+const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
   try {
     const result = await authServices.retrieveSID(req.body.userId);
     if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
