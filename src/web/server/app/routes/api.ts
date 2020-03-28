@@ -1,6 +1,10 @@
 import { spawn } from 'child_process';
 import express from 'express';
 
+import {
+  isLoggedIn,
+} from '../middlewares/authChecks';
+
 import { client } from '../utils/client';
 import * as apiController from '../controllers/api';
 
@@ -41,8 +45,16 @@ app.get(
 
 app.get(
   '/getStreamIds/:cameraId',
+  isLoggedIn,
   async (req: express.Request, res: express.Response) => {
     apiController.retrieveStreamIds(req, res);
+  }
+);
+
+app.get(
+  '/getLiveStreamId/:cameraId',
+  async (req: express.Request, res: express.Response) => {
+    apiController.retrieveLiveStreamId(req, res);
   }
 );
 

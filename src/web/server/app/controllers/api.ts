@@ -3,17 +3,34 @@ import { Request, Response } from 'express';
 import * as apiServices from '../services/api';
 
 export const retrieveStreamIds = async (req: Request, res: Response) => {
+  const canView = await apiServices.verifyUserCamera(req.session!.userId, req.params.cameraId);
+  if (canView) {
+    const cameraId = req.params.cameraId;
+    const result = await apiServices.retrieveStreamIds(cameraId);
+    if (result === undefined) {
+      res.status(400).send('Invalid cameraId');
+    } else {
+      const streamIds = result.rows.map(row => {
+        const key = Object.keys(row)[0];
+        return row[key];
+      });
+      console.log(streamIds);
+      res.status(200).json(streamIds);
+    }
+  } else {
+    res.status(400).send('Cant view this camera');
+  }
+};
+
+export const retrieveLiveStreamId = async (req: Request, res: Response) => {
   const cameraId = req.params.cameraId;
-  const result = await apiServices.retrieveStreamIds(cameraId);
+  const result = await apiServices.retrieveLiveStreamId(cameraId);
   if (result === undefined) {
     res.status(400).send('Invalid cameraId');
   } else {
-    const streamIds = result.rows.map(row => {
-      const key = Object.keys(row)[0];
-      return row[key];
-    });
-    console.log(streamIds);
-    res.status(200).json(streamIds);
+    const key = Object.keys(result.rows[0])[0];
+    const streamId = result.rows[0][key];
+    res.status(200).json(streamId);
   }
 };
 
