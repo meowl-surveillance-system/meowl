@@ -8,9 +8,9 @@ export const retrieveStreamIds = async (req: Request, res: Response) => {
   if (result === undefined) {
     res.status(400).send('Invalid cameraId');
   } else {
-    const streamIds = result.rows.map((row) => {
+    const streamIds = result.rows.map(row => {
       const key = Object.keys(row)[0];
-      return row[key]; 
+      return row[key];
     });
     console.log(streamIds);
     res.status(200).json(streamIds);
@@ -22,8 +22,7 @@ export const storeStreamId = async (req: Request, res: Response) => {
   try {
     await apiServices.storeStreamId(cameraId, streamId);
     res.status(200).send('OK');
-  }
-  catch(e) {
+  } catch (e) {
     console.log(e);
     res.status(500).send('Server error');
   }
@@ -34,9 +33,9 @@ export const retrieveCameraIds = async (req: Request, res: Response) => {
   if (result === undefined) {
     res.status(400).send('Invalid cameraId');
   } else {
-    const streamIds = result.rows.map((row) => {
+    const streamIds = result.rows.map(row => {
       const key = Object.keys(row)[0];
-      return row[key]; 
+      return row[key];
     });
     console.log(streamIds);
     res.status(200).send(streamIds);

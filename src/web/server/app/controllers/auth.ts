@@ -6,10 +6,9 @@ import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
 
 export const isLoggedIn = (req: Request, res: Response) => {
-  if(req.session!.userId) {
+  if (req.session!.userId) {
     res.status(200).send();
-  }
-  else {
+  } else {
     res.status(400).send();
   }
 };
@@ -87,12 +86,12 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: bool) => {
       res.status(400).send('Nice try kid');
     } else {
       await apiServices.storeStreamId(req.body.cameraId, req.body.name);
-      const saverUrl = "http://localhost:5000/" + (start? "store/" : "stop/") + req.body.name;
+      const saverUrl =
+        'http://localhost:5000/' + (start ? 'store/' : 'stop/') + req.body.name;
       const saverResponse = await HTTPGet(saverUrl);
-      if (saverResponse.status == 200) {
+      if (saverResponse.status === 200) {
         res.status(200).send('OK');
-      }
-      else {
+      } else {
         res.status(500).send('Server error');
       }
     }
