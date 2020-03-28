@@ -1,6 +1,18 @@
-import React, { ComponentState, Component, ChangeEvent, FormEvent } from 'react';
-import { Redirect } from 'react-router-dom';
-import { Container, FormControl, TextField, Button, Grid, Typography } from '@material-ui/core';
+import React, {
+  ComponentState,
+  Component,
+  ChangeEvent,
+  FormEvent,
+} from "react";
+import { Redirect } from "react-router-dom";
+import {
+  Container,
+  FormControl,
+  TextField,
+  Button,
+  Grid,
+  Typography,
+} from "@material-ui/core";
 
 interface Props {
   isLoggedIn: boolean;
@@ -13,7 +25,6 @@ interface State {
 }
 
 export default class Login extends Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -24,9 +35,9 @@ export default class Login extends Component<Props, State> {
 
   handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
-    let target: HTMLInputElement = (event.target as HTMLInputElement);
-    let label: string = target.name;
-    let value: string = target.value;
+    const target: HTMLInputElement = event.target as HTMLInputElement;
+    const label: string = target.name;
+    const value: string = target.value;
     this.setState({ [label]: value } as ComponentState);
   };
 
@@ -35,74 +46,73 @@ export default class Login extends Component<Props, State> {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({username:this.state.username, password:this.state.password})
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+      }),
     };
     fetch(`/auth/login`, requestOptions)
-      .then(res => res.text())
-      .then(msg => {
-        if(msg === 'successfully logged in') {
+      .then((res) => res.text())
+      .then((msg) => {
+        if (msg === "successfully logged in") {
           this.props.onAuthChange(true);
-          this.props.history.push('/streams');
-        }
-        else {
+          this.props.history.push("/streams");
+        } else {
           console.log(msg);
         }
       })
-      .catch(e => console.log(e));
-  }
+      .catch((e) => console.log(e));
+  };
 
   render() {
     return (
       <Container component="main" maxWidth="xs">
-            <Grid
+        <Grid
           container
           spacing={2}
           direction="column"
           alignItems="center"
           justify="center"
-          style={{ minHeight: '100vh' }}
+          style={{ minHeight: "100vh" }}
         >
-        <Typography variant="h5" component="h6">Login</Typography>
-        <form noValidate onSubmit={this.loginSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username-input"
-            name="username"
-            value={this.state.username}
-            onChange={this.handleChange}
-            placeholder="Username"
-            inputProps={{ "data-testid": "username-test" }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="password-input"
-            name="password"
-            value={this.state.password}
-            onChange={this.handleChange}
-            placeholder="Password"
-	    type="password"
-            inputProps={{ "data-testid": "password-test" }}
-          />
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
+          <Typography variant="h5" component="h6">
             Login
-          </Button>
-        </form>
+          </Typography>
+          <form noValidate onSubmit={this.loginSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username-input"
+              name="username"
+              value={this.state.username}
+              onChange={this.handleChange}
+              placeholder="Username"
+              inputProps={{ "data-testid": "username-test" }}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="password-input"
+              name="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              placeholder="Password"
+              type="password"
+              inputProps={{ "data-testid": "password-test" }}
+            />
+            <Button fullWidth type="submit" variant="contained" color="primary">
+              Login
+            </Button>
+          </form>
         </Grid>
-      </Container >
+      </Container>
     );
   }
 }
