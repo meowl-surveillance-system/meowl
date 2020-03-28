@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 import Playback from './components/Playback/Playback';
@@ -19,8 +19,12 @@ class App extends Component<Props, State> {
     this.state = { isLoggedIn: false }
   }
 
+  // To be passed as a callback to handle authentication changes
+  onAuthChange = (authState: boolean) => {
+    this.setState({ isLoggedIn: authState });
+  }
+
   componentDidMount() {
-    // Check if user is logged in by calling an express route. I don't know how well this works yet.
     fetch('/auth/isLoggedIn')
       .then(res => res.json())
       .then(isLoggedIn => {
@@ -34,7 +38,9 @@ class App extends Component<Props, State> {
       <div className="App">
         <BrowserRouter>
           <div>
-            <Navbar isLoggedIn={this.state.isLoggedIn} />
+            <Navbar 
+              isLoggedIn={this.state.isLoggedIn}
+              onAuthChange={this.onAuthChange} />
             <Switch>
               <ProtectedRoute
                 exact
@@ -42,18 +48,8 @@ class App extends Component<Props, State> {
                 component={Playback}
                 isLoggedIn={this.state.isLoggedIn}
                 redirectPath="/" />
-              <ProtectedRoute 
-                exact 
-                path="/login"
-                component={Login}
-                isLoggedIn={!this.state.isLoggedIn}
-                redirectPath="/" />
-              <ProtectedRoute 
-                exact 
-                path="/register" 
-                component={Register}
-                isLoggedIn={!this.state.isLoggedIn}
-                redirectPath="/" />
+              <Route exact path="/login" render={(props) => <Login {...props} isLoggedIn={this.state.isLoggedIn} onAuthChange={this.onAuthChange} />} />
+              <Route exact path="/register" render={(props) => <Register {...props} isLoggedIn={this.state.isLoggedIn} onAuthChange={this.onAuthChange} />} />
             </Switch>
            </div>
         </BrowserRouter>
