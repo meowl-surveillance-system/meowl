@@ -62,7 +62,7 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
         res['objects'] = obj_detector.draw_box(writer, args, start, end, layerOutputs,
             w, h, frame, colors, labels, total)
 
-        if len(res['objects'].keys()) > 0 or len(res['faces'].keys()) > 0:
+        if len(res['objects'].keys()) > 0 or len(res['faces']) > 0:
             img_str = cv2.imencode('.jpg', frame)[1].tostring()
             img_str = bytes(img_str)
             insert_frame.insert_frame(repr(args['camera_id']), repr(args['stream_id']), repr(frame_id), img_str, json.dumps(res).encode('utf-8'))        
