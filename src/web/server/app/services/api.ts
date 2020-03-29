@@ -54,12 +54,10 @@ export const retrieveLiveCameraStreamIds = async (userId: string) => {
     const collection = await oldCollection;
     const liveStreamIdResult = await retrieveLiveStreamId(row['camera_id']);
     if (liveStreamIdResult !== undefined && liveStreamIdResult.rows.length > 0) {
-      const cameraStreamPair = {};
-      cameraStreamPair[row['camera_id']] = liveStreamIdResult.rows[0]['stream_id'];
-      collection.push(cameraStreamPair);
+      collection[row['camera_id']] = liveStreamIdResult.rows[0]['stream_id'];
     }
     return collection;
-  }, []);
+  }, {});
   return liveCameras;
 };
 
