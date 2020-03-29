@@ -28,7 +28,7 @@ class App extends React.Component<Props, AppState> {
       isPublishing: false,
       isViewingFrontCamera: true,
       settingsFormVisible: false,
-      outputLink: "rtmp://192.168.1.0",
+      outputLink: "rtmp://34.71.199.141:1935",
       sessionId: '',
       userId: '',
       videoBitRate: 8000000,

@@ -20,9 +20,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   constructor(props: LoginFormProps) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
-      serverLink: '',
+      username: 'wack',
+      password: 'boi',
+      serverLink: 'http://35.192.148.203:8081',
       cameraId: ''
     }
   }
@@ -36,22 +36,51 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
       this.setState({ cameraId: newCameraId });
       await AsyncStorage.setItem('meowlCameraId', newCameraId);
     }
+    await this.logout();
+  }
+  async logout() {
+    const loginEndpoint = this.state.serverLink + '/auth/logout';
+    try {
+      const logoutResponse = await fetch(loginEndpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          credentials: 'include',
+        }
+      });
+      return logoutResponse;
+    }
+    catch (err) {
+      return null;
+    }
+  }
+  async login() {
+    const loginEndpoint = this.state.serverLink + '/auth/login';
+    try {
+      const loginResponse = await fetch(loginEndpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          credentials: 'include',
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          password: this.state.password,
+        })
+      });
+      return loginResponse;
+    }
+    catch (err) {
+      Alert.alert('Wrong IP and port number. Note: please specify http:// or https://');
+      return null;
+    }
   }
 
   async onSubmit() {
-    const loginResponse = await fetch(this.state.serverLink + '/auth/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        credentials: 'include',
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      })
-    });
-    if (loginResponse.ok) {
+    let loginResponse: Response | null = await this.login();
+    if (loginResponse && loginResponse.ok) {
       const rtmpResponse = await fetch(this.state.serverLink + '/auth/rtmpRequest', {
         method: 'POST',
         headers: {
@@ -62,18 +91,21 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
       });
       if (rtmpResponse.ok) {
         const responseBody = await rtmpResponse.json();
+        console.log(responseBody);
         this.updateProps({
           isLoggedIn: true,
           userId: responseBody['userId'],
-          sessionId: responseBody['sessionId'],
+          // TODO(yliu): Change this to sessionId after server changes this minor inconsistency
+          sessionId: responseBody['sessionID'],
           cameraId: this.state.cameraId
         });
       } else {
         Alert.alert('RTMP Server failed to provide session and user credentials');
       }
     } else {
-      Alert.alert('Wrong username/password/IP');
+      Alert.alert('Wrong username or password');
     }
+    return true;
   }
 
   /**
@@ -81,6 +113,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
    * @param props - Property to be updated
    */
   updateProps(props: object) {
+    console.log('loginform', props);
     this.props.updateProps(props);
   }
 
@@ -125,7 +158,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
           value={this.state.password}
         />
         <Button
-          onPress={() => this.onSubmit}
+          onPress={() => this.onSubmit()}
           title="Submit"
         />
       </Modal>

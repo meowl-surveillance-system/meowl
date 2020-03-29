@@ -65,6 +65,7 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
       }
       if (this.props.isPublishing !== prevProps.isPublishing) {
         if (this.props.isPublishing === true) {
+          this.setNewRtmpStreamLink();
           this.vb.start();
         } else {
           this.vb.stop();
@@ -76,20 +77,22 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
   setNewRtmpStreamLink() {
     const streamId: string = uuidv4();
     const baseUrl: string = this.props.outputLink + '/show/' + streamId;
-    const fullUrl: string = queryString.stringifyUrl({
-      url: baseUrl,
-      query: {
-        cameraId: this.props.cameraId,
-        userId: this.props.userId,
-        sessionId: this.props.sessionId,
-      },
-    });
+    // const fullUrl: string = queryString.stringifyUrl({
+    //   url: baseUrl,
+    //   query: {
+    //     cameraId: this.props.cameraId,
+    //     userId: this.props.userId,
+    //     sessionID: this.props.sessionId,
+    //   },
+    // });
+    const fullUrl = this.props.outputLink + '/show/stream';
     this.setState({ rtmpStreamLink: fullUrl });
   }
   /**
    * Renders NodeCameraView that will serve as a streaming camera
    */
   render() {
+    console.log(this.state.rtmpStreamLink);
     return (
       <NodeCameraView
         style={{ flex: 10, zIndex: 0 }}
@@ -100,6 +103,7 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
         video={{ preset: 1, bitrate: this.props.videoBitRate, profile: 1, fps: this.props.fps, videoFrontMirror: false }}
         smoothSkinLevel={3}
         autopreview={true}
+        onStatus={(status: any) => { console.log("Node Camera Status: " + status) }}
       />
     );
   }
