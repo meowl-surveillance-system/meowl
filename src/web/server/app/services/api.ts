@@ -48,10 +48,10 @@ export const retrieveLiveStreamId = async (cameraId: string) => {
  */
 export const storeStreamId = async (cameraId: string, streamId: string) => {
   const params = [cameraId, streamId, Date.now()];
-  const result = await client.execute(SELECT_STREAMID_METADATA, [streamId], {
+  const result = await client.execute(SELECT_CAMERAID_STREAMID, [cameraId], {
     prepare: true,
   });
-  if (result.rows.length === 0) {
+  if (!result.rows.some((element) => element['stream_id'] === streamId)) {
     await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
   }
 };
