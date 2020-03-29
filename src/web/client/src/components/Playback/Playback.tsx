@@ -10,8 +10,8 @@ interface Props {}
 interface State {
   tmpUrl: string;
   url: string;
-  cameraId: string;
-  streamIds: Array<string>;
+  cameraIds: Array<string>;
+  cameraIdsDict: Record<string, Array<string>>;
 }
 
 export default class Playback extends Component<Props, State> {
@@ -20,24 +20,57 @@ export default class Playback extends Component<Props, State> {
     this.state = {
       tmpUrl: "",
       url: "",
-      cameraId: "",
-      streamIds: [],
+      cameraIds: [],
+      cameraIdsDict: {},
     };
   }
 
+  // Map cameraId to streamIds
   componentDidMount() {
-    fetch(`/api/getStreamIds/1`)
+    fetch(`/api/getCameraIds`)
       .then((res) => res.json())
-      .then((streamIds) => this.setState({ streamIds: streamIds }));
+      .then((cameraIds) => this.setState({ cameraIds: cameraIds }))
+      .then(() =>
+        this.state.cameraIds.map((cameraId, index) => {
+          fetch(`/api/getStreamIds/${cameraId}`)
+            .then((res) => res.json())
+            .then((streamIds) =>
+              this.setState({
+                cameraIdsDict: {
+                  ...this.state.cameraIdsDict,
+                  [cameraId]: streamIds,
+                },
+              }),
+            );
+        }),
+      );
   }
 
-  renderStreamIds = () => {
-    return this.state.streamIds.map((streamId, index) => {
+  // Render the nested list of cameraIds and streamIds
+  renderList = () => {
+    return Object.keys(this.state.cameraIdsDict).map((cameraId, index) => {
+      return (
+        <List
+          key={index}
+          subheader={
+            <ListSubheader color="inherit">
+              <Typography variant="inherit">{cameraId}</Typography>
+            </ListSubheader>
+          }
+        >
+          {this.renderStreamIds(this.state.cameraIdsDict[cameraId])}
+        </List>
+      );
+    });
+  };
+
+  renderStreamIds = (streamIds: Array<string>) => {
+    return streamIds.map((streamId, index) => {
       return (
         <ListItem
           button
-          onClick={() => this.retrieveVideo(streamId)}
           key={index}
+          onClick={() => this.retrieveVideo(streamId)}
         >
           {streamId}
         </ListItem>
@@ -69,7 +102,7 @@ export default class Playback extends Component<Props, State> {
             </ListSubheader>
           }
         >
-          {this.renderStreamIds()}
+          {this.renderList()}
         </List>
         <ResponsivePlayer url={this.state.url} controls={true} />
       </Container>
