@@ -90,6 +90,7 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
         req.body.cameraId
       );
       if (canStream) {
+        await apiServices.addUserCamera(req.body.userId, req.body.cameraId);
         await apiServices.storeStreamId(req.body.cameraId, req.body.name);
         await apiServices.updateCameraLive(req.body.cameraId, start);
         const saverUrl =

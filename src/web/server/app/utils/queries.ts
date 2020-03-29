@@ -27,6 +27,8 @@ export const INSERT_CAMERAID_STREAMID =
   'INSERT INTO camera_streams (camera_id, stream_id, stream_date) VALUES(?, ?, ?)';
 export const SELECT_CAMERAID_STREAMID =
   'SELECT stream_id FROM camera_streams WHERE camera_id = ?';
+export const SELECT_STREAMID_METADATA =
+  'SELECT stream_id FROM metadata WHERE stream_id = ?';
 export const SELECT_CAMERAID_STREAMID_SINGLE =
   'SELECT stream_id FROM camera_streams WHERE camera_id = ? LIMIT 1';
 export const INSERT_CAMERAID_LIVE =

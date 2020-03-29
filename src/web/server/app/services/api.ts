@@ -3,6 +3,7 @@ import {
   SELECT_USERID_CAMERAID,
   SELECT_CAMERAID_USERID,
   SELECT_LIVE_CAMERAID,
+  SELECT_STREAMID_METADATA,
   SELECT_CAMERAID_STREAMID,
   SELECT_CAMERAID_STREAMID_SINGLE,
   INSERT_CAMERAID_STREAMID,
@@ -47,7 +48,12 @@ export const retrieveLiveStreamId = async (cameraId: string) => {
  */
 export const storeStreamId = async (cameraId: string, streamId: string) => {
   const params = [cameraId, streamId, Date.now()];
-  await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
+  const result = await client.execute(SELECT_STREAMID_METADATA, [streamId], {
+    prepare: true,
+  });
+  if (result.rows.length === 0) {
+    await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
+  }
 };
 
 /**
@@ -61,22 +67,30 @@ export const updateCameraLive = async (cameraId: string, live: boolean) => {
 };
 
 /**
- * Verify camera belongs to user and assign if not belonged to anyone
- * @param cameraId - The cameraId of the camera that streamed
- * @param userId - The user id of the user that started streaming
+ * Verify camera belongs to user
+ * @param cameraId - The cameraId of the camera
+ * @param userId - The user id of the user
  */
 export const verifyUserCamera = async (userId: string, cameraId: string) => {
   const result = await client.execute(SELECT_USERID_CAMERAID, [cameraId], {
     prepare: true,
   });
   if (result.rows.length === 0) {
-    const params = [userId, cameraId];
-    await client.execute(INSERT_USERID_CAMERAID, params, { prepare: true });
-    await client.execute(INSERT_CAMERAID_USERID, params, { prepare: true });
     return true;
   } else {
     return result.rows[0]['user_id'] === userId;
   }
+};
+
+/**
+ * Assign camera to user
+ * @param cameraId - The cameraId of the camera
+ * @param userId - The user id of the user
+ */
+export const addUserCamera = async (userId: string, cameraId: string) => {
+  const params = [userId, cameraId];
+  await client.execute(INSERT_USERID_CAMERAID, params, { prepare: true });
+  await client.execute(INSERT_CAMERAID_USERID, params, { prepare: true });
 };
 
 /**
