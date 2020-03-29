@@ -37,6 +37,15 @@ export const retrieveLiveStreamId = async (req: Request, res: Response) => {
   }
 };
 
+export const retrieveLiveCameraStreamIds = async (req: Request, res: Response) => {
+  const result = await apiServices.retrieveLiveCameraStreamIds(req.session!.userId);
+  if (result === undefined) {
+    res.status(400).send('Unable to retrieve camera streams');
+  } else {
+    res.status(200).json(result);
+  }
+};
+
 export const storeStreamId = async (req: Request, res: Response) => {
   const { cameraId, streamId } = req.body;
   try {

@@ -42,6 +42,28 @@ export const retrieveLiveStreamId = async (cameraId: string) => {
 };
 
 /**
+ * Retrieve all streamId from camera if live belonging to user
+ * @param userId - userId of user
+ */
+export const retrieveLiveCameraStreamIds = async (userId: string) => {
+  const camerasResult = await retrieveCameraIds(userId);
+  if (camerasResult === undefined || camerasResult.rows.length === 0) {
+    return undefined;
+  }
+  const liveCameras = camerasResult.rows.reduce(async (oldCollection, row) => {
+    const collection = await oldCollection;
+    const liveStreamIdResult = await retrieveLiveStreamId(row['camera_id']);
+    if (liveStreamIdResult !== undefined && liveStreamIdResult.rows.length > 0) {
+      const cameraStreamPair = {};
+      cameraStreamPair[row['camera_id']] = liveStreamIdResult.rows[0]['stream_id'];
+      collection.push(cameraStreamPair);
+    }
+    return collection;
+  }, []);
+  return liveCameras;
+};
+
+/**
  * Store streamId in database
  * @param cameraId - The cameraId of the camera that streamed
  * @param streamId - The streamId
@@ -94,7 +116,8 @@ export const addUserCamera = async (userId: string, cameraId: string) => {
 };
 
 /**
- * Retrieve cameraIds from database
+ * Retrieve cameraIds from database that belong to user
+ * @param userId - The user id of the user
  */
 export const retrieveCameraIds = async (userId: string) => {
   return client.execute(SELECT_CAMERAID_USERID, [userId], {

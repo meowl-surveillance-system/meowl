@@ -57,6 +57,14 @@ app.get(
   }
 );
 
+app.get(
+  '/getLiveCameraStreamIds',
+  isLoggedIn,
+  async (req: express.Request, res: express.Response) => {
+    apiController.retrieveLiveCameraStreamIds(req, res);
+  }
+);
+
 app.post(
   '/storeStreamId',
   async (req: express.Request, res: express.Response) => {
