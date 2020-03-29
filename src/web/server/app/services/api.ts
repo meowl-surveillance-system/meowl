@@ -1,6 +1,7 @@
 import {
   SELECT_CAMERAID,
   SELECT_USERID_CAMERAID,
+  SELECT_CAMERAID_USERID,
   SELECT_LIVE_CAMERAID,
   SELECT_CAMERAID_STREAMID,
   SELECT_CAMERAID_STREAMID_SINGLE,
@@ -81,8 +82,8 @@ export const verifyUserCamera = async (userId: string, cameraId: string) => {
 /**
  * Retrieve cameraIds from database
  */
-export const retrieveCameraIds = async () => {
-  return client.execute(SELECT_CAMERAID, [], {
+export const retrieveCameraIds = async (userId: string) => {
+  return client.execute(SELECT_CAMERAID_USERID, [userId], {
     prepare: true,
   });
 };

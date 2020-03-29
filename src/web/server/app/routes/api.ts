@@ -51,6 +51,7 @@ app.get(
 
 app.get(
   '/getLiveStreamId/:cameraId',
+  isLoggedIn,
   async (req: express.Request, res: express.Response) => {
     apiController.retrieveLiveStreamId(req, res);
   }
@@ -65,6 +66,7 @@ app.post(
 
 app.get(
   '/getCameraIds',
+  isLoggedIn,
   async (req: express.Request, res: express.Response) => {
     apiController.retrieveCameraIds(req, res);
   }

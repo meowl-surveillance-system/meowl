@@ -49,7 +49,7 @@ export const storeStreamId = async (req: Request, res: Response) => {
 };
 
 export const retrieveCameraIds = async (req: Request, res: Response) => {
-  const result = await apiServices.retrieveCameraIds();
+  const result = await apiServices.retrieveCameraIds(req.session!.userId);
   if (result === undefined) {
     res.status(400).send('Invalid cameraId');
   } else {
