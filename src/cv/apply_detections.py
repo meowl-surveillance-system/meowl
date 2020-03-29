@@ -12,10 +12,21 @@ import recognize_faces as face_recognize
 import cv_producer
 import insert_frame
 
+def face_tracker_helper(face_tracker, new_detections):
+    """ Returns True if there is at least 1 new detection """
+    ret_val = False
+    for i in range(len(new_detections)):
+        if new_detections[i] == "unknown":
+            continue
+        elif not new_detections[i] in face_tracker:
+            face_tracker.append(new_detections[i])
+            ret_val = True
+    return ret_val
+
 def init_video_stream(args):
     """ Obtains the video stream """
-    stream = cv2.VideoCapture(args["input"])
-    #stream = cv2.VideoCapture(0)
+    #stream = cv2.VideoCapture(args["input"])
+    stream = cv2.VideoCapture(0)
     try:
         if imutils.is_cv2():
             prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT
@@ -35,7 +46,12 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
     stream = init_video_stream(args)
     writer = None
     frame_id = 1
+    face_tracker = []
+    start_time = int(round(time.time()))
     while True:
+        if int(round(time.time())) - start_time > 600:
+            face_tracker = []
+            start_time = int(round(time.time()))
         res = {}
         (grabbed, frame) = stream.read()
         if not grabbed:
@@ -52,26 +68,31 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
         detector.setInput(imageBlob)
         detections = detector.forward()
         res['faces'] = face_recognize.analyze_detections(args, embedder, recognizer, le, detections, writer, frame, w, h)
-        blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
-            swapRB=True, crop=False)
-        net.setInput(blob)
-        start = time.time()
-        layerOutputs = net.forward(ln)
-        end = time.time()
+        #blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
+         #   swapRB=True, crop=False)
+        #net.setInput(blob)
+        #start = time.time()
+        #layerOutputs = net.forward(ln)
+        #end = time.time()
 
-        res['objects'] = obj_detector.draw_box(writer, args, start, end, layerOutputs,
-            w, h, frame, colors, labels, total)
+        #res['objects'] = obj_detector.draw_box(writer, args, start, end, layerOutputs,
+        #    w, h, frame, colors, labels, total)
 
-        if len(res['objects'].keys()) > 0 or len(res['faces']) > 0:
+        #if len(res['objects'].keys()) > 0 or len(res['faces']) > 0:
+
+        new_detect_exist = face_tracker_helper(face_tracker, res['faces'])
+        if len(res['faces']) > 0 and new_detect_exist:
             img_str = cv2.imencode('.jpg', frame)[1].tostring()
             img_str = bytes(img_str)
-            insert_frame.insert_frame(repr(args['camera_id']), repr(args['stream_id']), repr(frame_id), img_str, json.dumps(res).encode('utf-8'))        
-            cv_producer.send_metadata(repr(args['camera_id']), repr(args['stream_id']), repr(str(frame_id)))
+            insert_frame.insert_frame(args['camera_id'], args['stream_id'], str(frame_id), img_str, json.dumps(res).encode('utf-8'))        
+            cv_producer.send_metadata(args['camera_id'], args['stream_id'], str(frame_id), res)
             frame_id += 1
             #cv2.imshow('Frame', frame)
             #key = cv2.waitKey(1) & 0xFF
             #if key == ord("q"):
             #    break
+        cv2.imshow('Frame', frame)
+        key = cv2.waitKey(1) & 0xFF
     return stream, writer
 
 def process(args):

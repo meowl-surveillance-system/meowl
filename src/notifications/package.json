@@ -4,13 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "testWatch": "jest --coverage --watchAll"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cassandra-driver": "^4.5.0",
     "dotenv": "^8.2.0",
-    "nodemailer": "^6.4.2"
+    "email-templates": "^7.0.2",
+    "kafka-node": "^5.0.0",
+    "nodemailer": "^6.4.2",
+    "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/email-templates": "^6.0.2",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.2",
+    "@types/nodemailer": "^6.4.0",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.7.0",
+    "typescript": "^3.8.3"
   }
 }
