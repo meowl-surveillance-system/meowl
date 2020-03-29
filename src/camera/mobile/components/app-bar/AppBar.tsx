@@ -60,6 +60,7 @@ class AppBar extends React.Component<AppBarProps> {
           name="settings"
           onPress={() => this.updateProps({ settingsFormVisible: true })}
           reverse={true}
+          disabled={this.props.isPublishing}
         />
         <Icon
           type="material-community"

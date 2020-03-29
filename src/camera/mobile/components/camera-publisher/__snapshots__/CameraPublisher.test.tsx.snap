@@ -28,7 +28,7 @@ exports[`renders correctly 1`] = `
   video={
     Object {
       "bitrate": 1234,
-      "fps": 1234,
+      "fps": 30,
       "preset": 1,
       "profile": 1,
       "videoFrontMirror": false,

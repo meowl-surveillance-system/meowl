@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StatusBar } from 'react-native';
-// @ts-ignore
 import CameraPublisher from './components/camera-publisher/CameraPublisher';
 import SettingsForm from './components/settings-form/SettingsForm';
 import AppBar from './components/app-bar/AppBar';
+import LoginForm from './components/login-form/LoginForm';
 
 interface Props { }
 
@@ -21,13 +21,17 @@ class App extends React.Component<Props, AppState> {
     super(props);
     this.state = {
       audioBitRate: 128000,
+      cameraId: '',
       flashEnabled: false,
       fps: 30,
+      isLoggedIn: false,
       isPublishing: false,
       isViewingFrontCamera: true,
       settingsFormVisible: false,
-      outputLink: "rtmp://[ENTER_RTMP_URL]/show/stream",
-      videoBitRate: 8000000
+      outputLink: "rtmp://192.168.1.0",
+      sessionId: '',
+      userId: '',
+      videoBitRate: 8000000,
     };
   }
 
@@ -63,6 +67,10 @@ class App extends React.Component<Props, AppState> {
 
             flashEnabled={this.state.flashEnabled}
             isPublishing={this.state.isPublishing}
+
+            cameraId={this.state.cameraId}
+            userId={this.state.userId}
+            sessionId={this.state.sessionId}
           />
         </View>
         <SettingsForm
@@ -71,6 +79,11 @@ class App extends React.Component<Props, AppState> {
           settingsFormVisible={this.state.settingsFormVisible}
           outputLink={this.state.outputLink}
           videoBitRate={this.state.videoBitRate}
+          updateProps={(props: any) => this.updateState(props)}
+        />
+        <LoginForm
+          isLoggedIn={this.state.isLoggedIn}
+          outputLink={this.state.outputLink}
           updateProps={(props: any) => this.updateState(props)}
         />
         <View style={{ flex: 1 }}>

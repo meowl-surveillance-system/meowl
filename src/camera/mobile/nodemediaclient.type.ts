@@ -7,23 +7,34 @@ interface NodeMediaClientRef {
 
 interface AppState {
   audioBitRate: number;
+  cameraId: string;
   flashEnabled: boolean;
   fps: number;
+  isLoggedIn: boolean;
   isPublishing: boolean;
   isViewingFrontCamera: boolean;
   settingsFormVisible: boolean;
+  sessionId: string;
+  userId: string;
   outputLink: string;
   videoBitRate: number;
 }
 
 interface CameraProps {
   audioBitRate: number;
+  cameraId: string;
   flashEnabled: boolean;
   fps: number;
   isPublishing: boolean;
   isViewingFrontCamera: boolean;
   outputLink: string;
+  sessionId: string;
+  userId: string;
   videoBitRate: number;
+}
+
+interface CameraState {
+  rtmpStreamLink: string;
 }
 
 interface AppBarProps {
@@ -40,5 +51,11 @@ interface SettingsFormProps {
   videoBitRate: number;
   audioBitRate: number;
   fps: number;
+  updateProps(props: object): void;
+}
+
+interface LoginFormProps {
+  outputLink: string;
+  isLoggedIn: boolean;
   updateProps(props: object): void;
 }

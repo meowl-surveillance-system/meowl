@@ -2,17 +2,23 @@ import React from 'react';
 import { PermissionsAndroid } from 'react-native';
 // @ts-ignore
 import { NodeCameraView } from 'react-native-nodemediaclient';
+import { v4 as uuidv4 } from 'uuid';
+import queryString from 'query-string';
+
 
 /**
  * A wrapper around react-native-nodemediaclient component
  * TODO(chc5): Create unit tests for CameraPublisher component
  */
-class CameraPublisher extends React.Component<CameraProps> {
+class CameraPublisher extends React.Component<CameraProps, CameraState> {
   // Initalized by nodemediaclient to get controller methods from library
   vb: NodeMediaClientRef | undefined;
 
   constructor(props: CameraProps) {
     super(props);
+    this.state = {
+      rtmpStreamLink: ''
+    }
   }
 
   /**
@@ -67,6 +73,19 @@ class CameraPublisher extends React.Component<CameraProps> {
     }
   }
 
+  setNewRtmpStreamLink() {
+    const streamId: string = uuidv4();
+    const baseUrl: string = this.props.outputLink + '/show/' + streamId;
+    const fullUrl: string = queryString.stringifyUrl({
+      url: baseUrl,
+      query: {
+        cameraId: this.props.cameraId,
+        userId: this.props.userId,
+        sessionId: this.props.sessionId,
+      },
+    });
+    this.setState({ rtmpStreamLink: fullUrl });
+  }
   /**
    * Renders NodeCameraView that will serve as a streaming camera
    */
@@ -75,7 +94,7 @@ class CameraPublisher extends React.Component<CameraProps> {
       <NodeCameraView
         style={{ flex: 10, zIndex: 0 }}
         ref={(vb: any) => { this.vb = vb }}
-        outputUrl={this.props.outputLink}
+        outputUrl={this.state.rtmpStreamLink}
         camera={{ cameraId: 1, cameraFrontMirror: this.props.isViewingFrontCamera }}
         audio={{ bitrate: this.props.audioBitRate, profile: 1, samplerate: 44100 }}
         video={{ preset: 1, bitrate: this.props.videoBitRate, profile: 1, fps: this.props.fps, videoFrontMirror: false }}
