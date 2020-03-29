@@ -5,6 +5,8 @@ interface NodeMediaClientRef {
   flashEnable(enabled: boolean): void;
 }
 
+type NodeMediaClientStatusCode = 2000|2001|2002|2004;
+
 interface AppState {
   audioBitRate: number;
   cameraId: string;
