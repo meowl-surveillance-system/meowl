@@ -28,9 +28,11 @@ app.get(
     ffProc.stdin.on('end', () => console.log('done'));
     ffProc.stdout.on('end', () => console.log('done'));
     ffProc.on('error', (error: Error) => console.log(error));
-    const chunkIdResults = await client.execute(selectChunkId, [
-      req.params.streamId,
-    ]);
+    const chunkIdResults = await client.execute(
+      selectChunkId,
+      [req.params.streamId],
+      { prepare: true }
+    );
     for (const chunkId of chunkIdResults.rows.map(row => row.chunk_id)) {
       const chunkResult = await client.execute(selectChunk, [chunkId], {
         prepare: true,
