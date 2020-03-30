@@ -6,6 +6,7 @@ import Playback from "./components/Playback/Playback";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
+import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 interface Props {}
@@ -44,6 +45,13 @@ class App extends Component<Props, State> {
               onAuthChange={this.onAuthChange}
             />
             <Switch>
+              <ProtectedRoute
+                exact
+                path="/liveStreams"
+                component={LiveStream}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
               <ProtectedRoute
                 exact
                 path="/streams"
