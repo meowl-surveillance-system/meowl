@@ -8,7 +8,6 @@ import ResponsivePlayer from "../ResponsivePlayer/ResponsivePlayer";
 
 interface Props {}
 interface State {
-  tmpUrl: string;
   url: string;
   cameraIds: Array<string>;
   cameraIdsDict: Record<string, Array<string>>;
@@ -18,7 +17,6 @@ export default class Playback extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tmpUrl: "",
       url: "",
       cameraIds: [],
       cameraIdsDict: {},
@@ -76,11 +74,6 @@ export default class Playback extends Component<Props, State> {
         </ListItem>
       );
     });
-  };
-
-  urlSubmit = (): void => {
-    this.setState({ url: this.state.tmpUrl });
-    this.setState({ tmpUrl: "" });
   };
 
   retrieveVideo = (streamId: string): void => {

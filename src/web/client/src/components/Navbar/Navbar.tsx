@@ -25,11 +25,10 @@ export default class Navbar extends Component<Props, State> {
     return (
       <div>
         <RouterLink
-          to="/"
+          to="/liveStreams"
           style={{ color: "inherit", textDecoration: "none" }}
-          onClick={this.logoutSubmit}
         >
-          Logout
+          LiveStreams
         </RouterLink>
         <RouterLink
           to="/streams"
@@ -39,7 +38,18 @@ export default class Navbar extends Component<Props, State> {
             textDecoration: "none",
           }}
         >
-          streams
+          Streams
+        </RouterLink>
+        <RouterLink
+          to="/"
+          style={{
+            paddingLeft: "10px",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+          onClick={this.logoutSubmit}
+        >
+          Logout
         </RouterLink>
       </div>
     );

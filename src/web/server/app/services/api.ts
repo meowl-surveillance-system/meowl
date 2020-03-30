@@ -53,7 +53,10 @@ export const retrieveLiveCameraStreamIds = async (userId: string) => {
   const liveCameras = camerasResult.rows.reduce(async (oldCollection, row) => {
     const collection = await oldCollection;
     const liveStreamIdResult = await retrieveLiveStreamId(row['camera_id']);
-    if (liveStreamIdResult !== undefined && liveStreamIdResult.rows.length > 0) {
+    if (
+      liveStreamIdResult !== undefined &&
+      liveStreamIdResult.rows.length > 0
+    ) {
       collection[row['camera_id']] = liveStreamIdResult.rows[0]['stream_id'];
     }
     return collection;
@@ -71,7 +74,7 @@ export const storeStreamId = async (cameraId: string, streamId: string) => {
   const result = await client.execute(SELECT_CAMERAID_STREAMID, [cameraId], {
     prepare: true,
   });
-  if (!result.rows.some((element) => element['stream_id'] === streamId)) {
+  if (!result.rows.some(element => element['stream_id'] === streamId)) {
     await client.execute(INSERT_CAMERAID_STREAMID, params, { prepare: true });
   }
 };
