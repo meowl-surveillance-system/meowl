@@ -9,7 +9,7 @@ import ResponsivePlayer from "../ResponsivePlayer/ResponsivePlayer";
 
 interface Props {}
 interface State {
-  liveCameraStreamIds: Record<string, Array<string>>;
+  liveCameraStreamIds: Record<string, string>;
   ip: string;
   port: string;
   url: string;
@@ -36,6 +36,7 @@ export default class LiveStream extends Component<Props, State> {
   renderList = () => {
     return Object.keys(this.state.liveCameraStreamIds).map(
       (cameraId, index) => {
+        const streamId = this.state.liveCameraStreamIds[cameraId];
         return (
           <List
             key={index}
@@ -45,21 +46,13 @@ export default class LiveStream extends Component<Props, State> {
               </ListSubheader>
             }
           >
-            {this.renderStreamIds(this.state.liveCameraStreamIds[cameraId])}
+            <ListItem button key={index} onClick={() => this.getURL(streamId)}>
+              {streamId}
+            </ListItem>
           </List>
         );
       },
     );
-  };
-
-  renderStreamIds = (streamIds: Array<string>) => {
-    return streamIds.map((streamId, index) => {
-      return (
-        <ListItem button key={index} onClick={() => this.getURL(streamId)}>
-          {streamId}
-        </ListItem>
-      );
-    });
   };
 
   getURL = (streamId: string) => {
