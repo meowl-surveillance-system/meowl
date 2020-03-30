@@ -13,6 +13,7 @@ export const UPDATE_USERSNAME_SID =
   'UPDATE users_name SET sid = ? WHERE username = ?';
 export const SELECT_USERSNAME_SID =
   'SELECT sid FROM users_id WHERE user_id = ?';
+export const SELECT_SID_SESSION = 'SELECT * FROM sessions WHERE sid = ?';
 export const SELECT_USERSNAME_USERID =
   'SELECT user_id FROM users_name WHERE username = ?';
 export const SELECT_CAMERAID_USERID =

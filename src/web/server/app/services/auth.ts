@@ -7,6 +7,7 @@ import {
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
+  SELECT_SID_SESSION,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -74,4 +75,12 @@ export const updateSessionId = async (
  */
 export const retrieveSID = async (userId: string) => {
   return client.execute(SELECT_USERSNAME_SID, [userId], { prepare: true });
+};
+
+/**
+ * Retrieve the session using the sessionID
+ * @param userId - The value used to lookup the sessionID
+ */
+export const retrieveSession = async (sessionID: string) => {
+  return client.execute(SELECT_SID_SESSION, [sessionID], { prepare: true });
 };

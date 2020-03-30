@@ -81,8 +81,12 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
 
 const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
   try {
-    const result = await authServices.retrieveSID(req.body.userId);
-    if (result.rows.length === 0 || result.rows[0].sid !== req.body.sessionID) {
+    const result = await authServices.retrieveSession(req.body.sessionID);
+    if (
+      result.rows.length === 0 ||
+      JSON.parse(result.rows[0].session).userId !== req.body.userId ||
+      result.rows[0].expires < Date.now()
+    ) {
       res.status(400).send('Nice try kid');
     } else {
       const canStream = await apiServices.verifyUserCamera(
