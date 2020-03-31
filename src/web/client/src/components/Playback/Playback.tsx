@@ -82,7 +82,8 @@ export default class Playback extends Component<Props, State> {
       .then((blob) => {
         const vidUrl = URL.createObjectURL(new Blob([blob]));
         this.setState({ url: vidUrl });
-      });
+      })
+      .catch((e) => console.log(e));
   };
 
   render() {
