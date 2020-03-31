@@ -31,11 +31,9 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
       ]);
-      if (Object.keys(granted)
+      if (!Object.keys(granted)
         .every((permission) => (granted as any)[permission] === PermissionsAndroid.RESULTS.GRANTED)) {
-        console.log('You can use the camera');
-      } else {
-        console.log('Camera permission denied');
+        Alert.alert('Camera Permission Denied...');
       }
     } catch (err) {
       console.warn(err);
@@ -74,6 +72,9 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
     }
   }
 
+  /**
+   * Creates a new RTMP Stream Link with a new Stream ID
+   */
   async setNewRtmpStreamLink() {
     const streamId: string = uuidv4();
     const baseUrl: string = this.props.rtmpServerUrl + '/show/' + streamId;
@@ -89,6 +90,13 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
     return fullUrl;
   }
 
+  /**
+   * Alerts the user about the status of the streaming app
+   * @param statusCode 2000 - Loading
+   *                   2001 - Started Streaming
+   *                   2002 - Error
+   *                   2004 - Closing
+   */
   onStatus(statusCode: NodeMediaClientStatusCode) {
     switch (statusCode) {
       case 2000:
@@ -103,6 +111,7 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
         break;
     }
   }
+
   /**
    * Renders NodeCameraView that will serve as a streaming camera
    */

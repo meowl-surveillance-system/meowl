@@ -1,3 +1,9 @@
+/**
+ * Makes a request to log out from the server
+ * @param serverUrl - Server URL that is hosting the requests
+ * @param logoutEndpoint - Endpoint where the logout method is called
+ * @returns the response to log out from the server
+ */
 export async function logout(
     serverUrl: string, logoutEndpoint: string = '/auth/logout') {
   const logoutUrl: string = serverUrl + logoutEndpoint;
@@ -17,6 +23,13 @@ export async function logout(
   }
 }
 
+/**
+ * Makes a request to log into the server
+ * @param credentials - Credentials required to login (e.g. username/password)
+ * @param serverUrl - Server URL that is hosting the requests
+ * @param loginEndpoint - Endpoint where the login method is called
+ * @returns the response to log into the server
+ */
 export async function login(
     credentials: object, serverUrl: string,
     loginEndpoint: string = '/auth/login') {

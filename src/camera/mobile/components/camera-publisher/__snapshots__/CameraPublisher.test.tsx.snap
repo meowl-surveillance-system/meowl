@@ -17,6 +17,7 @@ exports[`renders correctly 1`] = `
     }
   }
   onChange={[Function]}
+  onStatus={[Function]}
   outputUrl=""
   smoothSkinLevel={3}
   style={

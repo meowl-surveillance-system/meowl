@@ -32,6 +32,7 @@ exports[`renders correctly 1`] = `
         }
       }
       onChange={[Function]}
+      onStatus={[Function]}
       outputUrl=""
       smoothSkinLevel={3}
       style={
@@ -143,7 +144,7 @@ exports[`renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value="rtmp://192.168.1.0"
+          value="rtmp://35.184.248.56:1935"
         />
       </View>
     </View>
@@ -785,6 +786,47 @@ exports[`renders correctly 1`] = `
             ]
           }
         >
+          Logout
+        </Text>
+      </View>
+    </View>
+    <View
+      accessibilityRole="button"
+      accessibilityState={Object {}}
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {},
+          ]
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "#007AFF",
+                "fontSize": 18,
+                "margin": 8,
+                "textAlign": "center",
+              },
+            ]
+          }
+        >
           Done
         </Text>
       </View>
@@ -881,7 +923,7 @@ exports[`renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value=""
+          value="http://35.202.200.155:3000"
         />
       </View>
     </View>
@@ -970,7 +1012,7 @@ exports[`renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value=""
+          value="wack"
         />
       </View>
     </View>
@@ -1060,7 +1102,7 @@ exports[`renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value=""
+          value="boi"
         />
       </View>
     </View>

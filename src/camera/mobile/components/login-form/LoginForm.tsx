@@ -17,6 +17,10 @@ interface LoginFormState {
   cameraId: string;
 }
 
+/**
+ * A form to log into the request server and get credentials for streaming
+ * TODO(chc5): Create unit tests for LoginForm component
+ */
 class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   constructor(props: LoginFormProps) {
     super(props);
@@ -27,6 +31,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     }
   }
 
+  /**
+   * Creates a new camera ID for this app if it doesn't exists
+   */
   async componentDidMount() {
     const cameraId: string | null = await AsyncStorage.getItem('meowlCameraId');
     if (cameraId) {
@@ -39,6 +46,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     await CookieManager.clearAll();
   }
 
+  /**
+   * Handles the login response after the login attempt
+   */
   async handleLogin() {
     let loginResponse: Response | null = await login({
       username: this.state.username,
@@ -57,6 +67,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     }
   }
 
+  /**
+   * Retrieve credentials for RTMP streaming
+   */
   async retrieveRtmpCredentials() {
     try {
       const rtmpResponse = await fetch(this.props.requestServerUrl + '/auth/rtmpRequest', {
@@ -80,6 +93,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     }
   }
 
+  /**
+   * Logins the user into the server and get credentials for streaming
+   */
   async onSubmit() {
     const loginResponse: Response | null = await this.handleLogin();
     if (loginResponse) {
@@ -114,6 +130,9 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     this.props.updateProps(props);
   }
 
+  /**
+   * Clears all privacy information from this form
+   */
   componentWillUnmount() {
     this.setState({
       username: '',

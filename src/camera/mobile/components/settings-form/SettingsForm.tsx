@@ -4,7 +4,6 @@ import { Text, Input, ButtonGroup } from 'react-native-elements';
 import CookieManager from '@react-native-community/cookies';
 import { logout } from '../../utils/utils';
 
-
 /**
  * A form that controls variable rates for RTMP streaming
  * TODO(chc5): Create unit tests for SettingsForm component
@@ -12,7 +11,6 @@ import { logout } from '../../utils/utils';
 class SettingsForm extends React.Component<SettingsFormProps> {
   constructor(props: SettingsFormProps) {
     super(props);
-
   }
 
   /**
@@ -23,6 +21,10 @@ class SettingsForm extends React.Component<SettingsFormProps> {
     this.props.updateProps(props);
   }
 
+  /**
+   * Handles the logout response based on the results given
+   * @returns true if logged out successfully else false
+   */
   async handleLogout() {
     const logoutResponse: Response | null = await logout(this.props.requestServerUrl);
     this.props.updateProps({
