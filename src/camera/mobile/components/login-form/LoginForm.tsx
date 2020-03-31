@@ -26,8 +26,8 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     this.state = {
       username: 'wack',
       password: 'boi',
-      cameraId: ''
-    }
+      cameraId: '',
+    };
   }
 
   /**
@@ -49,15 +49,18 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
    * Handles the login response after the login attempt
    */
   async handleLogin() {
-    let loginResponse: Response | null = await login({
-      username: this.state.username,
-      password: this.state.password
-    }, this.props.requestServerUrl);
+    const loginResponse: Response | null = await login(
+      {
+        username: this.state.username,
+        password: this.state.password,
+      },
+      this.props.requestServerUrl,
+    );
     if (loginResponse) {
       if (loginResponse.ok) {
         return loginResponse;
       } else {
-        Alert.alert('Wrong username or password.')
+        Alert.alert('Wrong username or password.');
         return null;
       }
     } else {
@@ -71,19 +74,22 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
    */
   async retrieveRtmpCredentials() {
     try {
-      const rtmpResponse = await fetch(this.props.requestServerUrl + '/auth/rtmpRequest', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          credentials: 'include',
-        }
-      });
+      const rtmpResponse = await fetch(
+        this.props.requestServerUrl + '/auth/rtmpRequest',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            credentials: 'include',
+          },
+        },
+      );
       if (rtmpResponse.ok) {
         const responseBody = await rtmpResponse.json();
         return responseBody;
       } else {
-        Alert.alert('Incorrect cookie credentials from logging in.')
+        Alert.alert('Incorrect cookie credentials from logging in.');
         return null;
       }
     } catch (error) {
@@ -105,12 +111,12 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
           userId: rtmpCredentials['userId'],
           // TODO(yliu): Change this to sessionId after server changes this minor inconsistency
           sessionId: rtmpCredentials['sessionID'],
-          cameraId: this.state.cameraId
+          cameraId: this.state.cameraId,
         });
         this.setState({
           username: '',
-          password: ''
-        })
+          password: '',
+        });
         return true;
       } else {
         return false;
@@ -135,7 +141,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   componentWillUnmount() {
     this.setState({
       username: '',
-      password: ''
+      password: '',
     });
   }
 
@@ -147,34 +153,26 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
       <Modal
         animationType="slide"
         transparent={false}
-        visible={!this.props.isLoggedIn}
-      >
-        <Text style={{ fontSize: 22 }}>
-          Request Server IP & Port Number:
-        </Text>
+        visible={!this.props.isLoggedIn}>
+        <Text style={{ fontSize: 22 }}>Request Server IP & Port Number:</Text>
         <Input
-          onChangeText={(requestServerUrl) => this.updateProps({ requestServerUrl })}
+          onChangeText={requestServerUrl =>
+            this.updateProps({ requestServerUrl })
+          }
           value={this.props.requestServerUrl}
         />
-        <Text style={{ fontSize: 22 }}>
-          Username:
-        </Text>
+        <Text style={{ fontSize: 22 }}>Username:</Text>
         <Input
-          onChangeText={(username) => this.setState({ username })}
+          onChangeText={username => this.setState({ username })}
           value={this.state.username}
         />
-        <Text style={{ fontSize: 22 }}>
-          Password:
-        </Text>
+        <Text style={{ fontSize: 22 }}>Password:</Text>
         <Input
           secureTextEntry={true}
-          onChangeText={(password) => this.setState({ password })}
+          onChangeText={password => this.setState({ password })}
           value={this.state.password}
         />
-        <Button
-          onPress={() => this.onSubmit()}
-          title="Submit"
-        />
+        <Button onPress={() => this.onSubmit()} title="Submit" />
       </Modal>
     );
   }

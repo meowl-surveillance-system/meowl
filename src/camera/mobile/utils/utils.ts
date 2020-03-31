@@ -5,7 +5,9 @@
  * @returns the response to log out from the server
  */
 export async function logout(
-    serverUrl: string, logoutEndpoint: string = '/auth/logout') {
+    serverUrl: string,
+    logoutEndpoint = '/auth/logout',
+) {
   const logoutUrl: string = serverUrl + logoutEndpoint;
   console.log(logoutUrl);
   try {
@@ -15,7 +17,7 @@ export async function logout(
         Accept: 'application/json',
         'Content-Type': 'application/json',
         credentials: 'include',
-      }
+      },
     });
     return logoutResponse;
   } catch (err) {
@@ -31,8 +33,10 @@ export async function logout(
  * @returns the response to log into the server
  */
 export async function login(
-    credentials: object, serverUrl: string,
-    loginEndpoint: string = '/auth/login') {
+    credentials: object,
+    serverUrl: string,
+    loginEndpoint = '/auth/login',
+) {
   const loginUrl = serverUrl + loginEndpoint;
   try {
     const loginResponse = await fetch(loginUrl, {
@@ -42,7 +46,7 @@ export async function login(
         'Content-Type': 'application/json',
         credentials: 'include',
       },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify(credentials),
     });
     return loginResponse;
   } catch (err) {

@@ -35,46 +35,56 @@ describe('CameraPublisher Component', () => {
   });
 
   it('renders correctly', () => {
-    const container = renderer.create(
-      <CameraPublisher
-        cameraId='abc'
-        sessionId='def'
-        userId='ghi'
-        flashEnabled={false}
-        isPublishing={false}
-        isViewingFrontCamera={false}
-        audioBitRate={1234}
-        fps={30}
-        rtmpServerUrl=''
-        videoBitRate={1234}
-      />
-    ).toJSON();
+    const container = renderer
+      .create(
+        <CameraPublisher
+          cameraId="abc"
+          sessionId="def"
+          userId="ghi"
+          flashEnabled={false}
+          isPublishing={false}
+          isViewingFrontCamera={false}
+          audioBitRate={1234}
+          fps={30}
+          rtmpServerUrl=""
+          videoBitRate={1234}
+        />,
+      )
+      .toJSON();
     expect(container).toMatchSnapshot();
   });
 
   it('should ask for permission onMount', async () => {
-    const permissionSpy: jest.SpyInstance = jest.spyOn(PermissionsAndroid, 'requestMultiple');
+    const permissionSpy: jest.SpyInstance = jest.spyOn(
+      PermissionsAndroid,
+      'requestMultiple',
+    );
     await cameraPublisherInstance.componentDidMount();
     expect(permissionSpy).toHaveBeenCalledWith([
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
     ]);
   });
 
   it('should call flashEnable on props change', async () => {
     oldProps.flashEnabled = true;
     cameraPublisherInstance.vb = new NodeMediaClientRefMock();
-    const vbFlashEnableSpy: jest.SpyInstance = jest.spyOn(cameraPublisherInstance.vb, 'flashEnable');
+    const vbFlashEnableSpy: jest.SpyInstance = jest.spyOn(
+      cameraPublisherInstance.vb,
+      'flashEnable',
+    );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
     expect(vbFlashEnableSpy).toHaveBeenCalledWith(false);
   });
 
-
   it('should call stop on props change', async () => {
     oldProps.isPublishing = true;
     cameraPublisherInstance.vb = new NodeMediaClientRefMock();
-    const vbStopSpy: jest.SpyInstance = jest.spyOn(cameraPublisherInstance.vb, 'stop');
+    const vbStopSpy: jest.SpyInstance = jest.spyOn(
+      cameraPublisherInstance.vb,
+      'stop',
+    );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
     expect(vbStopSpy).toHaveBeenCalled();
   });
@@ -82,7 +92,10 @@ describe('CameraPublisher Component', () => {
   it('should call switchCamera on props change', async () => {
     oldProps.isViewingFrontCamera = true;
     cameraPublisherInstance.vb = new NodeMediaClientRefMock();
-    const vbSwitchCameraSpy: jest.SpyInstance = jest.spyOn(cameraPublisherInstance.vb, 'switchCamera');
+    const vbSwitchCameraSpy: jest.SpyInstance = jest.spyOn(
+      cameraPublisherInstance.vb,
+      'switchCamera',
+    );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
     expect(vbSwitchCameraSpy).toHaveBeenCalled();
   });
@@ -93,6 +106,8 @@ describe('CameraPublisher Component', () => {
     props.cameraId = '890';
     props.rtmpServerUrl = 'rtmp://123.123.123:9000';
     const fullUrl = await cameraPublisherInstance.setNewRtmpStreamLink();
-    expect(fullUrl).toEqual('rtmp://123.123.123:9000/show/1234?cameraId=890&sessionID=456&userId=123');
+    expect(fullUrl).toEqual(
+      'rtmp://123.123.123:9000/show/1234?cameraId=890&sessionID=456&userId=123',
+    );
   });
-})
+});

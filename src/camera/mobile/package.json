@@ -7,7 +7,14 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.8.1",
@@ -39,7 +46,9 @@
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.11.0",
     "ts-jest": "^25.2.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "gts": "^1.1.2",
+    "@types/node": "^10.0.3"
   },
   "jest": {
     "preset": "react-native",

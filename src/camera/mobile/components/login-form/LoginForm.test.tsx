@@ -20,40 +20,60 @@ describe('LoginForm Component', () => {
     });
   });
   it('renders correctly', () => {
-    const container = renderer.create(
-      <LoginForm
-        requestServerUrl=''
-        rtmpServerUrl=''
-        isLoggedIn={true}
-        updateProps={(obj: object) => { }}
-      />
-    ).toJSON();
+    const container = renderer
+      .create(
+        <LoginForm
+          requestServerUrl=""
+          rtmpServerUrl=""
+          isLoggedIn={true}
+          updateProps={(obj: object) => { }}
+        />,
+      )
+      .toJSON();
     expect(container).toMatchSnapshot();
   });
 
   it('should call handleLogin and retrieveRtmpCredentials in a successful onSubmit', async () => {
-    const handleLoginSpy = jest.spyOn(loginFormInstance, 'handleLogin').mockResolvedValue(new Response({}, {
-      status: 200,
-      statusText: 'yes',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    }));
-    const retrieveRtmpCredentialsSpy = jest.spyOn(loginFormInstance, 'retrieveRtmpCredentials');
+    const handleLoginSpy = jest
+      .spyOn(loginFormInstance, 'handleLogin')
+      .mockResolvedValue(
+        new Response(
+          {},
+          {
+            status: 200,
+            statusText: 'yes',
+            headers: {
+              'Content-type': 'application/json',
+            },
+          },
+        ),
+      );
+    const retrieveRtmpCredentialsSpy = jest.spyOn(
+      loginFormInstance,
+      'retrieveRtmpCredentials',
+    );
     await loginFormInstance.onSubmit();
     expect(handleLoginSpy).toHaveBeenCalled();
     expect(retrieveRtmpCredentialsSpy).toHaveBeenCalled();
   });
 
   it('should call updateProps on a succesfully login', async () => {
-    const handleLoginSpy = jest.spyOn(loginFormInstance, 'handleLogin').mockResolvedValue(new Response({}, {
-      status: 200,
-      statusText: 'yes',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    }));
-    const retrieveRtmpCredentialsSpy = jest.spyOn(loginFormInstance, 'retrieveRtmpCredentials')
+    const handleLoginSpy = jest
+      .spyOn(loginFormInstance, 'handleLogin')
+      .mockResolvedValue(
+        new Response(
+          {},
+          {
+            status: 200,
+            statusText: 'yes',
+            headers: {
+              'Content-type': 'application/json',
+            },
+          },
+        ),
+      );
+    const retrieveRtmpCredentialsSpy = jest
+      .spyOn(loginFormInstance, 'retrieveRtmpCredentials')
       .mockResolvedValue({
         userId: 'hello',
         // TODO(yliu): fix this sessionID to sessionId
@@ -66,7 +86,7 @@ describe('LoginForm Component', () => {
       userId: 'hello',
       sessionId: 'world',
       isLoggedIn: true,
-    })
+    });
   });
 
   it('should call login method in handleLogin', async () => {
@@ -76,10 +96,11 @@ describe('LoginForm Component', () => {
   });
 
   it('should alert the user on unsuccessful login', async () => {
-    const loginSpy: jest.SpyInstance = jest.spyOn(utils, 'login').mockResolvedValue(null);
+    const loginSpy: jest.SpyInstance = jest
+      .spyOn(utils, 'login')
+      .mockResolvedValue(null);
     const alertSpy: jest.SpyInstance = jest.spyOn(Alert, 'alert');
     await loginFormInstance.handleLogin();
     expect(alertSpy).toHaveBeenCalled();
   });
-
 });

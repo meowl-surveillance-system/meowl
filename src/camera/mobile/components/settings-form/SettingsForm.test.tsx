@@ -23,17 +23,19 @@ describe('SettingsForm Component', () => {
   });
 
   it('renders correctly', () => {
-    const container = renderer.create(
-      <SettingsForm
-        audioBitRate={1234}
-        fps={1234}
-        requestServerUrl=''
-        rtmpServerUrl=''
-        settingsFormVisible={false}
-        updateProps={(obj) => { }}
-        videoBitRate={1234}
-      />
-    ).toJSON();
+    const container = renderer
+      .create(
+        <SettingsForm
+          audioBitRate={1234}
+          fps={1234}
+          requestServerUrl=""
+          rtmpServerUrl=""
+          settingsFormVisible={false}
+          updateProps={obj => { }}
+          videoBitRate={1234}
+        />,
+      )
+      .toJSON();
     expect(container).toMatchSnapshot();
   });
 
@@ -46,7 +48,8 @@ describe('SettingsForm Component', () => {
 
   it('should call props.updateProps on updates', async () => {
     settingsFormInstance.updateProps({ rtmpServerUrl: 'testing1234567' });
-    expect(updatePropsMock).toHaveBeenLastCalledWith({ rtmpServerUrl: 'testing1234567' });
+    expect(updatePropsMock).toHaveBeenLastCalledWith({
+      rtmpServerUrl: 'testing1234567',
+    });
   });
-
 });

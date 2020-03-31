@@ -25,7 +25,9 @@ class SettingsForm extends React.Component<SettingsFormProps> {
    * @returns true if logged out successfully else false
    */
   async handleLogout() {
-    const logoutResponse: Response | null = await logout(this.props.requestServerUrl);
+    const logoutResponse: Response | null = await logout(
+      this.props.requestServerUrl,
+    );
     this.props.updateProps({
       userId: '',
       sessionId: '',
@@ -37,7 +39,13 @@ class SettingsForm extends React.Component<SettingsFormProps> {
       return true;
     } else {
       await this.updateProps({ isLoggedIn: false });
-      setTimeout(() => Alert.alert('Failed to logout from server... Clearing cookies related to this account on this app'), 500);
+      setTimeout(
+        () =>
+          Alert.alert(
+            'Failed to logout from server... Clearing cookies related to this account on this app',
+          ),
+        500,
+      );
       await CookieManager.clearAll();
       return false;
     }
@@ -53,50 +61,45 @@ class SettingsForm extends React.Component<SettingsFormProps> {
       20: 1,
       24: 2,
       30: 3,
-    }
+    };
 
     return (
       <Modal
         animationType="slide"
         transparent={false}
-        visible={this.props.settingsFormVisible}
-      >
-        <Text style={{ fontSize: 22 }}>
-          Stream Link:
-          </Text>
+        visible={this.props.settingsFormVisible}>
+        <Text style={{ fontSize: 22 }}>Stream Link:</Text>
         <Input
-          onChangeText={(rtmpServerUrl) => this.updateProps({ rtmpServerUrl: rtmpServerUrl })}
+          onChangeText={rtmpServerUrl => this.updateProps({ rtmpServerUrl })}
           value={this.props.rtmpServerUrl}
           placeholder="rtmp://"
         />
-        <Text style={{ fontSize: 22 }}>
-          Video Bit Rate:
-        </Text>
+        <Text style={{ fontSize: 22 }}>Video Bit Rate:</Text>
         <Input
-          onChangeText={(videoBitRate) => this.updateProps({ videoBitRate: parseInt(videoBitRate) })}
+          onChangeText={videoBitRate =>
+            this.updateProps({ videoBitRate: Number(videoBitRate) })
+          }
           value={this.props.videoBitRate.toString()}
           placeholder="8000000 (Recommended)"
-        /><Text style={{ fontSize: 22 }}>
-          Audio Bit Rate:
-      </Text>
+        />
+        <Text style={{ fontSize: 22 }}>Audio Bit Rate:</Text>
         <Input
-          onChangeText={(audioBitRate) => this.updateProps({ audioBitRate: parseInt(audioBitRate) })}
+          onChangeText={audioBitRate =>
+            this.updateProps({ audioBitRate: Number(audioBitRate) })
+          }
           value={this.props.audioBitRate.toString()}
           placeholder="128000 (Recommended)"
         />
-        <Text style={{ fontSize: 22 }}>
-          Frames Per Second
-          </Text>
+        <Text style={{ fontSize: 22 }}>Frames Per Second</Text>
         <ButtonGroup
-          onPress={(selectedIndex) => this.updateProps({ fps: parseInt(fpsBtns[selectedIndex]) })}
+          onPress={selectedIndex =>
+            this.updateProps({ fps: Number(fpsBtns[selectedIndex]) })
+          }
           selectedIndex={fpsIndexMap[this.props.fps]}
           buttons={fpsBtns}
           containerStyle={{ height: 100 }}
         />
-        <Button
-          title="Logout"
-          onPress={() => this.handleLogout()}
-        />
+        <Button title="Logout" onPress={() => this.handleLogout()} />
         <Button
           onPress={() => {
             this.updateProps({ settingsFormVisible: false });

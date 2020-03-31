@@ -13,7 +13,7 @@ interface Props { }
 class App extends React.Component<Props, AppState> {
   /**
    * Sets default state of the App Component
-   * @param props 
+   * @param props
    */
   constructor(props: Props) {
     super(props);
@@ -27,7 +27,7 @@ class App extends React.Component<Props, AppState> {
       isViewingFrontCamera: true,
       settingsFormVisible: false,
       requestServerUrl: 'http://35.202.200.155:3000',
-      rtmpServerUrl: "rtmp://35.184.248.56:1935",
+      rtmpServerUrl: 'rtmp://35.184.248.56:1935',
       sessionId: '',
       userId: '',
       videoBitRate: 8000000,
@@ -37,8 +37,8 @@ class App extends React.Component<Props, AppState> {
   /**
    * Updates the state of the App Component
    * @param state - State to be updated
-   * 
-   * This method is mainly used to pass down as 
+   *
+   * This method is mainly used to pass down as
    * a property method for child components.
    */
   updateState(state: object) {
@@ -47,15 +47,13 @@ class App extends React.Component<Props, AppState> {
 
   /**
    * Renders the App component that contains several main components
-   * 
+   *
    * These main components include CameraPublisher, SettingsForm and AppBar
    */
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#333' }}>
-        <StatusBar
-          barStyle="dark-content"
-        />
+        <StatusBar barStyle="dark-content" />
         <View style={{ flex: 6 }}>
           <CameraPublisher
             rtmpServerUrl={this.state.rtmpServerUrl}
@@ -63,10 +61,8 @@ class App extends React.Component<Props, AppState> {
             audioBitRate={this.state.audioBitRate}
             videoBitRate={this.state.videoBitRate}
             fps={this.state.fps}
-
             flashEnabled={this.state.flashEnabled}
             isPublishing={this.state.isPublishing}
-
             cameraId={this.state.cameraId}
             userId={this.state.userId}
             sessionId={this.state.sessionId}
@@ -96,7 +92,7 @@ class App extends React.Component<Props, AppState> {
             updateProps={(props: any) => this.updateState(props)}
           />
         </View>
-      </View >
+      </View>
     );
   }
 }

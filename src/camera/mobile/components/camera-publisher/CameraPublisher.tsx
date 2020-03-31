@@ -5,7 +5,6 @@ import { NodeCameraView } from 'react-native-nodemediaclient';
 import { v4 as uuidv4 } from 'uuid';
 import queryString from 'query-string';
 
-
 /**
  * A wrapper around react-native-nodemediaclient component
  */
@@ -16,8 +15,8 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
   constructor(props: CameraProps) {
     super(props);
     this.state = {
-      rtmpStreamLink: ''
-    }
+      rtmpStreamLink: '',
+    };
   }
 
   /**
@@ -28,10 +27,14 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.CAMERA,
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       ]);
-      if (!Object.keys(granted)
-        .every((permission) => (granted as any)[permission] === PermissionsAndroid.RESULTS.GRANTED)) {
+      if (
+        !Object.keys(granted).every(
+          permission =>
+            (granted as any)[permission] === PermissionsAndroid.RESULTS.GRANTED,
+        )
+      ) {
         Alert.alert('Camera Permission Denied...');
       }
     } catch (err) {
@@ -40,7 +43,7 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
   }
 
   /**
-   * Stops streaming from camera 
+   * Stops streaming from camera
    */
   componentWillUnmount() {
     if (this.vb) {
@@ -104,10 +107,14 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
         Alert.alert('Meowl Mobile App is now streaming!');
         break;
       case 2002:
-        Alert.alert('The RTMP Stream Server or Port either does not exist or does not accept your credentials!')
+        Alert.alert(
+          'The RTMP Stream Server or Port either does not exist or does not accept your credentials!',
+        );
         break;
       case 2004:
         break;
+      default:
+        Alert.alert('Unknown status code:', statusCode);
     }
   }
 
@@ -119,14 +126,31 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
     return (
       <NodeCameraView
         style={{ flex: 10, zIndex: 0 }}
-        ref={(vb: any) => { this.vb = vb }}
+        ref={(vb: NodeMediaClientRef) => {
+          this.vb = vb;
+        }}
         outputUrl={this.state.rtmpStreamLink}
-        camera={{ cameraId: 1, cameraFrontMirror: this.props.isViewingFrontCamera }}
-        audio={{ bitrate: this.props.audioBitRate, profile: 1, samplerate: 44100 }}
-        video={{ preset: 1, bitrate: this.props.videoBitRate, profile: 1, fps: this.props.fps, videoFrontMirror: false }}
+        camera={{
+          cameraId: 1,
+          cameraFrontMirror: this.props.isViewingFrontCamera,
+        }}
+        audio={{
+          bitrate: this.props.audioBitRate,
+          profile: 1,
+          samplerate: 44100,
+        }}
+        video={{
+          preset: 1,
+          bitrate: this.props.videoBitRate,
+          profile: 1,
+          fps: this.props.fps,
+          videoFrontMirror: false,
+        }}
         smoothSkinLevel={3}
         autopreview={true}
-        onStatus={(statusCode: NodeMediaClientStatusCode) => { this.onStatus(statusCode); }}
+        onStatus={(statusCode: NodeMediaClientStatusCode) => {
+          this.onStatus(statusCode);
+        }}
       />
     );
   }

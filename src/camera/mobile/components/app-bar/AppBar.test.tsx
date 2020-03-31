@@ -14,20 +14,22 @@ describe('AppBar Component', () => {
       isPublishing: false,
       isViewingFrontCamera: false,
       settingsFormVisible: false,
-      updateProps: updatePropsMock
+      updateProps: updatePropsMock,
     });
   });
 
   it('renders correctly', () => {
-    const container = renderer.create(
-      <AppBar
-        flashEnabled={false}
-        isPublishing={false}
-        isViewingFrontCamera={false}
-        settingsFormVisible={false}
-        updateProps={(obj) => { }}
-      />
-    ).toJSON();
+    const container = renderer
+      .create(
+        <AppBar
+          flashEnabled={false}
+          isPublishing={false}
+          isViewingFrontCamera={false}
+          settingsFormVisible={false}
+          updateProps={obj => { }}
+        />,
+      )
+      .toJSON();
     expect(container).toMatchSnapshot();
   });
 
@@ -35,5 +37,4 @@ describe('AppBar Component', () => {
     appBarInstance.updateProps({ isPublishing: true });
     expect(updatePropsMock).toHaveBeenLastCalledWith({ isPublishing: true });
   });
-
 });
