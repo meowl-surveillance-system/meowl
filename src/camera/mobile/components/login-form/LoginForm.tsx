@@ -8,7 +8,6 @@ import { login } from './../../utils/utils';
 
 /**
  * A form for logging in and getting rtmp link
- * TODO(chc5): Create unit tests for Login component
  */
 
 interface LoginFormState {

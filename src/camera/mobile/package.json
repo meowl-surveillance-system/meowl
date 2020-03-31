@@ -49,7 +49,7 @@
       "js"
     ],
     "setupFiles": [
-      "./jest-setup.js"
+      "./jest.setup.js"
     ],
     "transform": {
       "^.+\\.(js)$": "<rootDir>/node_modules/babel-jest",

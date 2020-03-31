@@ -4,7 +4,6 @@ import { Icon } from 'react-native-elements';
 
 /**
  * The AppBar component controls all the main features of MeowlMobile
- * TODO(chc5): Create unit tests for AppBar component
  */
 class AppBar extends React.Component<AppBarProps> {
   constructor(props: AppBarProps) {

@@ -8,7 +8,6 @@ import queryString from 'query-string';
 
 /**
  * A wrapper around react-native-nodemediaclient component
- * TODO(chc5): Create unit tests for CameraPublisher component
  */
 class CameraPublisher extends React.Component<CameraProps, CameraState> {
   // Initalized by nodemediaclient to get controller methods from library

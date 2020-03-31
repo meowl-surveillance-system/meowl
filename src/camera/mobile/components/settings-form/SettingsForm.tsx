@@ -6,7 +6,6 @@ import { logout } from '../../utils/utils';
 
 /**
  * A form that controls variable rates for RTMP streaming
- * TODO(chc5): Create unit tests for SettingsForm component
  */
 class SettingsForm extends React.Component<SettingsFormProps> {
   constructor(props: SettingsFormProps) {
@@ -35,6 +34,7 @@ class SettingsForm extends React.Component<SettingsFormProps> {
     if (logoutResponse) {
       await this.updateProps({ isLoggedIn: false });
       setTimeout(() => Alert.alert('Successfully logged out!'), 500);
+      return true;
     } else {
       await this.updateProps({ isLoggedIn: false });
       setTimeout(() => Alert.alert('Failed to logout from server... Clearing cookies related to this account on this app'), 500);

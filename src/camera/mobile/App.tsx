@@ -9,8 +9,6 @@ interface Props { }
 
 /**
  * The overall application component for Meowl Mobile
- * 
- * TODO(chc5): Create unit tests for App component
  */
 class App extends React.Component<Props, AppState> {
   /**
@@ -44,7 +42,7 @@ class App extends React.Component<Props, AppState> {
    * a property method for child components.
    */
   updateState(state: object) {
-    this.setState(state);
+    return this.setState(state);
   }
 
   /**
