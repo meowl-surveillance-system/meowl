@@ -7,7 +7,8 @@ import renderer from 'react-test-renderer';
 it('renders correctly', () => {
   const container = renderer.create(
     <LoginForm
-      outputLink=''
+      requestServerUrl=''
+      rtmpServerUrl=''
       isLoggedIn={true}
       updateProps={(obj) => { }}
     />

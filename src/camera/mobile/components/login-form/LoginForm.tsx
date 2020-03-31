@@ -3,6 +3,8 @@ import { Modal, Button, Alert } from 'react-native';
 import { Text, Input } from 'react-native-elements';
 import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-community/async-storage';
+import CookieManager from '@react-native-community/cookies';
+import { login } from './../../utils/utils';
 
 /**
  * A form for logging in and getting rtmp link
@@ -12,7 +14,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 interface LoginFormState {
   username: string;
   password: string;
-  serverLink: string;
   cameraId: string;
 }
 
@@ -22,7 +23,6 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     this.state = {
       username: 'wack',
       password: 'boi',
-      serverLink: 'http://35.192.148.203:8081',
       cameraId: ''
     }
   }
@@ -36,52 +36,30 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
       this.setState({ cameraId: newCameraId });
       await AsyncStorage.setItem('meowlCameraId', newCameraId);
     }
-    await this.logout();
+    await CookieManager.clearAll();
   }
-  async logout() {
-    const loginEndpoint = this.state.serverLink + '/auth/logout';
-    try {
-      const logoutResponse = await fetch(loginEndpoint, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          credentials: 'include',
-        }
-      });
-      return logoutResponse;
-    }
-    catch (err) {
-      return null;
-    }
-  }
-  async login() {
-    const loginEndpoint = this.state.serverLink + '/auth/login';
-    try {
-      const loginResponse = await fetch(loginEndpoint, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          credentials: 'include',
-        },
-        body: JSON.stringify({
-          username: this.state.username,
-          password: this.state.password,
-        })
-      });
-      return loginResponse;
-    }
-    catch (err) {
-      Alert.alert('Wrong IP and port number. Note: please specify http:// or https://');
+
+  async handleLogin() {
+    let loginResponse: Response | null = await login({
+      username: this.state.username,
+      password: this.state.password
+    }, this.props.requestServerUrl);
+    if (loginResponse) {
+      if (loginResponse.ok) {
+        return loginResponse;
+      } else {
+        Alert.alert('Wrong username or password.')
+        return null;
+      }
+    } else {
+      Alert.alert('Wrong IP/Port Number. Please specify http:// or https://');
       return null;
     }
   }
 
-  async onSubmit() {
-    let loginResponse: Response | null = await this.login();
-    if (loginResponse && loginResponse.ok) {
-      const rtmpResponse = await fetch(this.state.serverLink + '/auth/rtmpRequest', {
+  async retrieveRtmpCredentials() {
+    try {
+      const rtmpResponse = await fetch(this.props.requestServerUrl + '/auth/rtmpRequest', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -91,21 +69,40 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
       });
       if (rtmpResponse.ok) {
         const responseBody = await rtmpResponse.json();
-        console.log(responseBody);
+        return responseBody;
+      } else {
+        Alert.alert('Incorrect cookie credentials from logging in.')
+        return null;
+      }
+    } catch (error) {
+      Alert.alert('Error:', error.toString());
+      return null;
+    }
+  }
+
+  async onSubmit() {
+    const loginResponse: Response | null = await this.handleLogin();
+    if (loginResponse) {
+      const rtmpCredentials = await this.retrieveRtmpCredentials();
+      if (rtmpCredentials) {
         this.updateProps({
           isLoggedIn: true,
-          userId: responseBody['userId'],
+          userId: rtmpCredentials['userId'],
           // TODO(yliu): Change this to sessionId after server changes this minor inconsistency
-          sessionId: responseBody['sessionID'],
+          sessionId: rtmpCredentials['sessionID'],
           cameraId: this.state.cameraId
         });
+        this.setState({
+          username: '',
+          password: ''
+        })
+        return true;
       } else {
-        Alert.alert('RTMP Server failed to provide session and user credentials');
+        return false;
       }
     } else {
-      Alert.alert('Wrong username or password');
+      return false;
     }
-    return true;
   }
 
   /**
@@ -120,8 +117,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   componentWillUnmount() {
     this.setState({
       username: '',
-      password: '',
-      serverLink: ''
+      password: ''
     });
   }
 
@@ -139,8 +135,8 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
           Request Server IP & Port Number:
         </Text>
         <Input
-          onChangeText={(serverLink) => this.setState({ serverLink })}
-          value={this.state.serverLink}
+          onChangeText={(requestServerUrl) => this.updateProps({ requestServerUrl })}
+          value={this.props.requestServerUrl}
         />
         <Text style={{ fontSize: 22 }}>
           Username:

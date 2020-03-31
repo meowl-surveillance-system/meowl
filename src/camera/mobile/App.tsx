@@ -28,7 +28,8 @@ class App extends React.Component<Props, AppState> {
       isPublishing: false,
       isViewingFrontCamera: true,
       settingsFormVisible: false,
-      outputLink: "rtmp://34.71.199.141:1935",
+      requestServerUrl: 'http://35.202.200.155:3000',
+      rtmpServerUrl: "rtmp://35.184.248.56:1935",
       sessionId: '',
       userId: '',
       videoBitRate: 8000000,
@@ -59,7 +60,7 @@ class App extends React.Component<Props, AppState> {
         />
         <View style={{ flex: 6 }}>
           <CameraPublisher
-            outputLink={this.state.outputLink}
+            rtmpServerUrl={this.state.rtmpServerUrl}
             isViewingFrontCamera={this.state.isViewingFrontCamera}
             audioBitRate={this.state.audioBitRate}
             videoBitRate={this.state.videoBitRate}
@@ -77,13 +78,15 @@ class App extends React.Component<Props, AppState> {
           audioBitRate={this.state.audioBitRate}
           fps={this.state.fps}
           settingsFormVisible={this.state.settingsFormVisible}
-          outputLink={this.state.outputLink}
+          requestServerUrl={this.state.requestServerUrl}
+          rtmpServerUrl={this.state.rtmpServerUrl}
           videoBitRate={this.state.videoBitRate}
           updateProps={(props: any) => this.updateState(props)}
         />
         <LoginForm
           isLoggedIn={this.state.isLoggedIn}
-          outputLink={this.state.outputLink}
+          requestServerUrl={this.state.requestServerUrl}
+          rtmpServerUrl={this.state.rtmpServerUrl}
           updateProps={(props: any) => this.updateState(props)}
         />
         <View style={{ flex: 1 }}>

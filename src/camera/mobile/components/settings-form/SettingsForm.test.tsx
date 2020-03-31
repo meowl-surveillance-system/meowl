@@ -9,7 +9,8 @@ it('renders correctly', () => {
     <SettingsForm
       audioBitRate={1234}
       fps={1234}
-      outputLink=''
+      requestServerUrl=''
+      rtmpServerUrl=''
       settingsFormVisible={false}
       updateProps={(obj) => { }}
       videoBitRate={1234}

@@ -1,6 +1,9 @@
 import React from 'react';
-import { Modal, Button } from 'react-native';
+import { Modal, Button, Alert } from 'react-native';
 import { Text, Input, ButtonGroup } from 'react-native-elements';
+import CookieManager from '@react-native-community/cookies';
+import { logout } from '../../utils/utils';
+
 
 /**
  * A form that controls variable rates for RTMP streaming
@@ -18,6 +21,24 @@ class SettingsForm extends React.Component<SettingsFormProps> {
    */
   updateProps(props: object) {
     this.props.updateProps(props);
+  }
+
+  async handleLogout() {
+    const logoutResponse: Response | null = await logout(this.props.requestServerUrl);
+    this.props.updateProps({
+      userId: '',
+      sessionId: '',
+      settingsFormVisible: false,
+    });
+    if (logoutResponse) {
+      await this.updateProps({ isLoggedIn: false });
+      setTimeout(() => Alert.alert('Successfully logged out!'), 500);
+    } else {
+      await this.updateProps({ isLoggedIn: false });
+      setTimeout(() => Alert.alert('Failed to logout from server... Clearing cookies related to this account on this app'), 500);
+      await CookieManager.clearAll();
+      return false;
+    }
   }
 
   /**
@@ -42,8 +63,8 @@ class SettingsForm extends React.Component<SettingsFormProps> {
           Stream Link:
           </Text>
         <Input
-          onChangeText={(outputLink) => this.updateProps({ outputLink: outputLink })}
-          value={this.props.outputLink}
+          onChangeText={(rtmpServerUrl) => this.updateProps({ rtmpServerUrl: rtmpServerUrl })}
+          value={this.props.rtmpServerUrl}
           placeholder="rtmp://"
         />
         <Text style={{ fontSize: 22 }}>
@@ -69,6 +90,10 @@ class SettingsForm extends React.Component<SettingsFormProps> {
           selectedIndex={fpsIndexMap[this.props.fps]}
           buttons={fpsBtns}
           containerStyle={{ height: 100 }}
+        />
+        <Button
+          title="Logout"
+          onPress={() => this.handleLogout()}
         />
         <Button
           onPress={() => {

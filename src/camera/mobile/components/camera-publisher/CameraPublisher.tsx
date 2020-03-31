@@ -76,7 +76,7 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
 
   async setNewRtmpStreamLink() {
     const streamId: string = uuidv4();
-    const baseUrl: string = this.props.outputLink + '/show/' + streamId;
+    const baseUrl: string = this.props.rtmpServerUrl + '/show/' + streamId;
     const fullUrl: string = queryString.stringifyUrl({
       url: baseUrl,
       query: {

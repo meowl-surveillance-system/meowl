@@ -15,10 +15,11 @@ interface AppState {
   isLoggedIn: boolean;
   isPublishing: boolean;
   isViewingFrontCamera: boolean;
+  requestServerUrl: string;
   settingsFormVisible: boolean;
   sessionId: string;
   userId: string;
-  outputLink: string;
+  rtmpServerUrl: string;
   videoBitRate: number;
 }
 
@@ -29,7 +30,7 @@ interface CameraProps {
   fps: number;
   isPublishing: boolean;
   isViewingFrontCamera: boolean;
-  outputLink: string;
+  rtmpServerUrl: string;
   sessionId: string;
   userId: string;
   videoBitRate: number;
@@ -49,7 +50,8 @@ interface AppBarProps {
 
 interface SettingsFormProps {
   settingsFormVisible: boolean;
-  outputLink: string;
+  requestServerUrl: string;
+  rtmpServerUrl: string;
   videoBitRate: number;
   audioBitRate: number;
   fps: number;
@@ -57,7 +59,8 @@ interface SettingsFormProps {
 }
 
 interface LoginFormProps {
-  outputLink: string;
+  requestServerUrl: string;
+  rtmpServerUrl: string;
   isLoggedIn: boolean;
   updateProps(props: object): void;
 }

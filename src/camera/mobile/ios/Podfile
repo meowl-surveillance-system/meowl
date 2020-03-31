@@ -65,6 +65,8 @@ target 'MeowlMobile' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'react-native-cookies', :path => '../node_modules/@react-native-community/cookies'
+
   target 'MeowlMobileTests' do
     inherit! :complete
     # Pods for testing

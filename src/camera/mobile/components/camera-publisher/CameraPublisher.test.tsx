@@ -15,7 +15,7 @@ it('renders correctly', () => {
       isViewingFrontCamera={false}
       audioBitRate={1234}
       fps={30}
-      outputLink=''
+      rtmpServerUrl=''
       videoBitRate={1234}
     />
   ).toJSON();
