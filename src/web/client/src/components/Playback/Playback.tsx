@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Container, Typography } from "@material-ui/core";
+import Collapse from '@material-ui/core/Collapse';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -11,8 +12,8 @@ interface State {
   url: string;
   cameraIds: Array<string>;
   cameraIdsDict: Record<string, Array<string>>;
+  cameraIdsSelected: Record<number, boolean>;
 }
-
 export default class Playback extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -20,7 +21,16 @@ export default class Playback extends Component<Props, State> {
       url: "",
       cameraIds: [],
       cameraIdsDict: {},
+      cameraIdsSelected: {},
     };
+  }
+  selectCamera = (index : number):void   => {
+    this.setState({
+      cameraIdsSelected: {
+        ...this.state.cameraIdsSelected,
+        [index] : !this.state.cameraIdsSelected[index],
+      },
+    });
   }
 
   // Map cameraId to streamIds
@@ -48,15 +58,18 @@ export default class Playback extends Component<Props, State> {
   renderList = () => {
     return Object.keys(this.state.cameraIdsDict).map((cameraId, index) => {
       return (
-        <List
-          key={index}
-          subheader={
-            <ListSubheader color="inherit">
-              <Typography variant="inherit">{cameraId}</Typography>
-            </ListSubheader>
-          }
-        >
-          {this.renderStreamIds(this.state.cameraIdsDict[cameraId])}
+        <List>
+          <ListItem
+            button onClick={() => this.selectCamera(index)}
+            key={index}
+          >
+          {cameraId}
+          </ListItem>
+          <Collapse in={this.state.cameraIdsSelected[index]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+            {this.renderStreamIds(this.state.cameraIdsDict[cameraId])}
+            </List>
+          </Collapse>
         </List>
       );
     });
