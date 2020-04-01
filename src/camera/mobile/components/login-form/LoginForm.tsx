@@ -18,7 +18,6 @@ interface LoginFormState {
 
 /**
  * A form to log into the request server and get credentials for streaming
- * TODO(chc5): Create unit tests for LoginForm component
  */
 class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   constructor(props: LoginFormProps) {
