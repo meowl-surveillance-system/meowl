@@ -21,7 +21,11 @@ export default function sendEmail(req: any) {
     
     const email = new Email({
         message: {
-            from: 'Meowl Notification Service'
+            from: 'Meowl Notification Service',
+            attachments: [{
+                filename: 'detected.jpg',
+                path: req.locals.img
+            }]
         },
         transport: transporter,
         send: true,
@@ -33,7 +37,7 @@ export default function sendEmail(req: any) {
         message: {
             to: req.recipient
         },
-        locals: req.locals
+        locals: req.locals,
     })
     .catch(console.error);
 }

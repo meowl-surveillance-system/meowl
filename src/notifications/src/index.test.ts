@@ -12,7 +12,10 @@ beforeEach(() => {
 
 it('should call nodemailer function', () => {
     const req = {
-        'test': 'dummy'
+        'test': 'dummy',
+        locals: {
+            img: 'img'
+        }
     }
     sendEmail(req);
     expect(sendMailMock).toHaveBeenCalled;
