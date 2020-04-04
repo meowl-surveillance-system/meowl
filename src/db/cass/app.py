@@ -35,4 +35,4 @@ def stop_stream(stream_id):
   del running_streams[stream_id]
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(debug=True, host='0.0.0.0')
