@@ -1,7 +1,6 @@
 from flask import Flask, request
 import cv2
 import numpy as np
-#import add_dataset_resources as add_data
 import embedding_extractor as embed_ex
 import apply_detections
 import train_face_recognizer as trainer
@@ -36,13 +35,6 @@ def display_vid():
 
     print("Finished Displaying Video")
 
-'''@app.route('/upload_resources/')
-def retrieve_dataset_res():
-    """ Retrieves the dataset resources """
-    add_data.add_resources(request.args.get("link"), request.args.get("class"))
-    return "Finished adding resources"
-'''
-
 @app.route('/extract_embeddings/')
 def extract_embeddings():
     """ Extracts the embeddings"""
@@ -58,29 +50,6 @@ def train_face_rec():
     trainer.train_recognizer()
     return "Finsihed Training Face Recognizer"
 
-@app.route('/recognize_faces/')
-def recognize():
-    """ Recognizes the Faces on frames """
-    args = {
-        'confidence': .5,
-        'input': request.args.get('input'),
-        'output': 'res.avi'
-    }
-    recognizer.recognize(args)
-    return "Finished Recognizing Faces"
-
-@app.route('/process/')
-def process_video():
-    """ Applies object detection on an input """
-    args = {
-        "input": request.args.get('input'),
-        "output": request.args.get('output'),
-        "confidence": request.args.get('confidence', default = .5, type = float),
-        "threshold": request.args.get('threshold', default = .3, type = float)
-    }
-    obj_detector.run_object_detection(args)
-    return "Finished Object Detection"
-
 @app.route('/apply_detections/')
 def process_detections():
     """ Applies object detection on an input """
@@ -89,7 +58,7 @@ def process_detections():
         "output": request.args.get('output'),
         "camera_id": request.args.get('camera_id'),
         "stream_id": request.args.get('stream_id'),
-        "confidence": request.args.get('confidence', default = .5, type = float),
+        "confidence": request.args.get('confidence', default = .8, type = float),
         "threshold": request.args.get('threshold', default = .3, type = float)
     }
     apply_detections.process(args)

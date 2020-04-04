@@ -1,3 +1,4 @@
+import imutils
 import cv2
 import mock
 import numpy as np
@@ -7,15 +8,13 @@ from pytest_mock import mocker
 import embedding_extractor as ee
 
 def test_load_configs(mocker):
-    mocked_os = mocker.patch('os.environ.get')
-    mocked_os.return_value = 'path'
+    mocked_os = mocker.patch('os.path')
+    mocked_os.exist.return_value = True
+    mocked_list_images = mocker.patch('imutils.paths.list_images')
+    mocked_list_images.return_value = []
     mocked_caffe_net = mocker.patch('cv2.dnn.readNetFromCaffe')
     mocked_torch_net = mocker.patch('cv2.dnn.readNetFromTorch')
     ee.load_configs()
-    mocked_os.assert_any_call('DETECTOR_PROTOTXT_PATH')
-    mocked_os.assert_any_call('DETECTOR_MODEL_PATH')
-    mocked_os.assert_any_call('EMBEDDING_MODEL_PATH')
-    mocked_os.assert_any_call('DATASET_PATH')
     mocked_caffe_net.assert_called_once()
     mocked_torch_net.assert_called_once()
 
@@ -32,5 +31,9 @@ def test_detect_images(mocker):
     ee.detect_images({'output':''}, detector, embedder, [])
     mocked_check_detections.assert_not_called()
 
-
+def test_write_embeddings(mocker):
+    mocked_open = mocker.patch('builtins.open')
+    mocked_pickle = mocker.patch('pickle.dumps')
+    ee.write_embeddings("", "")
+    assert mocked_pickle.call_count == 1
 
