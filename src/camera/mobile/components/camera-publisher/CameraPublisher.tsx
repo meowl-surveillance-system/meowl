@@ -10,7 +10,7 @@ import queryString from 'query-string';
  */
 class CameraPublisher extends React.Component<CameraProps, CameraState> {
   // Initalized by nodemediaclient to get controller methods from library
-  vb: NodeMediaClientRef | undefined;
+  client: NodeMediaClientRef | undefined;
 
   constructor(props: CameraProps) {
     super(props);
@@ -46,8 +46,8 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
    * Stops streaming from camera
    */
   componentWillUnmount() {
-    if (this.vb) {
-      this.vb.stop();
+    if (this.client) {
+      this.client.stop();
     }
   }
 
@@ -56,19 +56,19 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
    * @param prevProps Previous property state
    */
   async componentDidUpdate(prevProps: CameraProps) {
-    if (this.vb) {
+    if (this.client) {
       if (this.props.flashEnabled !== prevProps.flashEnabled) {
-        this.vb.flashEnable(this.props.flashEnabled);
+        this.client.flashEnable(this.props.flashEnabled);
       }
       if (this.props.isViewingFrontCamera !== prevProps.isViewingFrontCamera) {
-        this.vb.switchCamera();
+        this.client.switchCamera();
       }
       if (this.props.isPublishing !== prevProps.isPublishing) {
         if (this.props.isPublishing === true) {
           await this.setNewRtmpStreamLink();
-          this.vb.start();
+          this.client.start();
         } else {
-          this.vb.stop();
+          this.client.stop();
         }
       }
     }
@@ -126,8 +126,8 @@ class CameraPublisher extends React.Component<CameraProps, CameraState> {
     return (
       <NodeCameraView
         style={{ flex: 10, zIndex: 0 }}
-        ref={(vb: NodeMediaClientRef) => {
-          this.vb = vb;
+        ref={(client: NodeMediaClientRef) => {
+          this.client = client;
         }}
         outputUrl={this.state.rtmpStreamLink}
         camera={{

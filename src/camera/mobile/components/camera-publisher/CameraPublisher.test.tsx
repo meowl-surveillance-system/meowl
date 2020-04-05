@@ -69,9 +69,9 @@ describe('CameraPublisher Component', () => {
 
   it('should call flashEnable on props change', async () => {
     oldProps.flashEnabled = true;
-    cameraPublisherInstance.vb = new NodeMediaClientRefMock();
+    cameraPublisherInstance.client = new NodeMediaClientRefMock();
     const vbFlashEnableSpy: jest.SpyInstance = jest.spyOn(
-      cameraPublisherInstance.vb,
+      cameraPublisherInstance.client,
       'flashEnable',
     );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
@@ -80,9 +80,9 @@ describe('CameraPublisher Component', () => {
 
   it('should call stop on props change', async () => {
     oldProps.isPublishing = true;
-    cameraPublisherInstance.vb = new NodeMediaClientRefMock();
+    cameraPublisherInstance.client = new NodeMediaClientRefMock();
     const vbStopSpy: jest.SpyInstance = jest.spyOn(
-      cameraPublisherInstance.vb,
+      cameraPublisherInstance.client,
       'stop',
     );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
@@ -91,9 +91,9 @@ describe('CameraPublisher Component', () => {
 
   it('should call switchCamera on props change', async () => {
     oldProps.isViewingFrontCamera = true;
-    cameraPublisherInstance.vb = new NodeMediaClientRefMock();
+    cameraPublisherInstance.client = new NodeMediaClientRefMock();
     const vbSwitchCameraSpy: jest.SpyInstance = jest.spyOn(
-      cameraPublisherInstance.vb,
+      cameraPublisherInstance.client,
       'switchCamera',
     );
     await cameraPublisherInstance.componentDidUpdate(oldProps);
