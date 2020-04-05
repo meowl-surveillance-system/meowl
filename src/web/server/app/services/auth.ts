@@ -20,12 +20,13 @@ import { client } from '../utils/client';
  */
 export const storeUser = (
   userId: string,
+  email: string,
   username: string,
   sid: any,
   password: string
 ) => {
   bcrypt.hash(password, 12, (err, hash) => {
-    const params = [userId, username, hash, sid];
+    const params = [userId, email, username, hash, sid];
     client.execute(INSERT_USERSID, params, { prepare: true });
     client.execute(INSERT_USERSNAME, params, { prepare: true });
   });
