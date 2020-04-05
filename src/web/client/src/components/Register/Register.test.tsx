@@ -8,6 +8,7 @@ describe("Register component", () => {
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
   let eventMock: any;
+  let preventDefaultMock: jest.Mock;
   beforeEach(() => {
     // Mock Fetch
     const mockSuccessResponse = "successfully registered";
@@ -17,8 +18,9 @@ describe("Register component", () => {
     });
     jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);
 
+    preventDefaultMock = jest.fn();
     eventMock = {
-      preventDefault: jest.fn(),
+      preventDefault: preventDefaultMock,
     };
 
     historyMock = {
@@ -45,6 +47,11 @@ describe("Register component", () => {
       </Router>,
     );
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it("should call preventDefault on onSubmit", () => {
+    registerMock.onSubmit(eventMock);
+    expect(preventDefaultMock).toHaveBeenCalled();
   });
 
   // There is an issue with this test, onAuthChange is not being called
