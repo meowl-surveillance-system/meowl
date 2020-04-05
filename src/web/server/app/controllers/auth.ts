@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { get as HTTPGet } from 'axios';
+import axios from 'axios';
 
 import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
@@ -101,7 +101,7 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
           'http://localhost:5000/' +
           (start ? 'store/' : 'stop/') +
           req.body.name;
-        const saverResponse = await HTTPGet(saverUrl);
+        const saverResponse = await axios.get(saverUrl);
         if (saverResponse.status === 200) {
           res.status(200).send('OK');
         } else {
