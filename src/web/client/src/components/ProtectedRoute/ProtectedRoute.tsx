@@ -8,8 +8,6 @@ export interface Props extends RouteProps {
 
 export default class ProtectedRoute extends Route<Props> {
   render() {
-    console.log(this.props.isLoggedIn);
-
     if (this.props.isLoggedIn === false) {
       return <Redirect to={{ pathname: this.props.redirectPath }} />;
     } else {
