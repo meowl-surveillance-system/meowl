@@ -1,48 +1,55 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from "react-router-dom";
 import Register from "./Register";
 
 describe("Register component", () => {
   let registerMock: Register;
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
-  let eventMock: FormEvent;
+  let eventMock: any;
   beforeEach(() => {
-  	// Mock Fetch
-    const mockSuccessResponse = 'successfully registered';
-    const mockTextPromise = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise = Promise.resolve({
-    	text: () => mockTextPromise,
+    // Mock Fetch
+    const mockSuccessResponse = "successfully registered";
+    const mockTextPromise: any = Promise.resolve(mockSuccessResponse);
+    const mockFetchPromise: any = Promise.resolve({
+      text: () => mockTextPromise,
     });
-    jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
+    jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);
 
     eventMock = {
-      preventDefault: jest.fn()
-    }
+      preventDefault: jest.fn(),
+    };
 
     historyMock = {
-      push: jest.fn()
-    }
+      push: jest.fn(),
+    };
 
-  	onAuthChangeMock = jest.fn();
+    onAuthChangeMock = jest.fn();
 
     registerMock = new Register({
       isLoggedIn: false,
       onAuthChange: onAuthChangeMock,
       history: historyMock,
     });
-
   });
 
   it("renders Register component", () => {
-  	const { container } = render(<Router><Register /></Router>);
+    const { container } = render(
+      <Router>
+        <Register
+          isLoggedIn={false}
+          onAuthChange={onAuthChangeMock}
+          history={historyMock}
+        />
+      </Router>,
+    );
     expect(container.firstChild).toMatchSnapshot();
   });
 
   // There is an issue with this test, onAuthChange is not being called
-  it.skip('should call onAuthChange on onSubmit', () => {
-  	registerMock.onSubmit(eventMock);
+  it.skip("should call onAuthChange on onSubmit", () => {
+    registerMock.onSubmit(eventMock);
     expect(onAuthChangeMock).toHaveBeenCalled();
   });
 });

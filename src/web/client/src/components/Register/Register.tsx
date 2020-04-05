@@ -121,9 +121,9 @@ export default class Register extends Component<Props, State> {
             </Button>
             <Grid container>
               <Grid item>
-                  <RouterLink to="/login">
-                    {"Already have an account? Sign In"}
-                  </RouterLink>
+                <RouterLink to="/login">
+                  {"Already have an account? Sign In"}
+                </RouterLink>
               </Grid>
             </Grid>
           </form>
