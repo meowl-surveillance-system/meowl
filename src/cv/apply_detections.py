@@ -9,11 +9,13 @@ import settings
 import time
 import yolo_video_detect as obj_detector
 import recognize_faces as face_recognize
-#import cv_producer
-#import insert_frame
+import cv_producer
+import insert_frame
 
-def face_tracker_helper(face_tracker, new_detections):
-    """ Returns True if there is at least 1 new detection """
+def add_unknown_detections(face_tracker, new_detections):
+    """ Add unknown detections to face_tracker
+    Returns True if there is at least 1 new detection
+    """
     ret_val = False
     for i in range(len(new_detections)):
         if new_detections[i] == "unknown":
@@ -24,9 +26,8 @@ def face_tracker_helper(face_tracker, new_detections):
     return ret_val
 
 def init_video_stream(args):
-    """ Obtains the video stream """
+    """ Returns the video stream """
     stream = cv2.VideoCapture(args["input"])
-    #stream = cv2.VideoCapture(0)
     try:
         if imutils.is_cv2():
             prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT
@@ -37,8 +38,6 @@ def init_video_stream(args):
 
     except:
         raise Exception("Could not determine # of frames in video")
-        total = -1
-
     return stream
 
 def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, labels, total):
@@ -75,12 +74,12 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
 
         #if len(res['objects'].keys()) > 0 or len(res['faces']) > 0:
 
-        new_detect_exist = face_tracker_helper(face_tracker, res['faces'])
+        new_detect_exist = add_unknown_detections(face_tracker, res['faces'])
         if len(res['faces']) > 0 and new_detect_exist:
             img_str = cv2.imencode('.jpg', frame)[1].tostring()
             img_str = bytes(img_str)
-            #insert_frame.insert_frame(args['camera_id'], args['stream_id'], str(frame_id), img_str, json.dumps(res).encode('utf-8'))        
-            #cv_producer.send_metadata(args['camera_id'], args['stream_id'], str(frame_id), res)
+            insert_frame.insert_frame(args['camera_id'], args['stream_id'], str(frame_id), img_str, json.dumps(res).encode('utf-8'))        
+            cv_producer.send_metadata(args['camera_id'], args['stream_id'], str(frame_id), res)
             frame_id += 1
             #cv2.imshow('Frame', frame)
             #key = cv2.waitKey(1) & 0xFF

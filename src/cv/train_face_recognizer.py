@@ -9,7 +9,7 @@ def load_configs():
     """ Loading in resources """
     print("[INFO] loading face embeddings...")
     if not os.path.exists(settings.EMBEDDINGS):
-        raise Exception("EMBEDDINGS_PATH: not found")
+        raise OSError("EMBEDDINGS_PATH: not found")
     data = pickle.loads(open(settings.EMBEDDINGS, "rb").read())
     print("[INFO] encoding labels...")
     le = LabelEncoder()

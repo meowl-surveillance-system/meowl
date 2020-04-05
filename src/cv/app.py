@@ -48,7 +48,7 @@ def extract_embeddings():
 def train_face_rec():
     """ Trains the Face Recognizer """
     trainer.train_recognizer()
-    return "Finsihed Training Face Recognizer"
+    return "Finished Training Face Recognizer"
 
 @app.route('/apply_detections/')
 def process_detections():

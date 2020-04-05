@@ -11,21 +11,21 @@ def load_configs():
     """ Loads in resources """
     print("Loading Caffe based face detector to localize faces in an image")
     if not os.path.exists(settings.DETECTOR_PROTOTXT):
-        raise Exception("DETECTOR_PROTOTXT_PATH: not found")
+        raise OSError("DETECTOR_PROTOTXT_PATH: not found")
     proto_path = settings.DETECTOR_PROTOTXT
     if not os.path.exists(settings.DETECTOR_MODEL):
-        raise Exception("DETECTOR_MODEL_PATH: not found")
+        raise OSError("DETECTOR_MODEL_PATH: not found")
     model_path = settings.DETECTOR_MODEL
 
     detector = cv2.dnn.readNetFromCaffe(proto_path, model_path)
 
     print("Loading Openface imlementation of Facenet model")
     if not os.path.exists(settings.EMBEDDING_MODEL):
-        raise Exception("EMBEDDING__MODEL_PATH: not found")
+        raise OSError("EMBEDDING__MODEL_PATH: not found")
     embedder = cv2.dnn.readNetFromTorch(settings.EMBEDDING_MODEL)
 
     if not os.path.exists(settings.DATASET):
-        raise Exception("DATASET_PATH: not found")
+        raise OSError("DATASET_PATH: not found")
     image_paths = list(paths.list_images(settings.DATASET))
     return detector, embedder, image_paths
 

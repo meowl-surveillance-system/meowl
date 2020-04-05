@@ -9,21 +9,21 @@ import settings
 def load_configs():
     """ Loading Configurations """
     if not os.path.exists(settings.DETECTOR_PROTOTXT):
-        raise Exception("DETECTOR_PROTOTXT_PATH: not found")
+        raise OSError("DETECTOR_PROTOTXT_PATH: not found")
     proto_path = settings.DETECTOR_PROTOTXT
     if not os.path.exists(settings.DETECTOR_MODEL):
-        raise Exception("DETECTOR_MODEL_PATH: not found")
+        raise OSError("DETECTOR_MODEL_PATH: not found")
     model_path = settings.DETECTOR_MODEL
     detector = cv2.dnn.readNetFromCaffe(proto_path, model_path)
     print("[INFO] loading face recognizer...")
     if not os.path.exists(settings.EMBEDDING_MODEL):
-        raise Exception("EMBEDDING_MODEL_PATH: not found")
+        raise OSError("EMBEDDING_MODEL_PATH: not found")
     embedder = cv2.dnn.readNetFromTorch(settings.EMBEDDING_MODEL)
     if not os.path.exists(settings.RECOGNIZER):
-        raise Exception("RECOGNIZER_PATH: not found")
+        raise OSError("RECOGNIZER_PATH: not found")
     recognizer = pickle.loads(open(settings.RECOGNIZER, "rb").read())
     if not os.path.exists(settings.LABEL_ENCODER):
-        raise Exception("LABEL_ENCODER_PATH: not found")
+        raise OSError("LABEL_ENCODER_PATH: not found")
     le = pickle.loads(open(settings.LABEL_ENCODER, "rb").read())
     return detector, embedder, recognizer, le
 
