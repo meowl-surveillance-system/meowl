@@ -57,6 +57,16 @@ target 'MeowlMobile' do
 
   pod 'react-native-nodemediaclient', :path => '../node_modules/react-native-nodemediaclient'
 
+
+
+
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'react-native-cookies', :path => '../node_modules/@react-native-community/cookies'
+
   target 'MeowlMobileTests' do
     inherit! :complete
     # Pods for testing

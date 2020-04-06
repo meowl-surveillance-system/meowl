@@ -1,58 +1,98 @@
 import React from 'react';
-import { PermissionsAndroid } from 'react-native';
-import { NodeCameraView } from 'react-native-nodemediaclient';
-
-/**
- * The overall application component for Meowl Mobile
- * 
- * TODO(chc5): Create unit tests for App component
- * TODO(chc5): Break the application up into multiple components
- */
+import { View, StatusBar } from 'react-native';
+import CameraPublisher from './components/camera-publisher/CameraPublisher';
+import SettingsForm from './components/settings-form/SettingsForm';
+import AppBar from './components/app-bar/AppBar';
+import LoginForm from './components/login-form/LoginForm';
 
 interface Props { }
 
-interface State { }
-class App extends React.Component<Props, State> {
+/**
+ * The overall application component for Meowl Mobile
+ */
+class App extends React.Component<Props, AppState> {
+  /**
+   * Sets default state of the App Component
+   * @param props
+   */
   constructor(props: Props) {
     super(props);
+    this.state = {
+      audioBitRate: 128000,
+      cameraId: '',
+      flashEnabled: false,
+      fps: 30,
+      isLoggedIn: false,
+      isPublishing: false,
+      isViewingFrontCamera: true,
+      settingsFormVisible: false,
+      requestServerUrl: 'http://35.202.200.155:3000',
+      rtmpServerUrl: 'rtmp://35.184.248.56:1935',
+      sessionId: '',
+      userId: '',
+      videoBitRate: 8000000,
+    };
   }
 
   /**
-   * Asks the user for camera, audio, storage permissions
+   * Updates the state of the App Component
+   * @param state - State to be updated
+   *
+   * This method is mainly used to pass down as
+   * a property method for child components.
    */
-  async componentDidMount() {
-    try {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-      ]);
-      if (Object.keys(granted)
-        .every((permission) => (granted as any)[permission] === PermissionsAndroid.RESULTS.GRANTED)) {
-        console.log('You can use the camera');
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+  updateState(state: object) {
+    return this.setState(state);
   }
 
   /**
-   * Renders NodeCameraView that will serve as a streaming camera
-   * 
-   * TODO(chc5): Make important NodeCameraView properties customizable in settings
+   * Renders the App component that contains several main components
+   *
+   * These main components include CameraPublisher, SettingsForm and AppBar
    */
   render() {
     return (
-      <NodeCameraView
-        style={{ flex: 1, zIndex: 0 }}
-        outputUrl={"rtmp://192.168.0.10/live/stream"}
-        camera={{ cameraId: 1, cameraFrontMirror: true }}
-        audio={{ bitrate: 32000, profile: 1, samplerate: 44100 }}
-        video={{ preset: 12, bitrate: 400000, profile: 1, fps: 15, videoFrontMirror: false }}
-        autopreview={true}
-      />
+      <View style={{ flex: 1, backgroundColor: '#333' }}>
+        <StatusBar barStyle="dark-content" />
+        <View style={{ flex: 6 }}>
+          <CameraPublisher
+            rtmpServerUrl={this.state.rtmpServerUrl}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            audioBitRate={this.state.audioBitRate}
+            videoBitRate={this.state.videoBitRate}
+            fps={this.state.fps}
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
+            cameraId={this.state.cameraId}
+            userId={this.state.userId}
+            sessionId={this.state.sessionId}
+          />
+        </View>
+        <SettingsForm
+          audioBitRate={this.state.audioBitRate}
+          fps={this.state.fps}
+          settingsFormVisible={this.state.settingsFormVisible}
+          requestServerUrl={this.state.requestServerUrl}
+          rtmpServerUrl={this.state.rtmpServerUrl}
+          videoBitRate={this.state.videoBitRate}
+          updateProps={(props: any) => this.updateState(props)}
+        />
+        <LoginForm
+          isLoggedIn={this.state.isLoggedIn}
+          requestServerUrl={this.state.requestServerUrl}
+          rtmpServerUrl={this.state.rtmpServerUrl}
+          updateProps={(props: any) => this.updateState(props)}
+        />
+        <View style={{ flex: 1 }}>
+          <AppBar
+            settingsFormVisible={this.state.settingsFormVisible}
+            flashEnabled={this.state.flashEnabled}
+            isPublishing={this.state.isPublishing}
+            isViewingFrontCamera={this.state.isViewingFrontCamera}
+            updateProps={(props: any) => this.updateState(props)}
+          />
+        </View>
+      </View>
     );
   }
 }
