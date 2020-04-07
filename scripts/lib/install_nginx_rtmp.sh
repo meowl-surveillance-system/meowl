@@ -72,8 +72,6 @@ http {
         listen 443 ssl;
 
         location / {
-            set \$auth_request_uri \"http://127.0.0.1/api-https-proxy/\$1\$is_args\$args\";
-            auth_request .auth;
             # Disable cache
             add_header 'Cache-Control' 'no-cache';
 
@@ -89,11 +87,6 @@ http {
                 add_header 'Content-Length' 0;
                 return 204;
             }
-
-            # Add args to subsequent requests
-            sub_filter .ts .ts\$is_args\$args;
-            sub_filter_once off;
-            sub_filter_types application/vnd.apple.mpegurl;
 
             types {
                 application/dash+xml mpd;
@@ -112,10 +105,6 @@ http {
             alias ${MEOWL_CA_CERT};
         }
 
-        location .auth {
-            internal;
-            proxy_pass \$auth_request_uri;
-        }
     }
     server {
         listen 80;
