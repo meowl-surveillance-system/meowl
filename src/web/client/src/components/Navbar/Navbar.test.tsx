@@ -15,8 +15,8 @@ describe("Navbar component", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  // will get network request failed error if this test is put right below
-  // or after the "should call renderIsLoggedIn when isLoggedIn is true" test
+  // will get network request failed error if this test is put right above
+  // or below the "should call renderIsLoggedIn when isLoggedIn is true" test
   it("should call renderIsNotLoggedIn when isLoggedIn is false", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
     const wrapper: any = shallow(

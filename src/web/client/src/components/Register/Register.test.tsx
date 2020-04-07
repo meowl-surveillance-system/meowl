@@ -1,10 +1,11 @@
 import React, { FormEvent } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { shallow } from "enzyme";
+import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Register from "./Register";
 
 describe("Register component", () => {
-  let registerMock: Register;
+  let registerWrapper: any;
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
   let eventMock: any;
@@ -21,6 +22,10 @@ describe("Register component", () => {
     preventDefaultMock = jest.fn();
     eventMock = {
       preventDefault: preventDefaultMock,
+      target: {
+        name: "email",
+        value: "test@test.com",
+      },
     };
 
     historyMock = {
@@ -29,11 +34,13 @@ describe("Register component", () => {
 
     onAuthChangeMock = jest.fn();
 
-    registerMock = new Register({
-      isLoggedIn: false,
-      onAuthChange: onAuthChangeMock,
-      history: historyMock,
-    });
+    registerWrapper = shallow(
+      <Register
+        isLoggedIn={false}
+        onAuthChange={onAuthChangeMock}
+        history={historyMock}
+      />,
+    );
   });
 
   it("renders Register component", () => {
@@ -49,14 +56,20 @@ describe("Register component", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it("should call preventDefault on onSubmit", () => {
-    registerMock.onSubmit(eventMock);
+  it("should call preventDefault on onSubmit", async () => {
+    await registerWrapper.instance().onSubmit(eventMock);
     expect(preventDefaultMock).toHaveBeenCalled();
   });
 
-  // There is an issue with this test, onAuthChange is not being called
-  it.skip("should call onAuthChange on onSubmit", () => {
-    registerMock.onSubmit(eventMock);
+  it("should call onAuthChange on onSubmit", async () => {
+    await registerWrapper.instance().onSubmit(eventMock);
     expect(onAuthChangeMock).toHaveBeenCalled();
+  });
+
+  it("should set email field when onChange is called", () => {
+    registerWrapper.instance().onChange(eventMock);
+    expect(registerWrapper.instance().state.email).toEqual(
+      eventMock.target.value,
+    );
   });
 });
