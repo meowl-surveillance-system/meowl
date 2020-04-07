@@ -147,7 +147,7 @@ download_rtmp_module() {
 }
 
 install_nginx_dependencies() {
-  sudo apt install -y build-essential libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev
+  sudo apt-get install -y build-essential libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev
 }
 
 download_extract_nginx() {
@@ -181,14 +181,14 @@ create_server_key_certs() {
 
 # Install stunnel as a server with a configuration to work with nginx rtmp
 install_stunnel_server() {
-  sudo apt install -y stunnel4
+  sudo apt-get install -y stunnel4
   create_server_key_certs
   echo "${STUNNEL_SERVER_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
 }
 
 install_nginx_rtmp_all() {
   echo "Installing Nginx rtmp..."
-  sudo apt update
+  sudo apt-get update
   install_nginx_with_rtmp
   install_stunnel_server
 }
