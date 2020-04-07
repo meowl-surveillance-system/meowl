@@ -19,20 +19,20 @@ describe('auth', () => {
       return res;
     };
 
-    it('should return sessionID and userID', () => {
+    it('should return sessionID and userID', async () => {
       const req = mockReq();
       const res = mockRes();
-      auth.rtmpRequest(req, res);
+      await auth.rtmpRequest(req, res);
       expect(res.json).toBeCalledWith({
         sessionID: req.sessionID,
         userId: req.session!.userId,
       });
     });
 
-    it('should return 200', () => {
+    it('should return 200', async () => {
       const req = mockReq();
       const res = mockRes();
-      auth.rtmpRequest(req, res);
+      await auth.rtmpRequest(req, res);
       expect(res.status).toBeCalledWith(200);
     });
   });

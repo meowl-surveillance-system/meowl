@@ -50,7 +50,7 @@ export const retrieveLiveCameraStreamIds = async (userId: string) => {
   if (camerasResult === undefined || camerasResult.rows.length === 0) {
     return undefined;
   }
-  const liveCameras = camerasResult.rows.reduce(async (oldCollection, row) => {
+  const liveCameras = camerasResult.rows.reduce(async (oldCollection: Promise<Record<string, string>>, row: any) => {
     const collection = await oldCollection;
     const liveStreamIdResult = await retrieveLiveStreamId(row['camera_id']);
     if (
@@ -60,7 +60,7 @@ export const retrieveLiveCameraStreamIds = async (userId: string) => {
       collection[row['camera_id']] = liveStreamIdResult.rows[0]['stream_id'];
     }
     return collection;
-  }, {});
+  }, new Promise((resolve, reject) => resolve({})));
   return liveCameras;
 };
 
