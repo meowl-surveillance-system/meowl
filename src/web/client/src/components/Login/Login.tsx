@@ -61,9 +61,11 @@ export default class Login extends Component<Props, State> {
         this.props.history.push("/streams");
       } else {
         console.log(msg);
+        alert(msg);
       }
     } catch (error) {
       console.log(error);
+      alert(error);
     }
   };
 

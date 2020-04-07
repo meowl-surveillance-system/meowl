@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./Navbar";
 

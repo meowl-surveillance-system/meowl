@@ -58,6 +58,7 @@ export default class Register extends Component<Props, State> {
       // Did not Successfully register
       if (msg === "Bad username") {
         console.log("no good");
+        alert(msg);
       }
       // Successfully registered
       else {
@@ -66,6 +67,7 @@ export default class Register extends Component<Props, State> {
       }
     } catch (error) {
       console.log(error);
+      alert(error);
     }
   };
 
