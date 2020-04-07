@@ -1,5 +1,15 @@
-# Kubernetes Installation without a VM
+#!/bin/bash
 #
+#######################################
+# Installs all required dependencies to install Kubernetes 
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+
 # Install Docker and all its dependencies
 install_docker() {
   sudo apt update
@@ -30,3 +40,5 @@ install_kubernetes() {
   command -v docker >/dev/null 2>&1 || { install_docker; }
   command -v minikube >/dev/null 2>&1 || { install_minikube; }
 }
+
+install_kubernetes

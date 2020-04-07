@@ -1,5 +1,14 @@
-# Install nginx with RTMP module
+#!/bin/bash
 #
+#######################################
+# Installs all required dependencies to install nginx with RTMP module
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 
 NGINX_VERSION=1.17.8
 NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
@@ -183,3 +192,5 @@ install_nginx_rtmp_all() {
   install_nginx_with_rtmp
   install_stunnel_server
 }
+
+install_nginx_rtmp_all

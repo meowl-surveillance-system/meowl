@@ -1,8 +1,19 @@
-# Install Node and necessary frameworks/packages
+#!/bin/bash
+#
+#######################################
+# Installs all required dependencies for Meowl notification server
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 PARENT_PATH=$(
   cd "$(dirname "${BASH_SOURCE[0]}")"
   pwd -P
 )
+
 # Install Node.js on Arch Linux
 install_node() {
   command -v node >/dev/null 2>&1 || {
@@ -14,17 +25,14 @@ install_node() {
 
 # Install dependencies for notification folder
 init_notif() {
-  cd ${PARENT_PATH}/../../src/notifications && npm install && cd -
-}
-
-init_react() {
-  cd ${PARENT_PATH}/../../src/web/client && npm install && cd -
+  cd ${PARENT_PATH} && npm install && cd -
 }
 
 #Install node and initializes configuration for Node related apps
-install_node_all() {
-  echo "Installing node and front-end apps..."
+install_notif() {
+  echo "Installing node and download npm-packages for notifications app..."
   install_node
   init_notif
-  init_react
 }
+
+install_notif

@@ -1,3 +1,15 @@
+#!/bin/bash
+#
+#######################################
+# Installs all required dependencies to install OpenCV app
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+
 PARENT_PATH=$(
   cd "$(dirname "${BASH_SOURCE[0]}")"
   pwd -P
@@ -9,8 +21,10 @@ install_opencv() {
   sudo apt -y update
   sudo apt install -y python3-pip
   sudo apt install -y python3-venv
-  cd ${PARENT_PATH}/../../src/cv/
+  cd ${PARENT_PATH}
   python3 -m venv venv
   source venv/bin/activate
   pip install -r requirements.txt
 }
+
+install_opencv

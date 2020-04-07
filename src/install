@@ -15,6 +15,10 @@ Install SERVICE(s) required for Meowl"
 
 # Installing all the required dependencies based on the arguments provided
 meowl_install() {
+  if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied..."
+  fi
   for arg in "$@"; do
     PARENT_PATH=$(
       cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -22,32 +26,25 @@ meowl_install() {
     )
     case ${arg} in
     kubernetes)
-      source ${PARENT_PATH}/lib/install_minikube.sh
-      install_kubernetes
+      source ${PARENT_PATH}/lib/kube/install
       ;;
     kafka)
-      source ${PARENT_PATH}/lib/install_kafka.sh
-      install_kafka
+      source ${PARENT_PATH}/lib/kafka/install
       ;;
     cassandra)
-      source ${PARENT_PATH}/lib/install_cassandra.sh
-      install_cassandra
+      source ${PARENT_PATH}/lib/cassandra/install
       ;;
     mobile-dev)
-      source ${PARENT_PATH}/lib/install_mobile_dev.sh
-      install_mobile_dev
+      source ${PARENT_PATH}/camera/mobile/install
       ;;
-    node)
-      source ${PARENT_PATH}/lib/install_node.sh
-      install_node_all
+    notifications)
+      source ${PARENT_PATH}/notifications/install
       ;;
     opencv)
-      source ${PARENT_PATH}/lib/install_opencv.sh
-      install_opencv
+      source ${PARENT_PATH}/cv/install
       ;;
     nginx-rtmp)
-      source ${PARENT_PATH}/lib/install_nginx_rtmp.sh
-      install_nginx_rtmp_all
+      source ${PARENT_PATH}/lib/nginx_rtmp/install
       ;;
     server)
       meowl_install kubernetes
@@ -58,9 +55,10 @@ meowl_install() {
       meowl_install nginx-rtmp
       ;;
     raspberry-pi)
-      source ${PARENT_PATH}/lib/install_raspberry_pi.sh
-      install_raspberry_pi
+      source ${PARENT_PATH}/camera/pi/install
       ;;
+    web)
+    
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;

@@ -1,3 +1,14 @@
+#!/bin/bash
+#
+#######################################
+# Installs all required dependencies to install Cassandra 
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 #
 # Cassandra Installation Script
 # Reference: http://cassandra.apache.org/download/
@@ -84,3 +95,4 @@ install_cassandra() {
   copy_cert
 }
 
+install_cassandra
