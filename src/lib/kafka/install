@@ -1,7 +1,14 @@
+#!/bin/bash
 #
-# Installation Script for Apache Kafka
-# Reference: https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04
-#
+#######################################
+# Installs all required dependencies to install Kafka 
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 
 KAFKA_CONFIG_PATH="/usr/local/kafka/config"
 
@@ -37,3 +44,5 @@ install_kafka() {
   enable_topic_deletion
   echo "Kafka successfully installed"
 }
+
+install_kafka

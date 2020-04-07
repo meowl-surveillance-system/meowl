@@ -1,22 +1,20 @@
+#!/bin/bash
+#
+#######################################
+# Installs all required dependencies to install Cassandra 
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
 #
 # Cassandra Installation Script
 # Reference: http://cassandra.apache.org/download/
 #
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P )
-NGINX_RTMP_IP="35.239.238.204"
-NGINX_RTMP_PORT="19350"
-CERT_PATH="/etc/ssl/certs"
-STUNNEL_CONF_FILE="foreground = yes
-debug = 5
-
-[my-encryption-service]
-client = yes
-accept = 1234
-connect = ${NGINX_RTMP_IP}:${NGINX_RTMP_PORT}
-CAfile = ${CERT_PATH}/meowl_nginx.crt
-verify = 3"
-MEOWL_NGINX_CERT=""
 
 # Install Java 8 if not installed
 install_java_environment() {
@@ -44,28 +42,6 @@ modify_server_hostname() {
   sudo sed -i 's/# JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=<public name>"/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=127.0.0.1"/' /etc/cassandra/cassandra-env.sh
 }
 
-# Install python driver
-install_python_driver() {
-  sudo apt-get -y install python3-pip
-  sudo apt-get -y install python3-venv
-  sudo apt-get -y install librtmp-dev
-  sudo apt-get -y install stunnel4
-  cd ${PARENT_PATH}/../../src/db/cass
-  python3 -m venv venv
-  source ./venv/bin/activate
-  pip install --upgrade pip
-  pip install -r requirements.txt
-}
-
-create_stunnel_config_file() {
-  echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
-}
-
-copy_cert() {
-  echo "${MEOWL_NGINX_CERT}" | sudo tee ${CERT_PATH}/meowl_nginx.crt 
-}
-
-
 # Complete Installation for Cassandra
 install_cassandra() {
   sudo apt-get update
@@ -79,8 +55,6 @@ install_cassandra() {
   echo "Installing Cassandra..."
   sudo apt-get -y install cassandra
   modify_server_hostname
-  install_python_driver
-  create_stunnel_config_file
-  copy_cert
 }
 
+install_cassandra
