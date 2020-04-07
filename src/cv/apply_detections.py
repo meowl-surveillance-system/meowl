@@ -47,7 +47,7 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
     face_tracker = []
     start_time = int(round(time.time()))
     while True:
-        if int(round(time.time())) - start_time > 600:
+        if int(round(time.time())) - start_time > settings.TRACK_TIME:
             face_tracker = []
             start_time = int(round(time.time()))
         res = {}
@@ -81,10 +81,6 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
             insert_frame.insert_frame(args['camera_id'], args['stream_id'], str(frame_id), img_str, json.dumps(res).encode('utf-8'))        
             cv_producer.send_metadata(args['camera_id'], args['stream_id'], str(frame_id), res)
             frame_id += 1
-            #cv2.imshow('Frame', frame)
-            #key = cv2.waitKey(1) & 0xFF
-            #if key == ord("q"):
-            #    break
         cv2.imshow('Frame', frame)
         key = cv2.waitKey(1) & 0xFF
     return stream
