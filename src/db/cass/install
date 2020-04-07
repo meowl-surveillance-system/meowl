@@ -35,7 +35,7 @@ install_python_driver() {
   sudo apt-get -y install python3-venv
   sudo apt-get -y install librtmp-dev
   sudo apt-get -y install stunnel4
-  cd ${PARENT_PATH}/../../src/db/cass
+  cd ${PARENT_PATH}
   python3 -m venv venv
   source ./venv/bin/activate
   pip install --upgrade pip

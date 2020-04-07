@@ -34,6 +34,9 @@ meowl_install() {
     cassandra)
       source ${PARENT_PATH}/lib/cassandra/install
       ;;
+    stream-server)
+      source ${PARENT_PATH}/db/cass/install
+      ;;
     mobile-dev)
       source ${PARENT_PATH}/camera/mobile/install
       ;;
@@ -50,9 +53,11 @@ meowl_install() {
       meowl_install kubernetes
       meowl_install kafka
       meowl_install cassandra
-      meowl_install node
       meowl_install opencv
       meowl_install nginx-rtmp
+      meowl_install notifications
+      meowl_install stream-server
+      meowl_install web
       ;;
     raspberry-pi)
       source ${PARENT_PATH}/camera/pi/install
