@@ -44,7 +44,7 @@ meowl_install() {
       source ${PARENT_PATH}/cv/install
       ;;
     nginx-rtmp)
-      source ${PARENT_PATH}/lib/nginx_rtmp/install
+      source ${PARENT_PATH}/lib/nginx-rtmp/install
       ;;
     server)
       meowl_install kubernetes
@@ -58,7 +58,8 @@ meowl_install() {
       source ${PARENT_PATH}/camera/pi/install
       ;;
     web)
-    
+      source ${PARENT_PATH}/web/install
+      ;;
     --help | -help | -H)
       echo "${INSTALLATION_HELP_TEXT}"
       ;;
