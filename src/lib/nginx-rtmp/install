@@ -21,6 +21,7 @@ STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
 STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
 STREAMING_SERVER_IP=127.0.0.1
 STREAMING_SERVER_DNS="localhost"
+AUTH_SERVER_URL="https://example.com"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
@@ -124,7 +125,7 @@ http {
           # Strips the api-https-proxy part of
           # the url, but forward the rest.
           rewrite  ^/api-https-proxy/(.*) /\$1 break;
-          proxy_pass https://example.com;
+          proxy_pass ${AUTH_SERVER_URL};
         }
 
         location =/meowl_nginx.crt {
