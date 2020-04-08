@@ -32,51 +32,7 @@ def load_object_detector(configPath, weightsPath):
     ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     return net, ln
 
-def init_video_stream(args):
-    """ Obtains the video stream """
-    vs = cv2.VideoCapture(args["input"])
-    try:
-        if imutils.is_cv2():
-            prop = cv2.cv.CV_CAP_PROP_FRAME_COUNT
-        else:
-            prop = cv2.CAP_PROP_FRAME_COUNT
-        total = int(vs.get(prop))
-        print("{} total frames in video".format(total))
-
-    except:
-        raise Exception("Could not determine # of frames in video")
-        total = -1
-
-    return vs, total
-
-def iterate_frames(args, vs, net, ln, colors, labels, total):
-    """ Iterate through each frame and pass it through the net """
-    writer = None
-    (W, H) = (None, None)
-    while True:
-        (grabbed, frame) = vs.read()
-        if writer is None:
-            fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-            writer = cv2.VideoWriter(args["output"], fourcc, 30,
-                (frame.shape[1], frame.shape[0]), True)
-        if not grabbed:
-            break
-        if W is None or H is None:
-            (H, W) = frame.shape[:2]
-
-        blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
-	        swapRB=True, crop=False)
-        net.setInput(blob)
-        start = time.time()
-        layerOutputs = net.forward(ln)
-        end = time.time()
-
-        draw_box(writer, args, start, end, layerOutputs,
-            W, H, frame, colors, labels, total)
-
-    return writer
-
-def draw_box(writer, args, start, end, layerOutputs,
+def draw_box(args, start, end, layerOutputs,
              W, H, frame, colors, labels, total):
     """ Draws boxes around detected elements in frame and writes the frame"""
     boxes = []
@@ -97,6 +53,7 @@ def draw_box(writer, args, start, end, layerOutputs,
                  confidences.append(float(confidence))
                  classIDs.append(classID)
 
+    objs = {}
     idxs = cv2.dnn.NMSBoxes(boxes, confidences,
         args["confidence"], args["threshold"])
     if len(idxs) > 0:
@@ -107,21 +64,9 @@ def draw_box(writer, args, start, end, layerOutputs,
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             text = "{}: {:.4f}".format(labels[classIDs[i]],
                 confidences[i])
+            key = labels[classIDs[i]]
+            objs[key] = objs.get(key, 0) + 1
             cv2.putText(frame, text, (x, y - 5),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-    writer.write(frame)
+    return objs
 
-def clean_up(writer, vs):
-    """ Releases the writer and Video Capture """
-    print("Cleaning up...")
-    writer.release()
-    vs.release()
-
-def run_object_detection(args):
-    """ Runs object detection with the configurations in args """
-    configs = get_configs(args)
-    object_detector = load_object_detector(configs[3], configs[2])
-    vs, total = init_video_stream(args)
-    writer = iterate_frames(args, vs, object_detector[0], object_detector[1],
-        configs[1], configs[0], total)
-    clean_up(writer, vs)

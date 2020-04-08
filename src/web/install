@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+#######################################
+# Installs all required dependencies for Meowl web server
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+
+PARENT_PATH=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  pwd -P
+)
+
+# Install Node.js on Arch Linux
+install_node() {
+  command -v node >/dev/null 2>&1 || {
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+    source ~/.nvm/nvm.sh
+    nvm install 12.15.0
+  }
+}
+
+# Install dependencies for react client folder
+init_react() {
+  cd ${PARENT_PATH}/client && npm install
+}
+
+init_server() {
+  cd ${PARENT_PATH}/server && npm install
+}
+
+#Install node and initializes configuration for Node related apps
+install_web() {
+  echo "Installing Meowl web apps..."
+  install_node
+  init_react
+  init_server
+}
+
+install_web
