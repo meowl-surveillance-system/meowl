@@ -6,6 +6,7 @@ import * as kafka from 'kafka-node';
 jest.mock('kafka-node');
 
 let client: kafka.KafkaClient;
+let consumer: kafka.Consumer;
 const message = {
     detections: ['Joe'],
     camera_id: 1,
@@ -15,6 +16,15 @@ const message = {
 beforeEach(() => {
     client = new kafka.KafkaClient();
     const producer = new kafka.Producer(client);
+    consumer = new kafka.Consumer(
+        client,
+        [
+            { topic: 'notif', partition: 0 }
+        ],
+        {
+            autoCommit: false
+        }
+    );
     const msg = [{
         topic: 'notif',
         messages: [message],
@@ -29,20 +39,23 @@ beforeEach(() => {
 
 it('should consume correct message', () => {
     let data: any;
-    const consumer = new kafka.Consumer(
-        client,
-        [
-            { topic: 'notif', partition: 0 }
-        ],
-        {
-            autoCommit: false
-        }
-    );
 
     consumer.on('message', (message) => {
         data = message.value;
+        expect(data).toEqual(message);
     });
-    console.log(data)
-    console.log(message)
-    expect(data).toEqual(message);
 });
+
+// Can't import specific consumer to emulate the specific behavior being performed
+it.skip('should query the DB for useful info and store notification to DB', () => {
+    const cassClient = new cassandra.Client({
+        contactPoints: ['127.0.0.1'],
+        localDataCenter: 'datacenter1',
+        keyspace: 'streams',
+    });
+    cassClient.execute = jest.fn();
+
+    consumer.on('message', (message) => {
+
+    })
+})
