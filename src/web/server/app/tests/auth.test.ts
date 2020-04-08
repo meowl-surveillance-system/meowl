@@ -122,9 +122,7 @@ describe('auth', () => {
     });
   });
   describe('isLoggedIn', () => {
-    const mockReq: any = (
-      userId: string
-    ) => {
+    const mockReq: any = (userId: string) => {
       return {
         session: { userId },
       };
@@ -158,7 +156,11 @@ describe('auth', () => {
   describe('logout', () => {
     const mockReq: any = () => {
       return {
-        session: { destroy: jest.fn(f => { f(); })},
+        session: {
+          destroy: jest.fn(f => {
+            f();
+          }),
+        },
       };
     };
     const mockRes: any = () => {
@@ -203,16 +205,13 @@ describe('auth', () => {
       res.send = jest.fn().mockReturnValue(res);
       return res;
     };
-    const rtmpMockReq: any = (
-      sessionID: string,
-      userId: string
-    ) => {
+    const rtmpMockReq: any = (sessionID: string, userId: string) => {
       return {
         body: {
           userId,
           sessionID,
         },
-      }
+      };
     };
     const rtmpMockRes: any = () => {
       const res = {
@@ -279,7 +278,7 @@ describe('auth', () => {
           cameraId,
           name,
         },
-      }
+      };
     };
     const rtmpMockRes: any = () => {
       const res = {
@@ -297,48 +296,102 @@ describe('auth', () => {
       const res = mockRes();
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-      const mockResults = { rows:[{session:JSON.stringify({userId:req.session.userId})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults as any));
-      const rtmpReq = rtmpMockReq(testSessionID, req.session.userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 200 })
+      );
+      const mockResults = {
+        rows: [{ session: JSON.stringify({ userId: req.session.userId }) }],
+      };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const rtmpReq = rtmpMockReq(
+        testSessionID,
+        req.session.userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes = rtmpMockRes();
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
-      expect(mockedAxios.get).toHaveBeenLastCalledWith('http://localhost:5000/store/' + rtmpReq.body.name);
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        'http://localhost:5000/store/' + rtmpReq.body.name
+      );
     });
     it('should return 500 on a unsuccessful rtmp saver call', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, '');
       const res = mockRes();
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 400 }));
-      const mockResults = { rows:[{session:JSON.stringify({userId:req.session.userId})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults as any));
-      const rtmpReq = rtmpMockReq(testSessionID, req.session.userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 400 })
+      );
+      const mockResults = {
+        rows: [{ session: JSON.stringify({ userId: req.session.userId }) }],
+      };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const rtmpReq = rtmpMockReq(
+        testSessionID,
+        req.session.userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes = rtmpMockRes();
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(500);
-      expect(mockedAxios.get).toHaveBeenLastCalledWith('http://localhost:5000/store/' + rtmpReq.body.name);
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        'http://localhost:5000/store/' + rtmpReq.body.name
+      );
     });
     it('should return 400 if userId does not own cameraId', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, '');
       const res = mockRes();
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-      const mockResults = { rows:[{session:JSON.stringify({userId:req.session.userId})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults as any));
-      const rtmpReq = rtmpMockReq(testSessionID, req.session.userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 200 })
+      );
+      const mockResults = {
+        rows: [{ session: JSON.stringify({ userId: req.session.userId }) }],
+      };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const rtmpReq = rtmpMockReq(
+        testSessionID,
+        req.session.userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes = rtmpMockRes();
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
 
       //Submit another publish start to same cameraId but different userId
       const userId = 'randomUserId';
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-      const mockResults2 = { rows:[{session:JSON.stringify({userId})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults2 as any));
-      const rtmpReq2 = rtmpMockReq(testSessionID, userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 200 })
+      );
+      const mockResults2 = { rows: [{ session: JSON.stringify({ userId }) }] };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults2 as any)
+        );
+      const rtmpReq2 = rtmpMockReq(
+        testSessionID,
+        userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes2 = rtmpMockRes();
       await auth.rtmpAuthPublishStart(rtmpReq2, rtmpRes2);
       expect(rtmpRes2.status).toBeCalledWith(400);
@@ -348,10 +401,23 @@ describe('auth', () => {
       const res = mockRes();
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-      const mockResults = { rows:[{session:JSON.stringify({userId: 'wackafboi'})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults as any));
-      const rtmpReq = rtmpMockReq(testSessionID, req.session.userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 200 })
+      );
+      const mockResults = {
+        rows: [{ session: JSON.stringify({ userId: 'wackafboi' }) }],
+      };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const rtmpReq = rtmpMockReq(
+        testSessionID,
+        req.session.userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes = rtmpMockRes();
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(400);
@@ -361,14 +427,29 @@ describe('auth', () => {
       const res = mockRes();
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
-      mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-      const mockResults = { rows:[{session:JSON.stringify({userId:req.session.userId})}]};
-      jest.spyOn(authServices, 'retrieveSession').mockImplementationOnce((sessionID: string) => Promise.resolve( mockResults as any));
-      const rtmpReq = rtmpMockReq(testSessionID, req.session.userId, testCameraId, testStreamId);
+      mockedAxios.get.mockImplementationOnce(() =>
+        Promise.resolve({ status: 200 })
+      );
+      const mockResults = {
+        rows: [{ session: JSON.stringify({ userId: req.session.userId }) }],
+      };
+      jest
+        .spyOn(authServices, 'retrieveSession')
+        .mockImplementationOnce((sessionID: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const rtmpReq = rtmpMockReq(
+        testSessionID,
+        req.session.userId,
+        testCameraId,
+        testStreamId
+      );
       const rtmpRes = rtmpMockRes();
       await auth.rtmpAuthPublishStop(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
-      expect(mockedAxios.get).toHaveBeenLastCalledWith('http://localhost:5000/stop/' + rtmpReq.body.name);
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        'http://localhost:5000/stop/' + rtmpReq.body.name
+      );
     });
   });
 });

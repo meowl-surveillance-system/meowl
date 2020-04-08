@@ -37,9 +37,7 @@ export const storeUser = (
  * Check if user exists
  * @param username - The username of the user
  */
-export const checkUserExists = (
-  username: string,
-) => {
+export const checkUserExists = (username: string) => {
   return client.execute(SELECT_USERSNAME_USERID, [username], { prepare: true });
 };
 /**
