@@ -65,13 +65,13 @@ export const storeStreamId = async (req: Request, res: Response) => {
 export const retrieveCameraIds = async (req: Request, res: Response) => {
   const result = await apiServices.retrieveCameraIds(req.session!.userId);
   if (result === undefined) {
-    res.status(400).send('Invalid cameraId');
+    res.status(400).send('Can not retrieve cameras');
   } else {
-    const streamIds = result.rows.map(row => {
+    const cameraIds = result.rows.map(row => {
       const key = Object.keys(row)[0];
       return row[key];
     });
-    console.log(streamIds);
-    res.status(200).send(streamIds);
+    console.log(cameraIds);
+    res.status(200).send(cameraIds);
   }
 };

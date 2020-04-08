@@ -7,6 +7,7 @@ import {
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
+  SELECT_USERSNAME_USERID,
   SELECT_SID_SESSION,
 } from '../utils/queries';
 
@@ -32,7 +33,15 @@ export const storeUser = (
     client.execute(INSERT_USERSNAME, params, { prepare: true });
   });
 };
-
+/**
+ * Check if user exists
+ * @param username - The username of the user
+ */
+export const checkUserExists = (
+  username: string,
+) => {
+  return client.execute(SELECT_USERSNAME_USERID, [username], { prepare: true });
+};
 /**
  * Retrieve user information from database
  * @param username - The username used to lookup the user

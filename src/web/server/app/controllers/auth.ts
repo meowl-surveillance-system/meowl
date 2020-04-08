@@ -17,9 +17,18 @@ export const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
   const sid = req.sessionID;
   const userId = uuidv4();
-  authServices.storeUser(userId, email, username, sid, password);
-  req.session!.userId = userId;
-  res.status(200).send('successfully registered');
+  const userExistsResult = await authServices.checkUserExists(username);
+  if (userExistsResult === undefined) {
+    res.status(500).send('server error');
+  } else {
+    if (userExistsResult.rows.length > 0) {
+      res.status(400).send('username already exists');
+    } else {
+      authServices.storeUser(userId, email, username, sid, password);
+      req.session!.userId = userId;
+      res.status(200).send('successfully registered');
+    }
+  }
 };
 
 export const login = async (req: Request, res: Response) => {
