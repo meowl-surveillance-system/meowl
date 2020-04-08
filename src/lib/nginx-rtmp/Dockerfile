@@ -14,9 +14,11 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 COPY install .
 
-ARG MEOWL_SECRET_KEY=$(head /dev/urandom | tr -dc _A-Z-a-z0-9 | head -c 32 ; echo '')
+ARG MEOWL_SECRET=igotavalorantkey
 
-RUN echo $MEOWL_SECRET_KEY
+ENV MEOWL_SECRET=${MEOWL_SECRET}
+
+RUN echo $MEOWL_SECRET
 
 RUN ./install
 
