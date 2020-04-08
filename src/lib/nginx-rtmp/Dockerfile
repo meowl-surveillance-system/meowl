@@ -6,9 +6,11 @@ RUN apt-get update
 
 RUN apt-get -y install sudo
 
-RUN apt-get install -y --no-install-recommends apt-utils
+RUN sudo apt-get install -y --no-install-recommends apt-utils
 
-RUN apt-get -y install git
+RUN sudo apt-get -y install wget
+
+RUN sudo apt-get -y install git
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
@@ -22,4 +24,6 @@ RUN echo $MEOWL_SECRET
 
 RUN ./install
 
-EXPOSE 19350 443
+EXPOSE 19350 443 8080
+
+CMD ["/usr/local/nginx/sbin/nginx", "-g 'daemon off;';"]
