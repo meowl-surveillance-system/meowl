@@ -5,6 +5,9 @@ import axios from 'axios';
 import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
 
+/**
+ * Sends 200 if session of user contains its userId, 400 otherwise
+ */
 export const isLoggedIn = (req: Request, res: Response) => {
   if (req.session!.userId) {
     res.status(200).json(true);
@@ -13,6 +16,9 @@ export const isLoggedIn = (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Stores a user's credentials if username does not exist
+ */
 export const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
   const sid = req.sessionID;
@@ -31,6 +37,9 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Checks if username and hashed password from body are valid and updates session to contain userId if so
+ */
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const sid = req.sessionID;
@@ -58,6 +67,9 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Destroys session
+ */
 export const logout = (req: Request, res: Response) => {
   req.session!.destroy(err => {
     if (err) {
@@ -68,12 +80,18 @@ export const logout = (req: Request, res: Response) => {
   });
 };
 
+/**
+ * Sends sessionID and userID of active session in response
+ */
 export const rtmpRequest = (req: Request, res: Response) => {
   res
     .status(200)
     .json({ sessionID: req.sessionID, userId: req.session!.userId });
 };
 
+/**
+ * Sends 200 if userId and sessionID in body of request match and session is still valid, 400 otherwise
+ */
 export const rtmpAuthPlay = async (req: Request, res: Response) => {
   try {
     const result = await authServices.retrieveSID(req.body.userId);
@@ -88,6 +106,13 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Handles authorization of rtmp stream publishing requests
+ * Assigns userId to cameraId, stores streamId to cameraId, updates that cameraId is live,
+ * and makes api request to rtmp saver to start or stop saving.
+ * Only tores if userId and sessionID in body of request match, cameraId is assigned to userId or no one.
+ * @param start true to indicate if this request is the start of the stream, false to indicate streaming has stopped
+ */
 const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
   try {
     const result = await authServices.retrieveSession(req.body.sessionID);
@@ -125,10 +150,17 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
     res.status(500).send('Server error');
   }
 };
+
+/**
+ * Calls rtmpAuthPublish with true when streaming starts
+ */
 export const rtmpAuthPublishStart = async (req: Request, res: Response) => {
   await rtmpAuthPublish(req, res, true);
 };
 
+/**
+ * Calls rtmpAuthPublish with false when streaming stops
+ */
 export const rtmpAuthPublishStop = async (req: Request, res: Response) => {
   await rtmpAuthPublish(req, res, false);
 };

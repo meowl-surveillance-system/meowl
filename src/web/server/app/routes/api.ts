@@ -8,6 +8,9 @@ import * as apiController from '../controllers/api';
 
 const app = express();
 
+/**
+ * Sends the video specified by streamId to response
+ */
 app.get(
   '/getVideo/:streamId',
   async (req: express.Request, res: express.Response) => {
@@ -43,6 +46,9 @@ app.get(
   }
 );
 
+/**
+ * Sends the streamIds specified by cameraId if logged in user owns cameraId
+ */
 app.get(
   '/getStreamIds/:cameraId',
   isLoggedIn,
@@ -51,6 +57,9 @@ app.get(
   }
 );
 
+/**
+ * Sends the streamId of cameraId if logged in user owns cameraId
+ */
 app.get(
   '/getLiveStreamId/:cameraId',
   isLoggedIn,
@@ -59,6 +68,9 @@ app.get(
   }
 );
 
+/**
+ * Sends a dictionary of cameraId:streamId for all cameras the logged in user owns
+ */
 app.get(
   '/getLiveCameraStreamIds',
   isLoggedIn,
@@ -67,13 +79,9 @@ app.get(
   }
 );
 
-app.post(
-  '/storeStreamId',
-  async (req: express.Request, res: express.Response) => {
-    apiController.storeStreamId(req, res);
-  }
-);
-
+/**
+ * Sends a list of cameraIds the logged in user owns
+ */
 app.get(
   '/getCameraIds',
   isLoggedIn,

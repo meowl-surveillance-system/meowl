@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 
 import * as apiServices from '../services/api';
 
+/**
+ * Sends a list of streamIds for a cameraId if the user owns the camera
+ */
 export const retrieveStreamIds = async (req: Request, res: Response) => {
   const canView = await apiServices.verifyUserCamera(
     req.session!.userId,
@@ -25,6 +28,9 @@ export const retrieveStreamIds = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Sends the streamId of a camera if it is live
+ */
 export const retrieveLiveStreamId = async (req: Request, res: Response) => {
   const cameraId = req.params.cameraId;
   const result = await apiServices.retrieveLiveStreamId(cameraId);
@@ -37,6 +43,9 @@ export const retrieveLiveStreamId = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Sends a dictionary of cameraId : streamId for all cameras the user owns that are live
+ */
 export const retrieveLiveCameraStreamIds = async (
   req: Request,
   res: Response
@@ -51,6 +60,9 @@ export const retrieveLiveCameraStreamIds = async (
   }
 };
 
+/**
+ * Stores a streamId to respective cameraId from body of request
+ */
 export const storeStreamId = async (req: Request, res: Response) => {
   const { cameraId, streamId } = req.body;
   try {
@@ -62,6 +74,9 @@ export const storeStreamId = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Sends a list of cameraIds the user owns
+ */
 export const retrieveCameraIds = async (req: Request, res: Response) => {
   const result = await apiServices.retrieveCameraIds(req.session!.userId);
   if (result === undefined) {
