@@ -1,5 +1,5 @@
-import * as auth from '../controllers/auth';
-import * as authServices from '../services/auth';
+import * as auth from '../../controllers/auth';
+import * as authServices from '../../services/auth';
 import axios from 'axios';
 
 jest.mock('axios');

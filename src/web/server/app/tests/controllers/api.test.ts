@@ -1,5 +1,5 @@
-import * as api from '../controllers/api';
-import * as apiServices from '../services/api';
+import * as api from '../../controllers/api';
+import * as apiServices from '../../services/api';
 
 describe('api', () => {
   const testSessionID = 'yes';

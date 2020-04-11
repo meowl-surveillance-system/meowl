@@ -1,5 +1,5 @@
-import * as authChecks from '../middlewares/authChecks';
-import * as helpers from '../middlewares/helpers';
+import * as authChecks from '../../middlewares/authChecks';
+import * as helpers from '../../middlewares/helpers';
 
 const mockReq: any = (userId: string) => {
   return {
