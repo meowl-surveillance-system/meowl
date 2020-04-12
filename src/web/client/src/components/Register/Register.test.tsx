@@ -13,8 +13,8 @@ describe("Register component", () => {
   beforeEach(() => {
     // Mock Fetch
     const mockSuccessResponse = "successfully registered";
-    const mockTextPromise: any = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise: any = Promise.resolve({
+    const mockTextPromise: Promise<any> = Promise.resolve(mockSuccessResponse);
+    const mockFetchPromise: Promise<any> = Promise.resolve({
       text: () => mockTextPromise,
     });
     jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);

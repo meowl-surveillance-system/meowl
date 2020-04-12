@@ -5,8 +5,8 @@ import LiveStream from "./LiveStream";
 
 describe("LiveStream component", () => {
   let mockCollection: object;
-  let mockJsonPromise: any;
-  let mockFetchPromise: any;
+  let mockJsonPromise: Promise<any>;
+  let mockFetchPromise: Promise<any>;
   beforeEach(() => {
     mockCollection = { okbigboi: "hooomygod" };
     mockJsonPromise = Promise.resolve(mockCollection);
