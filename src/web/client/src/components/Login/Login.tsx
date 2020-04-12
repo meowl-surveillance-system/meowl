@@ -23,6 +23,9 @@ interface State {
   password: string;
 }
 
+/**
+ * A Login form for users to login 
+ */
 export default class Login extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -32,6 +35,10 @@ export default class Login extends Component<Props, State> {
     };
   }
 
+  /**
+   * Sets the appropriate state when a keyboard event is triggered
+   * @params event - An event that records changes happening to an input field
+   */
   handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const target: HTMLInputElement = event.target as HTMLInputElement;
@@ -40,6 +47,14 @@ export default class Login extends Component<Props, State> {
     this.setState({ [label]: value } as ComponentState);
   };
 
+  /**
+   * Submits the user credentials to the auth server
+   * @params event - An event that records submission of a form element
+   *
+   * Changes the root level isLoggedIn state to True and redirects to the
+   * "/streams" route if login submission is successful.
+   * Otherwise, alert the user that login is not successful.
+   */
   loginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
@@ -69,6 +84,9 @@ export default class Login extends Component<Props, State> {
     }
   };
 
+  /**
+   * Renders a Login form for users to input their credentials
+   */
   render() {
     return (
       <Container component="main" maxWidth="xs">

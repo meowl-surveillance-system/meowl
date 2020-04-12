@@ -22,6 +22,9 @@ interface State {
   password: string;
 }
 
+/**
+ * A register form for users to register an account
+ */
 export default class Register extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -32,6 +35,10 @@ export default class Register extends Component<Props, State> {
     };
   }
 
+  /**
+   * Sets the appropriate state when a keyboard event is triggered
+   * @params event - An event that records changes happening to an input field
+   */
   onChange = (event: ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
     this.setState({
@@ -39,6 +46,14 @@ export default class Register extends Component<Props, State> {
     } as ComponentState);
   };
 
+  /**
+   * Submits the user credentials to the auth server
+   * @params event - An event that records submission of a form element
+   *
+   * Changes the root level isLoggedIn state to True and redirects to the
+   * "/streams" route if register submission is successful.
+   * Otherwise, alert the user that register is not successful.
+   */
   onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
@@ -70,7 +85,11 @@ export default class Register extends Component<Props, State> {
       alert(error);
     }
   };
-
+  
+  /**
+   * Redirect user to "/" if user is already logged in
+   * Otherwise, render the register form
+   */
   render() {
     if (this.props.isLoggedIn) {
       return <Redirect to="/" />;

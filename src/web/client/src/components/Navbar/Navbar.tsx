@@ -11,7 +11,13 @@ interface Props {
 }
 interface State {}
 
+/**
+ * A navigation bar component for easy access to other pages
+ */
 export default class Navbar extends Component<Props, State> {
+  /**
+   * Logout the user by sending a logout request to the auth server
+   */
   logoutSubmit = (): void => {
     const requestOptions = {
       method: "POST",
@@ -20,7 +26,9 @@ export default class Navbar extends Component<Props, State> {
     this.props.onAuthChange(false);
   };
 
-  // Render the buttons on the navbar when the user is authenticated
+  /**
+   * Renders the buttons on the navbar when the user is authenticated
+   */
   renderIsLoggedIn = () => {
     return (
       <div>
@@ -55,7 +63,9 @@ export default class Navbar extends Component<Props, State> {
     );
   };
 
-  // Render the buttons on the navbar when the user is not authenticated
+  /**
+   * Renders the buttons on the navbar when the user is not authenticated
+   */
   renderIsNotLoggedIn = () => {
     return (
       <div>
@@ -79,6 +89,9 @@ export default class Navbar extends Component<Props, State> {
     );
   };
 
+  /**
+   * Renders the navbar appropriately based on the isLoggedIn prop
+   */
   render() {
     return (
       <AppBar position="static">

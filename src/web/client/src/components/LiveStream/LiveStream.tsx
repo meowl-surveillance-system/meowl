@@ -15,6 +15,9 @@ interface State {
   url: string;
 }
 
+/**
+ * The LiveStream component displays all live streams
+ */
 export default class LiveStream extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -25,7 +28,10 @@ export default class LiveStream extends Component<Props, State> {
       url: "",
     };
   }
-
+  
+  /**
+   * Fetch all cameras that are currently recording
+   */
   async componentDidMount() {
     try {
       const res = await fetch(`/api/getLiveCameraStreamIds`);
@@ -36,7 +42,9 @@ export default class LiveStream extends Component<Props, State> {
     }
   }
 
-  // Render a nested list of all live streamIds
+  /**
+   * Render a nested list of cameraIds to streamIds
+   */
   renderList = () => {
     return Object.keys(this.state.liveCameraStreamIds).map(
       (cameraId, index) => {
@@ -59,12 +67,19 @@ export default class LiveStream extends Component<Props, State> {
     );
   };
 
+  /**
+   * Set the appropraite streaming URL
+   * @params streamId - The ID of a particular stream
+   */
   getURL = (streamId: string) => {
     this.setState({
       url: `http://${this.state.ip}:${this.state.port}/hls/${streamId}.m3u8`,
     });
   };
-
+  
+  /**
+   * Renders the nested list and React player of a particular stream
+   */
   render() {
     return (
       <Container>
