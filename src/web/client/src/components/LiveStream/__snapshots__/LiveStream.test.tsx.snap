@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Playback component renders Playback component 1`] = `
+exports[`LiveStream component renders the LiveStream component 1`] = `
 <div
   class="MuiContainer-root MuiContainer-maxWidthLg"
 >
@@ -13,7 +13,7 @@ exports[`Playback component renders Playback component 1`] = `
       <span
         class="MuiTypography-root"
       >
-        My Streams
+        Live Streams
       </span>
     </li>
   </ul>

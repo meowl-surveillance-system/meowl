@@ -26,10 +26,14 @@ export default class LiveStream extends Component<Props, State> {
     };
   }
 
-  componentDidMount() {
-    fetch(`/api/getLiveCameraStreamIds`)
-      .then((res) => res.json())
-      .then((collection) => this.setState({ liveCameraStreamIds: collection }));
+  async componentDidMount() {
+    try {
+      const res = await fetch(`/api/getLiveCameraStreamIds`);
+      const collection = await res.json();
+      this.setState({ liveCameraStreamIds: collection });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Render a nested list of all live streamIds

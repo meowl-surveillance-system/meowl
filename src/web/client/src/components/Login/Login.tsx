@@ -7,7 +7,6 @@ import React, {
 import { Redirect } from "react-router-dom";
 import {
   Container,
-  FormControl,
   TextField,
   Button,
   Grid,
@@ -41,30 +40,33 @@ export default class Login extends Component<Props, State> {
     this.setState({ [label]: value } as ComponentState);
   };
 
-  loginSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    };
-    fetch(`/auth/login`, requestOptions)
-      .then((res) => res.text())
-      .then((msg) => {
-        if (msg === "successfully logged in") {
-          this.props.onAuthChange(true);
-          this.props.history.push("/streams");
-        } else {
-          console.log(msg);
-        }
-      })
-      .catch((e) => console.log(e));
+  loginSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault();
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          password: this.state.password,
+        }),
+      };
+      const res = await fetch(`/auth/login`, requestOptions);
+      const msg = await res.text();
+      if (msg === "successfully logged in") {
+        this.props.onAuthChange(true);
+        this.props.history.push("/streams");
+      } else {
+        console.log(msg);
+        alert(msg);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   render() {

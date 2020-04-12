@@ -7,7 +7,6 @@ import React, {
 import { Redirect, Link as RouterLink } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -40,34 +39,36 @@ export default class Register extends Component<Props, State> {
     } as ComponentState);
   };
 
-  onSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    fetch("/auth/register", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: this.state.email,
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    })
-      .then((res) => res.text())
-      .then((msg) => {
-        // Did not Successfully register
-        if (msg === "Bad username") {
-          console.log("no good");
-        }
-        // Successfully registered
-        else {
-          console.log(msg);
-          this.props.onAuthChange(true);
-          this.props.history.push("/streams");
-        }
-      })
-      .catch((e) => console.log(e));
+  onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault();
+      const res = await fetch("/auth/register", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          username: this.state.username,
+          password: this.state.password,
+        }),
+      });
+      const msg = await res.text();
+      // Did not Successfully register
+      if (msg === "Bad username") {
+        console.log("no good");
+        alert(msg);
+      }
+      // Successfully registered
+      else {
+        this.props.onAuthChange(true);
+        this.props.history.push("/streams");
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   render() {
@@ -121,11 +122,9 @@ export default class Register extends Component<Props, State> {
             </Button>
             <Grid container>
               <Grid item>
-                <Link variant="body1">
-                  <RouterLink to="/login">
-                    {"Already have an account? Sign In"}
-                  </RouterLink>
-                </Link>
+                <RouterLink to="/login">
+                  {"Already have an account? Sign In"}
+                </RouterLink>
               </Grid>
             </Grid>
           </form>

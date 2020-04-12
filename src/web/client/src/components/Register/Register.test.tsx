@@ -1,17 +1,18 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import { shallow } from "enzyme";
 import { render } from "@testing-library/react";
-import Login from "./Login";
+import { BrowserRouter as Router } from "react-router-dom";
+import Register from "./Register";
 
-describe("Login component", () => {
-  let loginWrapper: any;
+describe("Register component", () => {
+  let registerWrapper: any;
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
   let eventMock: any;
   let preventDefaultMock: jest.Mock;
   beforeEach(() => {
     // Mock Fetch
-    const mockSuccessResponse = "successfully logged in";
+    const mockSuccessResponse = "successfully registered";
     const mockTextPromise: Promise<any> = Promise.resolve(mockSuccessResponse);
     const mockFetchPromise: Promise<any> = Promise.resolve({
       text: () => mockTextPromise,
@@ -22,8 +23,8 @@ describe("Login component", () => {
     eventMock = {
       preventDefault: preventDefaultMock,
       target: {
-        name: "username",
-        value: "goat",
+        name: "email",
+        value: "test@test.com",
       },
     };
 
@@ -33,38 +34,41 @@ describe("Login component", () => {
 
     onAuthChangeMock = jest.fn();
 
-    loginWrapper = shallow(
-      <Login
+    registerWrapper = shallow(
+      <Register
         isLoggedIn={false}
         onAuthChange={onAuthChangeMock}
         history={historyMock}
       />,
     );
   });
-  it("renders Login component", () => {
+
+  it("renders Register component", () => {
     const { container } = render(
-      <Login
-        isLoggedIn={false}
-        history={historyMock}
-        onAuthChange={onAuthChangeMock}
-      />,
+      <Router>
+        <Register
+          isLoggedIn={false}
+          onAuthChange={onAuthChangeMock}
+          history={historyMock}
+        />
+      </Router>,
     );
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it("should call preventDefault on loginSubmit", async () => {
-    await loginWrapper.instance().loginSubmit(eventMock);
+  it("should call preventDefault on onSubmit", async () => {
+    await registerWrapper.instance().onSubmit(eventMock);
     expect(preventDefaultMock).toHaveBeenCalled();
   });
 
-  it("should call onAuthChange on loginSubmit", async () => {
-    await loginWrapper.instance().loginSubmit(eventMock);
+  it("should call onAuthChange on onSubmit", async () => {
+    await registerWrapper.instance().onSubmit(eventMock);
     expect(onAuthChangeMock).toHaveBeenCalled();
   });
 
-  it("should set username filed when handleChange is called", () => {
-    loginWrapper.instance().handleChange(eventMock);
-    expect(loginWrapper.instance().state.username).toEqual(
+  it("should set email field when onChange is called", () => {
+    registerWrapper.instance().onChange(eventMock);
+    expect(registerWrapper.instance().state.email).toEqual(
       eventMock.target.value,
     );
   });
