@@ -2,6 +2,7 @@ from flask import Flask, request
 import cv2
 import numpy as np
 import embedding_extractor as embed_ex
+import apply_detections
 import train_face_recognizer as trainer
 import recognize_faces as recognizer
 import yolo_video_detect as obj_detector
@@ -12,9 +13,10 @@ def hello_world():
     """ Returns Hello World as a String """
     return 'Hello World'
 
-def display_vid(file_name):
+@app.route('/test_ssl/')
+def display_vid():
     """ Displays frames from VideoCapture """
-    cap = cv2.VideoCapture(file_name)
+    cap = cv2.VideoCapture(request.args.get('input'))
     if (cap.isOpened()== False): 
         print("OpenCV failed to open video stream or file")
     while(cap.isOpened()):
@@ -46,25 +48,19 @@ def extract_embeddings():
 def train_face_rec():
     """ Trains the Face Recognizer """
     trainer.train_recognizer()
-    return "Finsihed Training Face Recognizer"
+    return "Finished Training Face Recognizer"
 
-@app.route('/recognize_faces/')
-def recognize():
-    """ Recognizes the Faces on frames """
-    args = {
-        'confidence': .5,
-        'input': request.args.get('input'),
-        'output': 'res.avi'
-    }
-    recognizer.recognize(args)
-    return "Finished Recognizing Faces"
-@app.route('/process/')
-def process_video():
+@app.route('/apply_detections/')
+def process_detections():
     """ Applies object detection on an input """
     args = {
         "input": request.args.get('input'),
         "output": request.args.get('output'),
-        "confidence": request.args.get('confidence', default = .5, type = float),
+        "camera_id": request.args.get('camera_id'),
+        "stream_id": request.args.get('stream_id'),
+        "confidence": request.args.get('confidence', default = .8, type = float),
         "threshold": request.args.get('threshold', default = .3, type = float)
     }
-    obj_detector.run_object_detection(args)
+    apply_detections.process(args)
+    return "Finished Processing detections"
+

@@ -3,11 +3,14 @@ from sklearn.svm import SVC
 import argparse
 import os
 import pickle
+import settings
 
 def load_configs():
     """ Loading in resources """
     print("[INFO] loading face embeddings...")
-    data = pickle.loads(open(os.environ.get('EMBEDDINGS_PATH'), "rb").read())
+    if not os.path.exists(settings.EMBEDDINGS):
+        raise OSError("EMBEDDINGS_PATH: not found")
+    data = pickle.loads(open(settings.EMBEDDINGS, "rb").read())
     print("[INFO] encoding labels...")
     le = LabelEncoder()
     labels = le.fit_transform(data["names"])
@@ -22,10 +25,10 @@ def train_model(data, labels):
 
 def write_data(recognizer, le):
     """ Write face recognition model and label encoder """
-    f = open(os.environ.get('RECOGNIZER_PATH'), "wb")
+    f = open(settings.RECOGNIZER, "wb")
     f.write(pickle.dumps(recognizer))
     f.close()
-    f = open(os.environ.get('LABEL_ENCODER_PATH'), "wb")
+    f = open(settings.LABEL_ENCODER, "wb")
     f.write(pickle.dumps(le))
     f.close()
 
