@@ -13,6 +13,9 @@ interface State {
   cameraIdsDict: Record<string, Array<string>>;
 }
 
+/**
+ * A component for playing back streams that have previously been recorded
+ */
 export default class Playback extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -23,7 +26,9 @@ export default class Playback extends Component<Props, State> {
     };
   }
 
-  // Map cameraId to streamIds
+  /**
+   * Fetch the cameraIds from the backend server and set the cameraId to streamIds dictionary
+   */
   componentDidMount() {
     fetch(`/api/getCameraIds`)
       .then((res) => res.json())
@@ -44,7 +49,9 @@ export default class Playback extends Component<Props, State> {
       );
   }
 
-  // Render the nested list of cameraIds and streamIds
+  /**
+   * Renders the nested list of cameraIds and streamIds
+   */
   renderList = () => {
     return Object.keys(this.state.cameraIdsDict).map((cameraId, index) => {
       return (
@@ -62,6 +69,10 @@ export default class Playback extends Component<Props, State> {
     });
   };
 
+  /**
+   * Renders a list of stream IDs which is a sublist of the nested list
+   * @params streamIds - A list of stream IDs
+   */
   renderStreamIds = (streamIds: Array<string>) => {
     return streamIds.map((streamId, index) => {
       return (
@@ -76,6 +87,10 @@ export default class Playback extends Component<Props, State> {
     });
   };
 
+  /**
+   * Retrieves the stream from the API server, creates a URL from the bytes retrieved, and sets the url state
+   * @params streamId - the ID of the stream that is retrieved
+   */
   retrieveVideo = (streamId: string): void => {
     fetch(`/api/getVideo/${streamId}`)
       .then((res) => res.blob())
@@ -85,7 +100,10 @@ export default class Playback extends Component<Props, State> {
       })
       .catch((e) => console.log(e));
   };
-
+ 
+  /**
+   * Renders out the nested list of cameraIds to streamIds and the appropriate React player based on the url state
+   */
   render() {
     return (
       <Container>

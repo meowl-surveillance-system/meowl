@@ -9,6 +9,9 @@ interface Props {
 }
 interface State {}
 
+/**
+ * A wrapper around ReactPlayer that adds responsiveness
+ */
 export default class ResponsivePlayer extends Component<Props, State> {
   render() {
     return (
