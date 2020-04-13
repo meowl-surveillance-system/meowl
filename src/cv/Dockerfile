@@ -1,0 +1,9 @@
+FROM python:3.6
+
+WORKDIR /cass-app
+
+ENV NGINX_RTMP_IP=127.0.0.1
+
+ENV NGINX_RTMP_PORT=19350
+
+

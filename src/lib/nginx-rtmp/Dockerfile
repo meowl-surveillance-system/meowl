@@ -2,6 +2,10 @@ FROM ubuntu:18.04
 
 WORKDIR /nginx
 
+ARG MEOWL_SECRET=igotavalorantkey
+
+ENV MEOWL_SECRET=${MEOWL_SECRET}
+
 RUN apt-get update 
 
 RUN apt-get -y install sudo
@@ -15,12 +19,6 @@ RUN sudo apt-get -y install git
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
 COPY install .
-
-ARG MEOWL_SECRET=igotavalorantkey
-
-ENV MEOWL_SECRET=${MEOWL_SECRET}
-
-RUN echo $MEOWL_SECRET
 
 RUN ./install
 
