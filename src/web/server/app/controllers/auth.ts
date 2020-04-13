@@ -110,7 +110,7 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
  * Handles authorization of rtmp stream publishing requests
  * Assigns userId to cameraId, stores streamId to cameraId, updates that cameraId is live,
  * and makes api request to rtmp saver to start or stop saving.
- * Only tores if userId and sessionID in body of request match, cameraId is assigned to userId or no one.
+ * Only stores if userId and sessionID in body of request match, cameraId is assigned to userId or no one.
  * @param start true to indicate if this request is the start of the stream, false to indicate streaming has stopped
  */
 const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {

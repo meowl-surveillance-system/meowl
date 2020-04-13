@@ -146,7 +146,7 @@ describe('api', () => {
     const testCameraIds = ['randomCameraId1', 'randomCameraId2'];
     const testStreamIds = ['randomStreamId1', 'randomStreamId2'];
     it('should return a dictionary of cameraIds to streamIds', async () => {
-      const mockResults = {} as any;
+      const mockResults = {} as Record<string, string>;
       testCameraIds.forEach(
         (key: string, i: number) => (mockResults[key] = testStreamIds[i])
       );

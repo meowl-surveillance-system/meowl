@@ -62,7 +62,7 @@ describe('api', () => {
       const liveCameraStreamIdResults = await api.retrieveLiveCameraStreamIds(
         testUserId
       );
-      const expected = {} as any;
+      const expected = {} as Record<string, string>;
       expected[testCameraId] = testStreamId;
       expect(liveCameraStreamIdResults).toStrictEqual(expected);
       await api.updateCameraLive(testCameraId2, true);
