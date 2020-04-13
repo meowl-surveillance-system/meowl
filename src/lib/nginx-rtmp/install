@@ -22,15 +22,16 @@ STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
 STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
 STREAMING_SERVER_IP=127.0.0.1
 STREAMING_SERVER_DNS="localhost"
+AUTH_SERVER_URL="https://example.com"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
 
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
+error_log  logs/error.log;
+error_log  logs/error.log  notice;
+error_log  logs/error.log  info;
 
-#pid        logs/nginx.pid;
+pid        logs/nginx.pid;
 
 
 events {
@@ -47,6 +48,8 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_publish http://localhost/api-https-proxy/auth/rtmpAuthPublishStart;
+            on_publish_done http://localhost/api-https-proxy/auth/rtmpAuthPublishStop;
             # Turn on HLS
             hls on;
             hls_path /mnt/hls/;
@@ -60,6 +63,7 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_play http://localhost/api-https-proxy/auth/rtmpAuthPlay;
         }
     }
 }
@@ -103,7 +107,37 @@ http {
 
             root /mnt/;
         }
+
+        location =/meowl_nginx.crt {
+            alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+            alias ${MEOWL_CA_CERT};
+        }
+
     }
+    server {
+        listen 80;
+        server_name localhost;
+        location /api-https-proxy {
+          allow 127.0.0.1;
+          deny all;
+          # Strips the api-https-proxy part of
+          # the url, but forward the rest.
+          rewrite  ^/api-https-proxy/(.*) /\$1 break;
+          proxy_pass ${AUTH_SERVER_URL};
+        }
+
+        location =/meowl_nginx.crt {
+          alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+          alias ${MEOWL_CA_CERT};
+        }
+    }
+
 }
 "
 MEOWL_SSL_CONF="
