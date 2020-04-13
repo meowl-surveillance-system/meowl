@@ -27,7 +27,6 @@ running_streams = {}
 def hello():
   return "Hello World"
 
-
 @app.route("/store/<stream_id>")
 def store_stream(stream_id):
   """Read from stream and store in DB"""
