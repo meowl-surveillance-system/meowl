@@ -6,7 +6,7 @@ jest.mock('axios');
 
 describe('auth', () => {
   const testSessionID = 'yes';
-  const testUser = 'testUser';
+  const testUser = 'controllersTestUser';
   const testPassword = 'password';
   const testEmail = 'test@email.com';
   const mockedAxios = axios as jest.Mocked<typeof axios>;

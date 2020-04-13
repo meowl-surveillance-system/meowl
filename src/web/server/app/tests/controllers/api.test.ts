@@ -3,10 +3,10 @@ import * as apiServices from '../../services/api';
 
 describe('api', () => {
   const testSessionID = 'yes';
-  const testUser = 'testUser';
+  const testUser = 'controllersTestUser';
   const testPassword = 'password';
   const testEmail = 'test@email.com';
-  const testUserId = 'randomUserId';
+  const testUserId = 'controllersTestUserId';
   describe('retrieveStreamIds', () => {
     const mockReq: any = (cameraId: string, userId: string) => {
       return {
