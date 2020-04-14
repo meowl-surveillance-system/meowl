@@ -8,6 +8,7 @@ import settings
 
 app = Flask(__name__)
 
+# Connects to local/remote Cluster set by environment variables
 cluster_services = ClusterServices(Cluster(CASSANDRA_CLUSTER_IPS, port=CASSANDRA_CLUSTER_PORT))
 
 # Set the keyspace

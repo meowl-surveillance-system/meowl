@@ -40,10 +40,12 @@ install_python_driver() {
   pip install -r requirements.txt
 }
 
+# Pastes stunnel configs to stunnel.conf
 create_stunnel_config_file() {
   echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
 }
 
+# Downloads cert from file address
 get_cert() {
   wget -O ${CERT_PATH}/meowl_nginx.crt ${CERT_FILE_ADDRESS} 
 }
