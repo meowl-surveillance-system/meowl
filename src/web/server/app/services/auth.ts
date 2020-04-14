@@ -20,18 +20,17 @@ import { client } from '../utils/client';
  * @param sid - The sessionID of the user
  * @param password - The password of the user
  */
-export const storeUser = (
+export const storeUser = async (
   userId: string,
   email: string,
   username: string,
   sid: any,
   password: string
 ) => {
-  bcrypt.hash(password, 12, (err, hash) => {
-    const params = [userId, email, username, hash, sid];
-    client.execute(INSERT_USERSID, params, { prepare: true });
-    client.execute(INSERT_USERSNAME, params, { prepare: true });
-  });
+  const hash = await bcrypt.hash(password, 12);
+  const params = [userId, email, username, hash, sid];
+  await client.execute(INSERT_USERSID, params, { prepare: true });
+  await client.execute(INSERT_USERSNAME, params, { prepare: true });
 };
 /**
  * Check if user exists

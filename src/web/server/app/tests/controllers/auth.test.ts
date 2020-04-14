@@ -73,9 +73,25 @@ describe('auth', () => {
       return res;
     };
 
-    it('should return 400 on an already register user', async () => {
+    it('should return 200 when registering a new user', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, testEmail, '');
       const res = mockRes();
+      jest
+        .spyOn(authServices, 'checkUserExists')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve({rows:[]} as any)
+        );
+      await auth.register(req, res);
+      expect(res.status).toBeCalledWith(200);
+    });
+    it('should return 400 when attempting to register a user that exists', async () => {
+      const req = mockReq(testSessionID, testUser, testPassword, testEmail, '');
+      const res = mockRes();
+      jest
+        .spyOn(authServices, 'checkUserExists')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve({rows:[userId]} as any)
+        );
       await auth.register(req, res);
       expect(res.status).toBeCalledWith(400);
     });

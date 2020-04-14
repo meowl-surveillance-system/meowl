@@ -30,7 +30,7 @@ export const register = async (req: Request, res: Response) => {
     if (userExistsResult.rows.length > 0) {
       res.status(400).send('username already exists');
     } else {
-      authServices.storeUser(userId, email, username, sid, password);
+      await authServices.storeUser(userId, email, username, sid, password);
       req.session!.userId = userId;
       res.status(200).send('successfully registered');
     }
