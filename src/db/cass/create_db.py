@@ -1,7 +1,8 @@
+from settings import CASSANDRA_CLUSTER_IPS, CASSANDRA_CLUSTER_PORT
 from cassandra.cluster import Cluster
 from src.cluster_services import ClusterServices
 
-cluster_services = ClusterServices(Cluster())
+cluster_services = ClusterServices(Cluster(CASSANDRA_CLUSTER_IPS, port=CASSANDRA_CLUSTER_PORT))
 
 # Create keyspace
 cluster_services.create_keyspace('streams')

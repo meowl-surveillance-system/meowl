@@ -1,3 +1,4 @@
+from settings import CASSANDRA_CLUSTER_IPS, CASSANDRA_CLUSTER_PORT
 from cassandra.cluster import Cluster
 from src.cluster_services import ClusterServices
 from src.file_services import FileServices
@@ -7,7 +8,7 @@ import settings
 
 app = Flask(__name__)
 
-cluster_services = ClusterServices(Cluster())
+cluster_services = ClusterServices(Cluster(CASSANDRA_CLUSTER_IPS, port=CASSANDRA_CLUSTER_PORT))
 
 # Set the keyspace
 cluster_services.set_keyspace('streams')
