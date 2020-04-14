@@ -13,8 +13,8 @@ ENV FLASK_APP=/cass-app/app.py
 
 # Install required packages
 RUN apt-get update
-RUN apt-get -y install sudo
-RUN sudo apt-get -y install wget
+RUN apt-get install -y sudo
+RUN sudo apt-get install -y wget
 RUN sudo apt-get install -y --no-install-recommends apt-utils
 
 # Disable interactive console when building Docker images

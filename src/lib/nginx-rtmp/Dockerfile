@@ -9,10 +9,10 @@ ENV MEOWL_SECRET=${MEOWL_SECRET}
 
 # Install required packages
 RUN apt-get update 
-RUN apt-get -y install sudo
+RUN apt-get install -y sudo
 RUN sudo apt-get install -y --no-install-recommends apt-utils
-RUN sudo apt-get -y install wget
-RUN sudo apt-get -y install git
+RUN sudo apt-get install -y wget
+RUN sudo apt-get install -y git
 
 # Disable interactive console when building Docker images
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
