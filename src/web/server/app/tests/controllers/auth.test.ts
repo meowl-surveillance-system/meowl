@@ -85,7 +85,7 @@ describe('auth', () => {
       const checkRes = mockRes();
       await auth.login(checkReq, checkRes);
       if (checkRes.status.mock.calls[0][0] === 200) {
-      //mock storing user if already exists
+        //mock storing user if already exists
         jest
           .spyOn(authServices, 'storeUser')
           .mockImplementationOnce(

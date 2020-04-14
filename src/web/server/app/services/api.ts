@@ -17,6 +17,7 @@ import { client } from '../utils/client';
 /**
  * Retrieve streamIds from database
  * @param cameraId - The cameraId that spawned the streamIds
+ * @returns ResultSet - Contains rows of streamIds belonging to cameraId
  */
 export const retrieveStreamIds = async (cameraId: string) => {
   return client.execute(SELECT_CAMERAID_STREAMID, [cameraId], {
@@ -27,6 +28,7 @@ export const retrieveStreamIds = async (cameraId: string) => {
 /**
  * Retrieve streamId from camera if live from database
  * @param cameraId - The cameraId that may be live
+ * @returns ResultSet - Contains row of streamId belonging to cameraId, undefined if camera not live
  */
 export const retrieveLiveStreamId = async (cameraId: string) => {
   const result = await client.execute(SELECT_LIVE_CAMERAID, [cameraId], {
@@ -44,6 +46,7 @@ export const retrieveLiveStreamId = async (cameraId: string) => {
 /**
  * Retrieve all streamId from camera if live belonging to user
  * @param userId - userId of user
+ * @returns Record<string, string> - Contains mapping of streamId belonging to cameraId, undefined if user does not own cameras
  */
 export const retrieveLiveCameraStreamIds = async (userId: string) => {
   const camerasResult = await retrieveCameraIds(userId);
@@ -96,6 +99,7 @@ export const updateCameraLive = async (cameraId: string, live: boolean) => {
  * Verify camera belongs to user
  * @param cameraId - The cameraId of the camera
  * @param userId - The user id of the user
+ * @returns boolean - True if userId owns cameraId
  */
 export const verifyUserCamera = async (userId: string, cameraId: string) => {
   const result = await client.execute(SELECT_USERID_CAMERAID, [cameraId], {
@@ -122,6 +126,7 @@ export const addUserCamera = async (userId: string, cameraId: string) => {
 /**
  * Retrieve cameraIds from database that belong to user
  * @param userId - The user id of the user
+ * @returns ResultSet - Contains rows of cameraIds belonging to userId
  */
 export const retrieveCameraIds = async (userId: string) => {
   return client.execute(SELECT_CAMERAID_USERID, [userId], {
