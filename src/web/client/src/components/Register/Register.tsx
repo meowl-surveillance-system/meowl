@@ -81,11 +81,10 @@ export default class Register extends Component<Props, State> {
         this.props.history.push("/streams");
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      console.error(error);
     }
   };
-  
+
   /**
    * Redirect user to "/" if user is already logged in
    * Otherwise, render the register form

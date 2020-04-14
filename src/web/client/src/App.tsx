@@ -14,17 +14,28 @@ interface State {
   isLoggedIn: boolean;
 }
 
+/**
+ * Root level component. Defines the routing structure of the overall app.
+ */
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { isLoggedIn: false };
   }
 
-  // To be passed as a callback to handle authentication changes
+  /**
+   * To be passed as a callback to handle authentication changes
+   * @params authState - The authentication state of the user
+   */
   onAuthChange = (authState: boolean) => {
     this.setState({ isLoggedIn: authState });
   };
 
+  /**
+   * Make request to auth server to check if user is logged in.
+   * If a user refreshes the page, the isLoggedIn state will be
+   * grabbed from the auth server.
+   */
   componentDidMount() {
     fetch("/auth/isLoggedIn")
       .then((res) => res.json())
@@ -32,9 +43,12 @@ class App extends Component<Props, State> {
         this.setState({ isLoggedIn: isLoggedIn });
         console.log(this.state.isLoggedIn);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   }
 
+  /**
+   * Defines a set of routes for the application
+   */
   render() {
     return (
       <div className="App">

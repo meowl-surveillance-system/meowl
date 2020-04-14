@@ -1,10 +1,10 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import { render } from "@testing-library/react";
 import Login from "./Login";
 
 describe("Login component", () => {
-  let loginWrapper: any;
+  let loginWrapper: ShallowWrapper<{}, {}, Login>;
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
   let eventMock: any;
@@ -12,11 +12,15 @@ describe("Login component", () => {
   beforeEach(() => {
     // Mock Fetch
     const mockSuccessResponse = "successfully logged in";
-    const mockTextPromise: Promise<any> = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise: Promise<any> = Promise.resolve({
+    const mockTextPromise: Promise<string> = Promise.resolve(
+      mockSuccessResponse,
+    );
+    const mockFetchPromise: Promise<object> = Promise.resolve({
       text: () => mockTextPromise,
     });
-    jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);
+    jest
+      .spyOn(window, "fetch")
+      .mockImplementation(() => mockFetchPromise as Promise<Response>);
 
     preventDefaultMock = jest.fn();
     eventMock = {

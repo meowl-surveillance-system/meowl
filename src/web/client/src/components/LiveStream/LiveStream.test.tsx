@@ -5,15 +5,17 @@ import LiveStream from "./LiveStream";
 
 describe("LiveStream component", () => {
   let mockCollection: object;
-  let mockJsonPromise: Promise<any>;
-  let mockFetchPromise: Promise<any>;
+  let mockJsonPromise: Promise<object>;
+  let mockFetchPromise: Promise<object>;
   beforeEach(() => {
     mockCollection = { okbigboi: "hooomygod" };
     mockJsonPromise = Promise.resolve(mockCollection);
     mockFetchPromise = Promise.resolve({
       json: () => mockJsonPromise,
     });
-    jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);
+    jest
+      .spyOn(window, "fetch")
+      .mockImplementation(() => mockFetchPromise as Promise<Response>);
   });
 
   it("renders the LiveStream component", () => {
