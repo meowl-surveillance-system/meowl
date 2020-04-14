@@ -1,3 +1,4 @@
+# TODO(chc5): Move this to docs
 sudo docker build --tag meowl-nginx-rtmp:1.0 . 
 sudo docker run --detach --publish 8000:19350 -p 8008:80 -p 8088:443 --name meowl-nginx-rtmp meowl-nginx-rtmp:1.0
 
