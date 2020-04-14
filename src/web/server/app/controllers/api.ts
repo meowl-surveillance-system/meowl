@@ -69,7 +69,7 @@ export const storeStreamId = async (req: Request, res: Response) => {
     await apiServices.storeStreamId(cameraId, streamId);
     res.status(200).send('OK');
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send('Server error');
   }
 };

@@ -62,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
       }
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send('Server error');
   }
 };
@@ -73,7 +73,7 @@ export const login = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
   req.session!.destroy(err => {
     if (err) {
-      console.log(err);
+      console.error(err);
     } else {
       res.status(200).send('logged out');
     }
@@ -101,7 +101,7 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
       res.status(200).send('OK');
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send('Server error');
   }
 };
@@ -146,7 +146,7 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
       }
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).send('Server error');
   }
 };

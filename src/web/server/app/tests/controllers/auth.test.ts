@@ -1,5 +1,6 @@
 import * as auth from '../../controllers/auth';
 import * as authServices from '../../services/auth';
+import * as apiServices from '../../services/api';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -307,6 +308,14 @@ describe('auth', () => {
     };
     const testCameraId = 'randomCameraId';
     const testStreamId = 'randomStreamId';
+    beforeAll(async () => {
+      const req = mockReq(testSessionID, testUser, testPassword, '');
+      const res = mockRes();
+      await auth.login(req, res);
+      expect(res.status).toBeCalledWith(200);
+      // Add userId to own cameraId before running tests
+      apiServices.addUserCamera(req.session.userId, testCameraId);
+    });
     it('should return 200 on a successful publish start', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, '');
       const res = mockRes();
