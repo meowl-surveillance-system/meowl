@@ -75,12 +75,35 @@ describe('auth', () => {
     };
 
     it('should return 200 when registering a new user', async () => {
+      const checkReq = mockReq(
+        testSessionID,
+        testUser,
+        testPassword,
+        testEmail,
+        ''
+      );
+      const checkRes = mockRes();
+      await auth.login(checkReq, checkRes);
+      if (checkRes.status.mock.calls[0][0] === 200) {
+      //mock storing user if already exists
+        jest
+          .spyOn(authServices, 'storeUser')
+          .mockImplementationOnce(
+            (
+              userId: string,
+              email: string,
+              username: string,
+              sid: string,
+              password: string
+            ) => Promise.resolve()
+          );
+      }
       const req = mockReq(testSessionID, testUser, testPassword, testEmail, '');
       const res = mockRes();
       jest
         .spyOn(authServices, 'checkUserExists')
         .mockImplementationOnce((userId: string) =>
-          Promise.resolve({rows:[]} as any)
+          Promise.resolve({ rows: [] } as any)
         );
       await auth.register(req, res);
       expect(res.status).toBeCalledWith(200);
@@ -91,7 +114,7 @@ describe('auth', () => {
       jest
         .spyOn(authServices, 'checkUserExists')
         .mockImplementationOnce((userId: string) =>
-          Promise.resolve({rows:[userId]} as any)
+          Promise.resolve({ rows: [userId] } as any)
         );
       await auth.register(req, res);
       expect(res.status).toBeCalledWith(400);
@@ -308,14 +331,6 @@ describe('auth', () => {
     };
     const testCameraId = 'randomCameraId';
     const testStreamId = 'randomStreamId';
-    beforeAll(async () => {
-      const req = mockReq(testSessionID, testUser, testPassword, '');
-      const res = mockRes();
-      await auth.login(req, res);
-      expect(res.status).toBeCalledWith(200);
-      // Add userId to own cameraId before running tests
-      apiServices.addUserCamera(req.session.userId, testCameraId);
-    });
     it('should return 200 on a successful publish start', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, '');
       const res = mockRes();
