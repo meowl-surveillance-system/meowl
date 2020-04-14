@@ -22,6 +22,6 @@ COPY install .
 
 RUN ./install
 
-EXPOSE 19350 443 8080
+EXPOSE 19350 443 80
 
 CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]

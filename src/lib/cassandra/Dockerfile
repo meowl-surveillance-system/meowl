@@ -1,0 +1,3 @@
+FROM cassandra:3
+
+RUN sed -i 's/# JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=<public name>"/JVM_OPTS="$JVM_OPTS -Djava.rmi.server.hostname=127.0.0.1"/' /etc/cassandra/cassandra-env.sh
