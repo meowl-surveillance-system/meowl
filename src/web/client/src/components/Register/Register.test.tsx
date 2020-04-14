@@ -1,11 +1,11 @@
 import React, { FormEvent } from "react";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Register from "./Register";
 
 describe("Register component", () => {
-  let registerWrapper: any;
+  let registerWrapper: ShallowWrapper<{}, {}, Register>;
   let onAuthChangeMock: jest.Mock;
   let historyMock: object;
   let eventMock: any;
@@ -13,11 +13,15 @@ describe("Register component", () => {
   beforeEach(() => {
     // Mock Fetch
     const mockSuccessResponse = "successfully registered";
-    const mockTextPromise: Promise<any> = Promise.resolve(mockSuccessResponse);
-    const mockFetchPromise: Promise<any> = Promise.resolve({
+    const mockTextPromise: Promise<string> = Promise.resolve(
+      mockSuccessResponse,
+    );
+    const mockFetchPromise: Promise<object> = Promise.resolve({
       text: () => mockTextPromise,
     });
-    jest.spyOn(window, "fetch").mockImplementation(() => mockFetchPromise);
+    jest
+      .spyOn(window, "fetch")
+      .mockImplementation(() => mockFetchPromise as Promise<Response>);
 
     preventDefaultMock = jest.fn();
     eventMock = {

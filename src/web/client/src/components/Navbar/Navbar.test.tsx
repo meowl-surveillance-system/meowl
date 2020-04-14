@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -19,7 +19,7 @@ describe("Navbar component", () => {
   // or below the "should call renderIsLoggedIn when isLoggedIn is true" test
   it("should call renderIsNotLoggedIn when isLoggedIn is false", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
-    const wrapper: any = shallow(
+    const wrapper: ShallowWrapper<{}, {}, Navbar> = shallow(
       <Navbar isLoggedIn={false} onAuthChange={onAuthChangeMock} />,
     );
     const spy: jest.SpyInstance = jest.spyOn(
@@ -42,7 +42,7 @@ describe("Navbar component", () => {
 
   it("should call renderIsLoggedIn when isLoggedIn is true", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
-    const wrapper: any = shallow(
+    const wrapper: ShallowWrapper<{}, {}, Navbar> = shallow(
       <Navbar isLoggedIn={true} onAuthChange={onAuthChangeMock} />,
     );
     const spy: jest.SpyInstance = jest.spyOn(

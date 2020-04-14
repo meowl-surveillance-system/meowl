@@ -28,7 +28,7 @@ export default class LiveStream extends Component<Props, State> {
       url: "",
     };
   }
-  
+
   /**
    * Fetch all cameras that are currently recording
    */
@@ -38,7 +38,7 @@ export default class LiveStream extends Component<Props, State> {
       const collection = await res.json();
       this.setState({ liveCameraStreamIds: collection });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -76,7 +76,7 @@ export default class LiveStream extends Component<Props, State> {
       url: `http://${this.state.ip}:${this.state.port}/hls/${streamId}.m3u8`,
     });
   };
-  
+
   /**
    * Renders the nested list and React player of a particular stream
    */

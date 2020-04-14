@@ -24,7 +24,7 @@ interface State {
 }
 
 /**
- * A Login form for users to login 
+ * A Login form for users to login
  */
 export default class Login extends Component<Props, State> {
   constructor(props: Props) {
@@ -79,8 +79,7 @@ export default class Login extends Component<Props, State> {
         alert(msg);
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      console.error(error);
     }
   };
 

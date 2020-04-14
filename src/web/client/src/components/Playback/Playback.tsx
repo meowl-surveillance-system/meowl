@@ -44,9 +44,11 @@ export default class Playback extends Component<Props, State> {
                   [cameraId]: streamIds,
                 },
               }),
-            );
+            )
+            .catch((e) => console.error(e));
         }),
-      );
+      )
+      .catch((e) => console.error(e));
   }
 
   /**
@@ -100,7 +102,7 @@ export default class Playback extends Component<Props, State> {
       })
       .catch((e) => console.log(e));
   };
- 
+
   /**
    * Renders out the nested list of cameraIds to streamIds and the appropriate React player based on the url state
    */
