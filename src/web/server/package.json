@@ -5,8 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node-dev ./app/index.ts",
-    "test": "jest",
-    "test-server": "npm test ./app/tests/.*\\.ts",
+    "test": "jest ./app/tests/.*\\.ts",
     "dev": "concurrently \"npm run start\" \"cd ../client && npm start\"",
     "check": "tslint --config ./tslint.json --project ./tsconfig.json --force",
     "clean": "gts clean",
