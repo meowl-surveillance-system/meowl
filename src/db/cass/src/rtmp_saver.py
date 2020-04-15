@@ -11,14 +11,18 @@ class RtmpSaver:
   """Create a RTMP connection"""
 
   def __init__(self, ip, port, stream_id, auth_options, chunk_size=2097152):
+    """Create a rtmp url using parameters, then connect to rtmp url"""
     self.stream_id = stream_id
+    # Create a rtmp url using ip, port, and stream_id
     connection_string = "rtmp://{0}:{1}/view/{2}".format(ip, port, stream_id)
+    # Add authorization parameters to connection string
     self.connection_string = self._auth_RTMP(
       connection_string,
       auth_options["loginUrl"],
       auth_options["rtmpRequestUrl"],
       auth_options["username"],
       auth_options["password"])
+    # Create a stream connection to rtmp url
     self.connection = librtmp.RTMP(self.connection_string, live=True)
     self.connection.connect()
     self.stream = self.connection.create_stream()
@@ -81,6 +85,7 @@ class RtmpSaver:
     rtmpRequestUrl,
     username,
     password):
+    """Authenticate to loginUrl, append authorization parameters to rtmpUrl"""
 
     body = {"username": username, "password": password}
     loginResponse = requests.post(loginUrl, data=body)

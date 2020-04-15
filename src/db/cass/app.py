@@ -33,7 +33,7 @@ def store_stream(stream_id):
   try:
     rtmp_saver = RtmpSaver(
       settings.RTMP_IP,
-      settings.PORT,
+      settings.RTMP_PORT,
       stream_id,
       auth_options)
   except BaseException:
