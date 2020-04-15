@@ -33,7 +33,13 @@ class RtmpSaver:
     self.is_reading = True
 
   def start(self, file_service):
-    """Create a thread and start reading the stream"""
+    """
+    Create a thread and start reading the stream
+
+    Parameters:
+    file_service (FileServices): handles saving chunks of data
+    to cassandra session
+    """
     self.is_reading_lock = threading.Lock()
     self.read_thread = threading.Thread(
       target=self._read, args=(file_service,))
@@ -43,6 +49,9 @@ class RtmpSaver:
     """Continuously read (chunk_size)MB chunks from RTMP server"""
     self.is_reading_lock.acquire()
     while self.is_reading:
+      # is_reading_lock guards is_reading which is condition of the while loop.
+      # We want to allow is_reading to be changed during the body of the while
+      # so we release it in the beginning of the loop.
       self.is_reading_lock.release()
       self.data += self.stream.read(self.chunk_size)
       self.bytes_read = len(self.data)
@@ -59,6 +68,8 @@ class RtmpSaver:
 
       self.previous_read = self.bytes_read
 
+      # Acquire the lock before checking is_reading again,
+      # so we acquire it at the end of the loop.
       self.is_reading_lock.acquire()
 
     # Store any leftover data
