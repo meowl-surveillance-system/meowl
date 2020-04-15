@@ -18,8 +18,7 @@ RUN rm -rf client/*
 RUN mv tmp-client-build client/build
 
 RUN rm -rf server/app
-RUN node server/build/app/index.js
 
 EXPOSE 8081
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "server/build/app/index.js" ]
