@@ -5,9 +5,9 @@ WORKDIR /cass-app
 # Sets environment variables on the server
 ENV NGINX_RTMP_IP=127.0.0.1
 ENV NGINX_RTMP_PORT=19350
-ENV CASSANDRA_CLUSTER_IPS="192.168.1.15"
+ENV CASSANDRA_CLUSTER_IPS="192.168.1.5"
 ENV CASSANDRA_CLUSTER_PORT="9043"
-ENV CERT_FILE_ADDRESS=192.168.1.15:8008/meowl_nginx.crt
+ENV CERT_FILE_ADDRESS=192.168.1.5:8008/meowl_nginx.crt
 ENV FLASK_APP=/cass-app/app.py
 
 
@@ -35,6 +35,8 @@ RUN python3 create_db.py
 
 # 5000: HTTP port
 EXPOSE 5000
+
+RUN python3 app.py
 
 # Runs this command forever in the container
 CMD ["flask", "run", "--host=0.0.0.0"]

@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node-dev ./app/index.ts",
+    "build": "tsc",
     "test": "jest",
     "test-server": "npm test ./app/tests/.*\\.ts",
     "dev": "concurrently \"npm run start\" \"cd ../client && npm start\"",
@@ -22,10 +23,13 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
+    "cors": "^2.8.5",
     "cassandra-driver": "^4.4.0",
     "cassandra-store": "^5.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "gts": "^1.1.2",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
@@ -37,8 +41,6 @@
     "@types/node": "^13.7.6",
     "@types/uuid": "^7.0.0",
     "concurrently": "^5.1.0",
-    "cors": "^2.8.5",
-    "gts": "^1.1.2",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.1",
     "ts-node-dev": "^1.0.0-pre.44",
