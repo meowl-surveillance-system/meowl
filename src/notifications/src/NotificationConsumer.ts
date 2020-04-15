@@ -18,7 +18,7 @@ const getBlacklisted = 'SELECT * FROM blacklist WHERE name = ?';
 const getUserID = 'SELECT user_id FROM camera_users WHERE camera_id = ?';
 const getEmail = 'SELECT email FROM users_id WHERE user_id = ?';
 const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
-const storeNotif = 'INSERT INTO notif (type, email, name, frame_id) VALUES (%s, %s, %s, %s)';
+const storeNotif = 'INSERT INTO notif (date, type, email, name, frame_id) VALUES (%s, %s, %s, %s, %s)';
 
 consumer.on('message', async function(message:any){
     handleNotif(message);
@@ -41,9 +41,8 @@ export default async function handleNotif(message: any) {
                     const owner = await cassClient.execute(getUserID, [message.camera_id], {prepare:true}).then((result:any) => {return result.rows[0].user_id;})
                     const userEmail = await cassClient.execute(getEmail, [owner], {prepare:true}).then((result:any) => {return result.rows[0].email;});
                     const img = await cassClient.execute(getImg, [message.frame_id], {prepare:true}).then((result:any) => {return result.rows[0].frame});
-                    var imageBuffer = img.file.buffer;
-                    var imageName = './img/tmp.jpg';
-                    fs.createWriteStream(imageName).write(imageBuffer);
+                    var imageName = '../img/tmp.jpg';
+                    fs.createWriteStream(imageName).write(img);
                     const req = {
                         template: 'blacklist',
                         recipient: userEmail,
@@ -53,7 +52,7 @@ export default async function handleNotif(message: any) {
                         }
                     }
                     sendEmail(req)
-                    await cassClient.execute(storeNotif, (req.template, userEmail, person, message.frame_id), {prepare:true});
+                    await cassClient.execute(storeNotif, (Date.now(),req.template, userEmail, person, message.frame_id), {prepare:true});
                 }
             })
         });
