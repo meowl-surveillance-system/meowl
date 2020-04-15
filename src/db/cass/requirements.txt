@@ -6,7 +6,6 @@ geomet==0.1.2
 itsdangerous==1.1.0
 Jinja2==2.11.1
 MarkupSafe==1.1.1
-pkg-resources==0.0.0
 pycparser==2.19
 python-librtmp==0.3.0
 six==1.14.0
