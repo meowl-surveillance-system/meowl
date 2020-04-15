@@ -3,14 +3,13 @@ from src.cluster_services import ClusterServices
 from src.file_services import FileServices
 from src.rtmp_saver import RtmpSaver
 from flask import Flask
-from getpass import getpass
 import settings
 
 app = Flask(__name__)
 auth_options = {"loginUrl": settings.LOGIN_URL,
-    "rtmpRequestUrl": settings.RTMP_REQUEST_URL}
-auth_options["username"] = input("Username: ")
-auth_options["password"] = getpass()
+    "rtmpRequestUrl": settings.RTMP_REQUEST_URL,
+    "username": settings.USERNAME,
+    "password": settings.PASSWORD}
 
 cluster_services = ClusterServices(Cluster())
 
