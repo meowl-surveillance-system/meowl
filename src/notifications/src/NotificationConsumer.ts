@@ -21,21 +21,20 @@ const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
 const storeNotif = 'INSERT INTO notif (date, type, email, name, frame_id) VALUES (%s, %s, %s, %s, %s)';
 
 consumer.on('message', async function(message:any){
-    handleNotif(message);
+    const cassClient = new cassandra.Client({
+        contactPoints: ['127.0.0.1'],
+        localDataCenter: 'datacenter1',
+        keyspace: 'streams',
+    });
+    handleNotif(message, cassClient);
 })
 
-export default async function handleNotif(message: any) {
+export default async function handleNotif(message: any, cassClient: cassandra.Client) {
     try {
         message = JSON.parse(message.value);
-        const cassClient = new cassandra.Client({
-            contactPoints: ['127.0.0.1'],
-            localDataCenter: 'datacenter1',
-            keyspace: 'streams',
-        });
 
         message.detections.faces.forEach((person:any) => {
-            cassClient.execute(getBlacklisted, [person])
-            .then(async function(result: any) {
+            cassClient.execute(getBlacklisted, [person], {prepare:true}, async function(err, result) {
                 if(result.rows.length !== 0)
                 {
                     const owner = await cassClient.execute(getUserID, [message.camera_id], {prepare:true}).then((result:any) => {return result.rows[0].user_id;})
@@ -54,7 +53,7 @@ export default async function handleNotif(message: any) {
                     sendEmail(req)
                     await cassClient.execute(storeNotif, (Date.now(),req.template, userEmail, person, message.frame_id), {prepare:true});
                 }
-            })
+            })    
         });
     } catch (error) {
         console.error(error);
