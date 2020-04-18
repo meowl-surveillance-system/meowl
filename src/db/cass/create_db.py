@@ -26,4 +26,4 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (use
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (camera_id text, stream_id text, frame_id text, frame blob, objects_detected blob, PRIMARY KEY(frame_id))')
 
 # Table for storing training data
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (data_id uuid, class_name text, data blob, PRIMARY KEY(data_id))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (data_id uuid, class_name text, insert_date timestamp, data blob, PRIMARY KEY(data_id))')
