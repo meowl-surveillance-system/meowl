@@ -33,7 +33,6 @@ def store_training_data(class_name):
                 INSERT INTO streams.training_data (data_id, class_name, insert_date, data)
                 VALUES(?, ?, ?, ?)
             """)
-            print(time.time())
             stmt_results = session.execute(stmt,
                 [uuid.uuid4(), class_name, time.time(), file_data.read()])
     os.system("rm -rf " + settings.TRAINING_DATA)
