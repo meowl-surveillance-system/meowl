@@ -10,6 +10,7 @@
 #   None
 #######################################
 
+export MEOWL_SECRET="${MEOWL_SECRET:-wack}"
 NGINX_VERSION=1.17.8
 NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
 NGINX_RTMP_PORT=1935
@@ -21,15 +22,16 @@ STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
 STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
 STREAMING_SERVER_IP=127.0.0.1
 STREAMING_SERVER_DNS="localhost"
+AUTH_SERVER_URL="${MEOWL_AUTH_SERVER_URL:-https://127.0.0.1:8081}"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;
 
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
+error_log  logs/error.log;
+error_log  logs/error.log  notice;
+error_log  logs/error.log  info;
 
-#pid        logs/nginx.pid;
+pid        logs/nginx.pid;
 
 
 events {
@@ -46,6 +48,8 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_publish http://localhost/api-https-proxy/auth/rtmpAuthPublishStart;
+            on_publish_done http://localhost/api-https-proxy/auth/rtmpAuthPublishStop;
             # Turn on HLS
             hls on;
             hls_path /mnt/hls/;
@@ -59,6 +63,7 @@ rtmp {
             live on;
             allow publish 127.0.0.1;
             deny publish all;
+            on_play http://localhost/api-https-proxy/auth/rtmpAuthPlay;
         }
     }
 }
@@ -102,24 +107,52 @@ http {
 
             root /mnt/;
         }
+
+        location =/meowl_nginx.crt {
+            alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+            alias ${MEOWL_CA_CERT};
+        }
+
     }
+    server {
+        listen 80;
+        server_name localhost;
+        location /api-https-proxy {
+          allow 127.0.0.1;
+          deny all;
+          # Strips the api-https-proxy part of
+          # the url, but forward the rest.
+          rewrite  ^/api-https-proxy/(.*) /\$1 break;
+          proxy_pass ${AUTH_SERVER_URL};
+        }
+
+        location =/meowl_nginx.crt {
+          alias ${STREAMING_SERVER_CERT};
+        }
+
+        location =/meowl_CA.pem {
+          alias ${MEOWL_CA_CERT};
+        }
+    }
+
 }
 "
 MEOWL_SSL_CONF="
 [ req ]
+prompt             = no
 default_bits       = 4096
 distinguished_name = req_distinguished_name
 req_extensions     = req_ext
 
 [ req_distinguished_name ]
-countryName                 = Country Name (2 letter code)
-countryName_default         = US
-stateOrProvinceName         = State or Province Name (full name)
-stateOrProvinceName_default = NY
-localityName                = Locality Name (eg, city)
-organizationName            = Organization Name (eg, company)
-organizationName_default    = Meowl-Surveillance-System
-commonName                  = Common Name (e.g. server FQDN or YOUR name)
+countryName                 = US
+stateOrProvinceName         = NY
+#localityName                = Locality Name (eg, city)
+organizationName            = Meowl-Surveillance-System
+#commonName                  = Common Name (e.g. server FQDN or YOUR name)
 
 [ req_ext ]
 subjectAltName = @alt_names
@@ -147,7 +180,7 @@ download_rtmp_module() {
 }
 
 install_nginx_dependencies() {
-  sudo apt install -y build-essential libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev
+  sudo apt-get install -y build-essential libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev
 }
 
 download_extract_nginx() {
@@ -171,24 +204,24 @@ install_nginx_with_rtmp() {
 create_server_key_certs() {
   sudo openssl rand -writerand ~/.rnd
   echo "${MEOWL_SSL_CONF}" | sudo tee /tmp/meowl_ssl.cnf
-  sudo openssl genrsa -des3 -out ${MEOWL_CA_KEY} 2048
-  sudo openssl req -x509 -new -nodes -key ${MEOWL_CA_KEY} -sha256 -days 3650 -out ${MEOWL_CA_CERT} -config /tmp/meowl_ssl.cnf
+  echo "${MEOWL_SECRET}" | sudo openssl genrsa -des3 -passout stdin -out ${MEOWL_CA_KEY} 2048
+  echo "${MEOWL_SECRET}" | sudo openssl req -x509 -new -nodes -key ${MEOWL_CA_KEY} -sha256 -days 3650 -passin stdin -out ${MEOWL_CA_CERT} -config /tmp/meowl_ssl.cnf
   sudo openssl genrsa -out ${STREAMING_SERVER_KEY} 2048
   sudo openssl req -new -key ${STREAMING_SERVER_KEY} -out /tmp/meowl.csr -config /tmp/meowl_ssl.cnf
-  sudo openssl x509 -req -days 3650 -in /tmp/meowl.csr -CA ${MEOWL_CA_CERT} -CAkey ${MEOWL_CA_KEY} -CAcreateserial -out ${STREAMING_SERVER_CERT} -extfile /tmp/meowl_ssl.cnf -extensions req_ext
+  echo "${MEOWL_SECRET}" | sudo openssl x509 -req -days 3650 -in /tmp/meowl.csr -CA ${MEOWL_CA_CERT} -CAkey ${MEOWL_CA_KEY} -CAcreateserial -passin stdin -out ${STREAMING_SERVER_CERT} -extfile /tmp/meowl_ssl.cnf -extensions req_ext
 
 }
 
 # Install stunnel as a server with a configuration to work with nginx rtmp
 install_stunnel_server() {
-  sudo apt install -y stunnel4
+  sudo apt-get install -y stunnel4
   create_server_key_certs
   echo "${STUNNEL_SERVER_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
 }
 
 install_nginx_rtmp_all() {
   echo "Installing Nginx rtmp..."
-  sudo apt update
+  sudo apt-get update
   install_nginx_with_rtmp
   install_stunnel_server
 }

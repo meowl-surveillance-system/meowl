@@ -1,7 +1,8 @@
+from settings import CASSANDRA_CLUSTER_IPS, CASSANDRA_CLUSTER_PORT
 from cassandra.cluster import Cluster
 from src.cluster_services import ClusterServices
 
-cluster_services = ClusterServices(Cluster())
+cluster_services = ClusterServices(Cluster(CASSANDRA_CLUSTER_IPS, port=CASSANDRA_CLUSTER_PORT))
 
 # Create keyspace
 cluster_services.create_keyspace('streams')
@@ -12,6 +13,18 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS metadata (strea
 
 # Data table
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS data (chunk_id text, chunk blob, PRIMARY KEY (chunk_id))')
+
+# Camera streamid table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS camera_streams (camera_id text, stream_id text, stream_date timestamp, PRIMARY KEY (camera_id, stream_date)) WITH CLUSTERING ORDER BY(stream_date DESC);')
+
+# Livestreaming cameras table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS live_cameras (camera_id text, live boolean, PRIMARY KEY (camera_id));')
+
+# User Camera table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS user_cameras (user_id text, camera_id text, PRIMARY KEY (user_id, camera_id))')
+
+# User Camera table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS camera_users (user_id text, camera_id text, PRIMARY KEY (camera_id, user_id))')
 
 # Session table
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS sessions (sid text, session text, expires timestamp, PRIMARY KEY (sid))')
@@ -27,3 +40,4 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (came
 
 # Table for storing training data
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (data_id uuid, class_name text, insert_date timestamp, data blob, PRIMARY KEY(data_id))')
+
