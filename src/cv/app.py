@@ -48,7 +48,7 @@ def extract_resources():
 @app.route('/retrieve_dataset/')
 def retrieve_dataset_res():
     """ Retrieves the dataset resources """
-    insert_frame.retrieve_training_data()
+    insert_frame.retrieve_training_data(request.args.get("start_time"))
     return "Finished retrieving dataset resources"
 
 @app.route('/extract_embeddings/')

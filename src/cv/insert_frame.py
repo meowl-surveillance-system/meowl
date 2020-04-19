@@ -37,11 +37,15 @@ def store_training_data(class_name):
                 [uuid.uuid4(), class_name, time.time(), file_data.read()])
     os.system("rm -rf " + settings.TRAINING_DATA)
 
-def retrieve_training_data():
+def retrieve_training_data(start_time):
     """ Obtains the training data from database """
     if not os.path.exists(settings.DATASET):
         os.system('mkdir ' + settings.DATASET)
-    res = session.execute("SELECT class_name, data from streams.training_data")
+    stmt = session.prepare("""
+        SELECT class_name, data from streams.training_data where insert_date > ?
+        ALLOW FILTERING
+    """)
+    res = session.execute(stmt, [int(start_time)])
     counter = 0
     for data in res:
         class_path = settings.DATASET + '/' + data[0]
