@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders learn react link 1`] = `
+<div
+  class="App"
+>
+  <div>
+    <header
+      class="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
+    >
+      <div
+        class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"
+      >
+        <a
+          href="/"
+          style="text-decoration: none;"
+        >
+          <span
+            class="MuiTypography-root"
+          >
+            Meowl
+          </span>
+        </a>
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-flex-start MuiGrid-justify-xs-flex-end"
+        >
+          <div>
+            <a
+              href="/login"
+              style="text-decoration: none;"
+            >
+              Login
+            </a>
+            <a
+              href="/register"
+              style="padding-left: 10px; text-decoration: none;"
+            >
+              Register
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+</div>
+`;
