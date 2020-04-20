@@ -17,22 +17,25 @@ export const isLoggedIn = (req: Request, res: Response) => {
 };
 
 /**
- * Stores a user's credentials if username does not exist
+ * Stores a user's credentials in pending_accounts table if username does not exist
  */
 export const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
-  const sid = req.sessionID;
   const userId = uuidv4();
-  const userExistsResult = await authServices.checkUserExists(username);
-  if (userExistsResult === undefined) {
+  const userExists = await authServices.checkUserExists(username);
+  if (userExists === undefined) {
     res.status(500).send('server error');
   } else {
-    if (userExistsResult.rows.length > 0) {
+    if (userExists) {
       res.status(400).send('username already exists');
     } else {
-      await authServices.storeUser(userId, email, username, sid, password);
-      req.session!.userId = userId;
-      res.status(200).send('successfully registered');
+      await authServices.addUserToPendingAccounts(
+        userId,
+        email,
+        username,
+        password
+      );
+      res.status(200).send('successfully added to pending accounts');
     }
   }
 };

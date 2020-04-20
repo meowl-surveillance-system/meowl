@@ -17,7 +17,7 @@ app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
 });
 
 /**
- * Register a new user
+ * Register a new pending user to the pending accounts table
  */
 app.post(
   '/register',

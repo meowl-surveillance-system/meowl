@@ -13,9 +13,13 @@ export const UPDATE_USERSNAME_SID =
   'UPDATE users_name SET sid = ? WHERE username = ?';
 export const SELECT_USERSNAME_SID =
   'SELECT sid FROM users_id WHERE user_id = ?';
-export const SELECT_SID_SESSION = 'SELECT * FROM sessions WHERE sid = ?';
 export const SELECT_USERSNAME_USERID =
   'SELECT user_id FROM users_name WHERE username = ?';
+export const SELECT_SID_SESSION = 'SELECT * FROM sessions WHERE sid = ?';
+export const SELECT_PENDINGACCOUNTS_USERID =
+  'SELECT user_id FROM pending_accounts WHERE username = ?';
+export const INSERT_PENDINGACCOUNTS =
+  'INSERT INTO pending_accounts (user_id, email, username, password) VALUES (?, ?, ?, ?)';
 export const SELECT_PENDINGACCOUNTS_ALL =
   'SELECT * FROM pending_accounts WHERE username = ?';
 export const DELETE_PENDINGACCOUNTS_ALL =

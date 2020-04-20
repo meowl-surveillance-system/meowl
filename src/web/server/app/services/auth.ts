@@ -3,11 +3,13 @@ import bcrypt from 'bcrypt';
 import {
   INSERT_USERSID,
   INSERT_USERSNAME,
+  INSERT_PENDINGACCOUNTS,
   SELECT_USERSID_USERID_PASSWORD_ADMIN,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
   SELECT_USERSNAME_USERID,
+  SELECT_PENDINGACCOUNTS_USERID,
   SELECT_SID_SESSION,
   SELECT_PENDINGACCOUNTS_ALL,
   DELETE_PENDINGACCOUNTS_ALL,
@@ -22,25 +24,42 @@ import { client } from '../utils/client';
  * @param sid - The sessionID of the user
  * @param password - The password of the user
  */
-export const storeUser = async (
+export const addUserToPendingAccounts = async (
   userId: string,
   email: string,
   username: string,
-  sid: any,
   password: string
 ) => {
   const hash = await bcrypt.hash(password, 12);
-  const params = [userId, email, username, hash, sid];
-  await client.execute(INSERT_USERSID, params, { prepare: true });
-  await client.execute(INSERT_USERSNAME, params, { prepare: true });
+  const params = [userId, email, username, hash];
+  await client.execute(INSERT_PENDINGACCOUNTS, params, { prepare: true });
 };
 /**
- * Check if user exists
+ * Check if user exists in both pending accounts and approved accounts
  * @param username - The username of the user
  * @returns ResultSet - Contains row of user_id
  */
-export const checkUserExists = (username: string) => {
-  return client.execute(SELECT_USERSNAME_USERID, [username], { prepare: true });
+export const checkUserExists = async (username: string) => {
+  const pendingAccountResult = await client.execute(
+    SELECT_PENDINGACCOUNTS_USERID,
+    [username],
+    { prepare: true }
+  );
+  const approvedAccountResult = await client.execute(
+    SELECT_USERSNAME_USERID,
+    [username],
+    { prepare: true }
+  );
+  if (
+    pendingAccountResult === undefined ||
+    approvedAccountResult === undefined
+  ) {
+    return undefined;
+  }
+  return (
+    pendingAccountResult.rows.length > 0 ||
+    approvedAccountResult.rows.length > 0
+  );
 };
 /**
  * Retrieve user information from database
