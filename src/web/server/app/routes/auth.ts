@@ -61,6 +61,17 @@ app.post(
 );
 
 /**
+ * Reject a registration
+ */
+app.post(
+  '/rejectRegistration',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.rejectRegistration(req, res);
+  }
+);
+
+/**
  * Extract sessionID and userId from cookie and send it back in the response body
  */
 app.post(

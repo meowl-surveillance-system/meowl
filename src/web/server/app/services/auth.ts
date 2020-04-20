@@ -10,6 +10,7 @@ import {
   SELECT_USERSNAME_USERID,
   SELECT_SID_SESSION,
   SELECT_PENDINGACCOUNTS_ALL,
+  DELETE_PENDINGACCOUNTS_ALL,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -124,4 +125,12 @@ export const approveRegistration = (
   const params = [userId, email, username, password, false];
   client.execute(INSERT_USERSID, params, { prepare: true });
   client.execute(INSERT_USERSNAME, params, { prepare: true });
+};
+
+/**
+ * Reject a pending account by deleting it from the pending_accounts table
+ * @param username - The username used to lookup the to-be-deleted account
+ */
+export const rejectRegistration = (username: string) => {
+  client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
 };

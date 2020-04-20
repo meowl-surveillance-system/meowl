@@ -107,6 +107,19 @@ export const approveRegistration = async (req: Request, res: Response) => {
 };
 
 /**
+ * Rejects a registration by deleting the pending account from the pending_accounts table
+ */
+export const rejectRegistration = async (req: Request, res: Response) => {
+  try {
+    await authServices.rejectRegistration(req.body.username);
+    res.status(200).send('Successfully deleted pending account');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
  * Sends sessionID and userID of active session in response
  */
 export const rtmpRequest = (req: Request, res: Response) => {
