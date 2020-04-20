@@ -101,6 +101,7 @@ export const approveRegistration = async (req: Request, res: Response) => {
         username,
         password
       );
+      await authServices.removePendingAccount(username);
       res.status(200).send('Successfully registered');
     }
   } catch (e) {
@@ -114,7 +115,7 @@ export const approveRegistration = async (req: Request, res: Response) => {
  */
 export const rejectRegistration = async (req: Request, res: Response) => {
   try {
-    await authServices.rejectRegistration(req.body.username);
+    await authServices.removePendingAccount(req.body.username);
     res.status(200).send('Successfully deleted pending account');
   } catch (e) {
     console.error(e);

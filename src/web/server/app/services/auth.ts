@@ -147,9 +147,9 @@ export const approveRegistration = (
 };
 
 /**
- * Reject a pending account by deleting it from the pending_accounts table
+ * Remove pending account from the pending_accounts table
  * @param username - The username used to lookup the to-be-deleted account
  */
-export const rejectRegistration = (username: string) => {
+export const removePendingAccount = (username: string) => {
   client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
 };
