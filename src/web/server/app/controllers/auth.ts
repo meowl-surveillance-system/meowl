@@ -56,6 +56,7 @@ export const login = async (req: Request, res: Response) => {
       if (match) {
         await authServices.updateSessionId(sid, credentials.user_id, username);
         req.session!.userId = credentials.user_id;
+        req.session!.admin = credentials.admin;
         res.status(200).send('successfully logged in');
       } else {
         res.status(400).send('Invalid username or password');
@@ -78,6 +79,31 @@ export const logout = (req: Request, res: Response) => {
       res.status(200).send('logged out');
     }
   });
+};
+
+/**
+ * Approves a registration by transferring the pending account to the users_id and users_name tables
+ */
+export const approveRegistration = async (req: Request, res: Response) => {
+  try {
+    const result = await authServices.retrievePendingAccount(req.body.username);
+    const credentials = result.rows[0];
+    if (credentials === undefined) {
+      res.status(400).send('Pending account does not exist');
+    } else {
+      const { user_id, email, username, password } = credentials;
+      await authServices.approveRegistration(
+        user_id,
+        email,
+        username,
+        password
+      );
+      res.status(200).send('Successfully registered');
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
 };
 
 /**

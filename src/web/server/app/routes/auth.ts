@@ -6,6 +6,7 @@ import {
   isLoggedOut,
   isUsernameCollide,
   isValidCred,
+  isAdmin,
 } from '../middlewares/authChecks';
 import * as authController from '../controllers/auth';
 
@@ -45,6 +46,17 @@ app.post(
   isLoggedIn,
   (req: express.Request, res: express.Response) => {
     authController.logout(req, res);
+  }
+);
+
+/**
+ * Approve a registration
+ */
+app.post(
+  '/approveRegistration',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.approveRegistration(req, res);
   }
 );
 

@@ -3,12 +3,13 @@ import bcrypt from 'bcrypt';
 import {
   INSERT_USERSID,
   INSERT_USERSNAME,
-  SELECT_USERSID_USERID_PASSWORD,
+  SELECT_USERSID_USERID_PASSWORD_ADMIN,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
   SELECT_USERSNAME_USERID,
   SELECT_SID_SESSION,
+  SELECT_PENDINGACCOUNTS_ALL,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -46,7 +47,7 @@ export const checkUserExists = (username: string) => {
  * @returns ResultSet - Contains row of user_id and password
  */
 export const retrieveUser = async (username: string) => {
-  return client.execute(SELECT_USERSID_USERID_PASSWORD, [username], {
+  return client.execute(SELECT_USERSID_USERID_PASSWORD_ADMIN, [username], {
     prepare: true,
   });
 };
@@ -94,4 +95,33 @@ export const retrieveSID = async (userId: string) => {
  */
 export const retrieveSession = async (sessionID: string) => {
   return client.execute(SELECT_SID_SESSION, [sessionID], { prepare: true });
+};
+
+/**
+ * Retrieve the pending account using the username
+ * @param username - The value used to lookup the pending account
+ * @returns ResultSet - Contains all the fields of the pending account
+ */
+export const retrievePendingAccount = (username: string) => {
+  return client.execute(SELECT_PENDINGACCOUNTS_ALL, [username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Store user information into users_id and users_name tables
+ * @param userId - The userId of the user
+ * @param email - The email of the user
+ * @param username - The username of the user
+ * @param password - The password of the user
+ */
+export const approveRegistration = (
+  userId: string,
+  email: string,
+  username: string,
+  password: string
+) => {
+  const params = [userId, email, username, password, false];
+  client.execute(INSERT_USERSID, params, { prepare: true });
+  client.execute(INSERT_USERSNAME, params, { prepare: true });
 };
