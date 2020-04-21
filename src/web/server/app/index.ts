@@ -57,6 +57,7 @@ app.use(session({
 app.use(routes);
 
 if (process.env.NODE_ENV === 'production') {
+  console.log('Meowl Web Server now in production mode!');
   app.use(compression());
   // Serve any static files
   app.use(express.static(path.join(__dirname, './../../../client/build')));
@@ -67,5 +68,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`Meowl Web Server listening on port ${port}!`);
 });
