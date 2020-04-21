@@ -4,7 +4,6 @@ from src.cluster_services import ClusterServices
 from src.file_services import FileServices
 from src.rtmp_saver import RtmpSaver
 from flask import Flask
-from getpass import getpass
 import settings
 
 app = Flask(__name__)
