@@ -1,5 +1,6 @@
 import cassandra from 'cassandra-driver';
 import CassandraStore from 'cassandra-store';
+import compression from 'compression';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -56,6 +57,7 @@ app.use(session({
 app.use(routes);
 
 if (process.env.NODE_ENV === 'production') {
+  app.use(compression());
   // Serve any static files
   app.use(express.static(path.join(__dirname, './../../../client/build')));
   // Handle React routing, return all requests to React app
