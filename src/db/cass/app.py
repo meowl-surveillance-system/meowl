@@ -9,9 +9,9 @@ import settings
 
 app = Flask(__name__)
 auth_options = {"loginUrl": settings.LOGIN_URL,
-    "rtmpRequestUrl": settings.RTMP_REQUEST_URL}
-auth_options["username"] = input("Username: ")
-auth_options["password"] = getpass()
+    "rtmpRequestUrl": settings.RTMP_REQUEST_URL,
+    "username": settings.USERNAME,
+    "password": settings.PASSWORD}
 
 # Connects to local/remote Cluster set by environment variables
 cluster_services = ClusterServices(Cluster(CASSANDRA_CLUSTER_IPS, port=CASSANDRA_CLUSTER_PORT))
