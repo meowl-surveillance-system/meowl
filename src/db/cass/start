@@ -1,0 +1,4 @@
+#!/bin/bash
+
+stunnel /etc/stunnel/stunnel.conf >> stunnel-service.log &
+flask run --host=0.0.0.0

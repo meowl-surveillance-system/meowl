@@ -40,4 +40,4 @@ RUN python3 create_db.py
 EXPOSE 5000
 
 # Runs this command forever in the container
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["./start"]
