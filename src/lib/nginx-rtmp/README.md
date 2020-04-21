@@ -16,6 +16,6 @@ sudo docker build --tag meowl-cass-app:1.0 . --build-arg CERT_FILE_ADDRESS=192.1
 sudo docker run --detach --publish 5001:5000 --name meowl-cass-app meowl-cass-app:1.0 
 
 sudo docker stop meowl-web
-sudo docker rm meowl-cass-app
+sudo docker rm meowl-web
 sudo docker build --tag meowl-web:1.0 .
 sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  

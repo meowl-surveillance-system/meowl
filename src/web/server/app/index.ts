@@ -2,7 +2,6 @@ import cassandra from 'cassandra-driver';
 import CassandraStore from 'cassandra-store';
 import compression from 'compression';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import path from 'path';
@@ -10,30 +9,25 @@ import {v4 as uuidv4} from 'uuid';
 
 import {routes} from './routes/index';
 import {client} from './utils/client';
-
-dotenv.config();
+import {CASSANDRA_CLUSTER_IPS, CASSANDRA_CLUSTER_PORT, ENABLE_HTTPS, NODE_ENV, SESSION_SECRET, WEB_SERVER_PORT} from './utils/settings';
 
 const app = express();
-const port = process.env.PORT || 8081;
+const port = WEB_SERVER_PORT;
 
 const cassandraStoreOptions = {
   table: 'sessions',
   client: null,
   clientOptions: {
-    contactPoints: process.env.CASSANDRA_CLUSTER_IPS ?
-        process.env.CASSANDRA_CLUSTER_IPS.split(' ') :
-        ['localhost'],
+    contactPoints: CASSANDRA_CLUSTER_IPS,
     keyspace: 'streams',
     queryOptions: {prepare: true},
     protocolOptions: {
-      port: process.env.CASSANDRA_CLUSTER_PORT ?
-          Number(process.env.CASSANDRA_CLUSTER_PORT) :
-          9042,
+      port: CASSANDRA_CLUSTER_PORT,
     }
   },
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (NODE_ENV !== 'production') {
   app.use(cors());
 }
 
@@ -41,11 +35,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'likeasomebooody',
+  secret: SESSION_SECRET,
   genid: req => uuidv4(),
   cookie: {
     maxAge: 60000000,
-    secure: process.env.NODE_ENV !== 'production',
+    secure: ENABLE_HTTPS,
     sameSite: true,
   },
   resave: false,
@@ -56,7 +50,7 @@ app.use(session({
 // Mount the routes
 app.use(routes);
 
-if (process.env.NODE_ENV === 'production') {
+if (NODE_ENV === 'production') {
   console.log('Meowl Web Server now in production mode!');
   app.use(compression());
   // Serve any static files

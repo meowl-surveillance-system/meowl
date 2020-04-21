@@ -1,9 +1,11 @@
-import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import {Request, Response} from 'express';
+import url from 'url';
+import {v4 as uuidv4} from 'uuid';
 
-import * as authServices from '../services/auth';
 import * as apiServices from '../services/api';
+import * as authServices from '../services/auth';
+import {CASSANDRA_FLASK_SERVER_URL} from '../utils/settings';
 
 /**
  * Sends 200 if session of user contains its userId, 400 otherwise
@@ -20,7 +22,7 @@ export const isLoggedIn = (req: Request, res: Response) => {
  * Stores a user's credentials if username does not exist
  */
 export const register = async (req: Request, res: Response) => {
-  const { email, username, password } = req.body;
+  const {email, username, password} = req.body;
   const sid = req.sessionID;
   const userId = uuidv4();
   const userExistsResult = await authServices.checkUserExists(username);
@@ -38,10 +40,11 @@ export const register = async (req: Request, res: Response) => {
 };
 
 /**
- * Checks if username and hashed password from body are valid and updates session to contain userId if so
+ * Checks if username and hashed password from body are valid and updates
+ * session to contain userId if so
  */
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const {username, password} = req.body;
   const sid = req.sessionID;
   try {
     const result = await authServices.retrieveUser(username);
@@ -49,10 +52,8 @@ export const login = async (req: Request, res: Response) => {
     if (credentials === undefined) {
       res.status(400).send('Invalid username or password');
     } else {
-      const match = await authServices.compareHash(
-        password,
-        credentials.password
-      );
+      const match =
+          await authServices.compareHash(password, credentials.password);
       if (match) {
         await authServices.updateSessionId(sid, credentials.user_id, username);
         req.session!.userId = credentials.user_id;
@@ -84,13 +85,12 @@ export const logout = (req: Request, res: Response) => {
  * Sends sessionID and userID of active session in response
  */
 export const rtmpRequest = (req: Request, res: Response) => {
-  res
-    .status(200)
-    .json({ sessionID: req.sessionID, userId: req.session!.userId });
+  res.status(200).json({sessionID: req.sessionID, userId: req.session!.userId});
 };
 
 /**
- * Sends 200 if userId and sessionID in body of request match and session is still valid, 400 otherwise
+ * Sends 200 if userId and sessionID in body of request match and session is
+ * still valid, 400 otherwise
  */
 export const rtmpAuthPlay = async (req: Request, res: Response) => {
   try {
@@ -108,33 +108,30 @@ export const rtmpAuthPlay = async (req: Request, res: Response) => {
 
 /**
  * Handles authorization of rtmp stream publishing requests
- * Assigns userId to cameraId, stores streamId to cameraId, updates that cameraId is live,
- * and makes api request to rtmp saver to start or stop saving.
- * Only stores if userId and sessionID in body of request match, cameraId is assigned to userId or no one.
- * @param start true to indicate if this request is the start of the stream, false to indicate streaming has stopped
+ * Assigns userId to cameraId, stores streamId to cameraId, updates that
+ * cameraId is live, and makes api request to rtmp saver to start or stop
+ * saving. Only stores if userId and sessionID in body of request match,
+ * cameraId is assigned to userId or no one.
+ * @param start true to indicate if this request is the start of the stream,
+ * false to indicate streaming has stopped
  */
 const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
   try {
     const result = await authServices.retrieveSession(req.body.sessionID);
-    if (
-      result.rows.length === 0 ||
-      JSON.parse(result.rows[0].session).userId !== req.body.userId ||
-      result.rows[0].expires < Date.now()
-    ) {
+    if (result.rows.length === 0 ||
+        JSON.parse(result.rows[0].session).userId !== req.body.userId ||
+        result.rows[0].expires < Date.now()) {
       res.status(400).send('Nice try kid');
     } else {
       const canStream = await apiServices.verifyUserCamera(
-        req.body.userId,
-        req.body.cameraId
-      );
+          req.body.userId, req.body.cameraId);
       if (canStream) {
         await apiServices.addUserCamera(req.body.userId, req.body.cameraId);
         await apiServices.storeStreamId(req.body.cameraId, req.body.name);
         await apiServices.updateCameraLive(req.body.cameraId, start);
-        const saverUrl =
-          'http://localhost:5000/' +
-          (start ? 'store/' : 'stop/') +
-          req.body.name;
+        const saverUrl = url.resolve(
+            CASSANDRA_FLASK_SERVER_URL,
+            (start ? 'store/' : 'stop/') + req.body.name);
         const saverResponse = await axios.get(saverUrl);
         if (saverResponse.status === 200) {
           res.status(200).send('OK');

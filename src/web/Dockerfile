@@ -1,4 +1,5 @@
 FROM node:current
+FROM jrottenberg/ffmpeg:3.4-ubuntu 
 
 WORKDIR /meowl/web
 
@@ -7,6 +8,10 @@ ENV NODE_ENV=production
 ENV SESSION_SECRET=${SESSION_SECRET:-whateversession}
 ENV CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
 ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9043}
+ENV CASSANDRA_FLASK_SERVER_URL=${CASSANDRA_FLASK_SERVER_URL:-http://192.168.1.10:5001}
+ENV WEB_SERVER_PORT=${WEB_SERVER_PORT:-8081}
+
+RUN apk add  --no-cache ffmpeg
 
 # Install packages inside client directory and build via react
 COPY client client
