@@ -10,7 +10,7 @@
 #   None
 #######################################
 
-export MEOWL_SECRET="${MEOWL_SECRET:=wack}"
+export MEOWL_SECRET="${MEOWL_SECRET:-wack}"
 NGINX_VERSION=1.17.8
 NGINX_DIRECTORY="nginx-${NGINX_VERSION}"
 NGINX_RTMP_PORT=1935
@@ -22,7 +22,7 @@ STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
 STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
 STREAMING_SERVER_IP=127.0.0.1
 STREAMING_SERVER_DNS="localhost"
-AUTH_SERVER_URL="https://example.com"
+AUTH_SERVER_URL="${MEOWL_AUTH_SERVER_URL:-https://127.0.0.1:8081}"
 NGINX_CONF_FILE="
 #user  nobody;
 worker_processes  1;

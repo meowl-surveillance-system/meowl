@@ -4,8 +4,8 @@ WORKDIR /nginx
 
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes
-ARG MEOWL_SECRET=igotavalorantkey
-ENV MEOWL_SECRET=${MEOWL_SECRET}
+ENV MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
+ENV MEOWL_AUTH_SERVER_URL=${MEOWL_AUTH_SERVER_URL:-https://127.0.0.1:8081}
 
 # Install required packages
 RUN apt-get update 
