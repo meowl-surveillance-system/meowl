@@ -45,7 +45,7 @@ app.use(session({
   genid: req => uuidv4(),
   cookie: {
     maxAge: 60000000,
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV !== 'production',
     sameSite: true,
   },
   resave: false,

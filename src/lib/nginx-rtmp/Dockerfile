@@ -5,7 +5,7 @@ WORKDIR /nginx
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes
 ARG MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
-ENV MEOWL_AUTH_SERVER_URL=${MEOWL_AUTH_SERVER_URL:-https://127.0.0.1:8081}
+ENV MEOWL_AUTH_SERVER_URL=${MEOWL_AUTH_SERVER_URL:-http://192.168.1.10:8081}
 
 # Install required packages
 RUN apt-get update 
@@ -19,6 +19,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # Installing nginx-rtmp via installation script
 COPY install .
+COPY start .
 RUN ./install
 
 # 80: HTTP port
@@ -27,4 +28,4 @@ RUN ./install
 EXPOSE 80 443 19350
 
 # Runs this command forever in the container
-CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
+CMD ["./start"]
