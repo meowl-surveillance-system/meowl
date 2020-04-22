@@ -6,6 +6,6 @@ export const retrieveNotifications = async (req: Request, res: Response) => {
   if (result === undefined) {
     res.status(400).send('No notifications found');
   } else {
-    res.status(200).json(result);
+    res.status(200).json(result.rows);
   }
 };
