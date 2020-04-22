@@ -41,3 +41,5 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (came
 # Table for storing training data
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (data_id uuid, class_name text, insert_date timestamp, data blob, PRIMARY KEY(data_id))')
 
+# Table for storing Notifications
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS notif (date timestamp, type text, email text, name text, frame_id text, PRIMARY KEY(date))')
