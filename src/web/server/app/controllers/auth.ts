@@ -115,8 +115,15 @@ export const approveRegistration = async (req: Request, res: Response) => {
  */
 export const rejectRegistration = async (req: Request, res: Response) => {
   try {
-    await authServices.removePendingAccount(req.body.username);
-    res.status(200).send('Successfully deleted pending account');
+    const { username } = req.body;
+    const result = await authServices.retrievePendingAccount(username);
+    const credentials = result.rows[0];
+    if (credentials === undefined) {
+      res.status(400).send('Pending account does not exist');
+    } else {
+      await authServices.removePendingAccount(username);
+      res.status(200).send('Successfully deleted pending account');
+    }
   } catch (e) {
     console.error(e);
     res.status(500).send('Server error');
