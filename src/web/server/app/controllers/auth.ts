@@ -85,6 +85,8 @@ export const logout = (req: Request, res: Response) => {
  * Sends sessionID and userID of active session in response
  */
 export const rtmpRequest = (req: Request, res: Response) => {
+  console.log(
+      'rtmpRequest', {sessionID: req.sessionID, userId: req.session!.userId});
   res.status(200).json({sessionID: req.sessionID, userId: req.session!.userId});
 };
 
