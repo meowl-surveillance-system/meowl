@@ -72,6 +72,8 @@ describe('api', () => {
       );
       expected[testCameraId2] = testStreamId2;
       expect(liveCameraStreamIdResults2).toStrictEqual(expected);
+      await api.updateCameraLive(testCameraId, false);
+      await api.updateCameraLive(testCameraId2, false);
     });
   });
   describe('user group cameras', () => {
@@ -142,6 +144,7 @@ describe('api', () => {
       expect(userGroupsResult2!.rows[0].group_id).toBe(testGroupId2);
       await api.addUserGroup(testUserId, testGroupId2);
       const bothGroupsResult = await api.retrieveUserGroups(testUserId);
+      // testUserId should be in testGroupId and testGroupId2
       expect(bothGroupsResult.rows).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -152,12 +155,75 @@ describe('api', () => {
           }),
         ])
       );
+      // testUserId should be able to view testCameraId from testGroupId
+      // and testCameraId2 from testGroupId2
       const allGroupsCamerasResult = await api.retrieveUserGroupCameras(
         testUserId
       );
       expect(allGroupsCamerasResult).toEqual(
         expect.arrayContaining([testCameraId, testCameraId2])
       );
+    });
+    it('should be able to store and retrieve users group cameras', async () => {
+      await api.addUserGroup(testUserId, testGroupId);
+      const userGroupsResult = await api.retrieveUserGroups(testUserId);
+      expect(userGroupsResult!.rows[0].group_id).toBe(testGroupId);
+      const groupUsersResult = await api.retrieveGroupUsers(testGroupId);
+      await api.addUserCamera(testUserId, testCameraId);
+      const verifyResult = await api.verifyUserCamera(testUserId, testCameraId);
+      expect(verifyResult).toBe(true);
+      const testUserId2 = testUserId + 'GroupLiveCamerasTest';
+      const testCameraId2 = testCameraId + 'GroupLiveCamerasTest';
+      const testGroupId2 = testGroupId + 'GroupLiveCamerasTest';
+      await api.addUserCamera(testUserId2, testCameraId2);
+      const verifyResult2 = await api.verifyUserCamera(
+        testUserId2,
+        testCameraId2
+      );
+      expect(verifyResult2).toBe(true);
+      await api.addUserGroup(testUserId2, testGroupId2);
+      const userGroupsResult2 = await api.retrieveUserGroups(testUserId2);
+      expect(userGroupsResult2!.rows[0].group_id).toBe(testGroupId2);
+      await api.addUserGroup(testUserId, testGroupId2);
+      const bothGroupsResult = await api.retrieveUserGroups(testUserId);
+      // testUserId should be in testGroupId and testGroupId2
+      expect(bothGroupsResult.rows).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            group_id: testGroupId,
+          }),
+          expect.objectContaining({
+            group_id: testGroupId2,
+          }),
+        ])
+      );
+      // testUserId should be able to view testCameraId from testGroupId
+      // and testCameraId2 from testGroupId2
+      const allGroupsCamerasResult = await api.retrieveUserGroupCameras(
+        testUserId
+      );
+      expect(allGroupsCamerasResult).toEqual(
+        expect.arrayContaining([testCameraId, testCameraId2])
+      );
+      const testStreamId2 = testStreamId + 'GroupLiveCamerasTest';
+      await api.updateCameraLive(testCameraId, true);
+      await api.updateCameraLive(testCameraId2, false);
+      await api.storeStreamId(testCameraId, testStreamId);
+      await api.storeStreamId(testCameraId2, testStreamId2);
+      const liveGroupCameraStreamIdResults = await api.retrieveLiveGroupCameraStreamIds(
+        testUserId
+      );
+      const expected = {} as Record<string, string>;
+      expected[testCameraId] = testStreamId;
+      expect(liveGroupCameraStreamIdResults).toStrictEqual(expected);
+      await api.updateCameraLive(testCameraId2, true);
+      const liveGroupCameraStreamIdResults2 = await api.retrieveLiveGroupCameraStreamIds(
+        testUserId
+      );
+      expected[testCameraId2] = testStreamId2;
+      expect(liveGroupCameraStreamIdResults2).toStrictEqual(expected);
+      await api.updateCameraLive(testCameraId, false);
+      await api.updateCameraLive(testCameraId2, false);
     });
   });
 });

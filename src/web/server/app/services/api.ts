@@ -222,3 +222,33 @@ export const retrieveUserGroupCameras = async (userId: string) => {
   );
   return userCameras;
 };
+
+/**
+ * Retrieve all streamId from camera if live belonging to users groups
+ * @param userId - userId of user
+ * @returns Record<string, string> - Contains mapping of streamId belonging to cameraId, undefined if user has no cameras or no cameras in group
+ */
+export const retrieveLiveGroupCameraStreamIds = async (userId: string) => {
+  const camerasResult = await retrieveUserGroupCameras(userId);
+  if (camerasResult === undefined || camerasResult.length === 0) {
+    return undefined;
+  }
+  const liveCameras = camerasResult.reduce(
+    async (
+      oldCollection: Promise<Record<string, string>>,
+      cameraId: string
+    ) => {
+      const collection = await oldCollection;
+      const liveStreamIdResult = await retrieveLiveStreamId(cameraId);
+      if (
+        liveStreamIdResult !== undefined &&
+        liveStreamIdResult.rows.length > 0
+      ) {
+        collection[cameraId] = liveStreamIdResult.rows[0]['stream_id'];
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve({}))
+  );
+  return liveCameras;
+};
