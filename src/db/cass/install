@@ -15,11 +15,12 @@
 #
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P )
-NGINX_RTMP_IP="${NGINX_RTMP_IP:-35.239.238.204}"
-NGINX_RTMP_PORT="${NGINX_RTMP_PORT:-19350}"
+NGINX_RTMP_IP=${NGINX_RTMP_IP:-192.168.1.10}
+NGINX_RTMP_PORT=${NGINX_RTMP_PORT:-8000}
+
 CERT_PATH="/etc/ssl/certs"
-CERT_FILE_ADDRESS="${CERT_FILE_ADDRESS:-127.0.0.1:8008/meowl_nginx.crt}"
-STUNNEL_PORT="${STUNNEL_PORT:-1234}"
+CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-127.0.0.1:8008/meowl_nginx.crt}
+STUNNEL_PORT=${STUNNEL_PORT:-1234}
 STUNNEL_CONF_FILE="foreground = yes
 debug = 5
 
@@ -44,6 +45,7 @@ install_python_driver() {
 # Pastes stunnel configs to stunnel.conf
 create_stunnel_config_file() {
   echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
+  cat /etc/stunnel/stunnel.conf
 }
 
 # Downloads cert from file address

@@ -9,8 +9,9 @@ except KeyError:
   raise KeyError('STUNNEL_IP or STUNNEL_PORT is not defined in the environment')
 
 try:
-  LOGIN_URL = urljoin(os.environ['AUTH_SERVER_URL'], '/auth/login')
-  RTMP_REQUEST_URL = urljoin(os.environ['AUTH_SERVER_URL'],'/auth/rtmpRequest')
+  LOGIN_URL = os.environ['AUTH_SERVER_URL'] + '/auth/login'
+  RTMP_REQUEST_URL = os.environ['AUTH_SERVER_URL'] + '/auth/rtmpRequest'
+  print(LOGIN_URL, RTMP_REQUEST_URL)
 except KeyError:
   raise KeyError('AUTH_SERVER_URL is not defined in the environment')
 

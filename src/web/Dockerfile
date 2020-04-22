@@ -1,4 +1,4 @@
-FROM node:current
+FROM ubuntu:18.04
 
 WORKDIR /meowl/web
 
@@ -10,9 +10,24 @@ ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9043}
 ENV CASSANDRA_FLASK_SERVER_URL=${CASSANDRA_FLASK_SERVER_URL:-http://192.168.1.10:5001}
 ENV WEB_SERVER_PORT=${WEB_SERVER_PORT:-8081}
 
+# Updating ubuntu
+RUN apt update -y
+
+# Installing node
+RUN apt-get install -y curl gnupg
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
+RUN apt-get update -y
+RUN apt install -y nodejs
+RUN node --version
+RUN npm --version
+
+
+# Installing ffmpeg
+RUN apt install -y ffmpeg
+
 # Install packages inside client directory and build via react
 COPY client client
-RUN cd client && npm install --no-optional && npm run build
+RUN cd client && npm install && npm run build
 
 # Install packages inside server directory and build via typescript compiler
 COPY server server
