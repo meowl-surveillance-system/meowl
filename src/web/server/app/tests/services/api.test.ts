@@ -8,6 +8,7 @@ describe('api', () => {
   const testEmail = 'test@email.com';
   const testCameraId = 'servicesTestCameraId';
   const testStreamId = 'servicesTestStreamId';
+  const testGroupId = 'servicesTestGroupId';
   describe('storing and retrieving stream ids and camera ids', () => {
     it('should be able to store and retrieve stream ids', async () => {
       await api.storeStreamId(testCameraId, testStreamId);
@@ -71,6 +72,92 @@ describe('api', () => {
       );
       expected[testCameraId2] = testStreamId2;
       expect(liveCameraStreamIdResults2).toStrictEqual(expected);
+    });
+  });
+  describe('user group cameras', () => {
+    it('should be able to store and retrieve user groups', async () => {
+      await api.addUserGroup(testUserId, testGroupId);
+      const userGroupsResult = await api.retrieveUserGroups(testUserId);
+      expect(userGroupsResult!.rows[0].group_id).toBe(testGroupId);
+      const testUserId2 = testUserId + 'GroupTest';
+      const testCameraId2 = testCameraId + 'GroupTest';
+      await api.addUserGroup(testUserId2, testGroupId);
+      const userGroupsResult2 = await api.retrieveUserGroups(testUserId2);
+      expect(userGroupsResult2!.rows[0].group_id).toBe(testGroupId);
+      const groupUsersResult = await api.retrieveGroupUsers(testGroupId);
+      expect(groupUsersResult.rows).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            user_id: testUserId,
+          }),
+          expect.objectContaining({
+            user_id: testUserId2,
+          }),
+        ])
+      );
+    });
+    it('should be able to store and retrieve group cameras', async () => {
+      await api.addUserGroup(testUserId, testGroupId);
+      const userGroupsResult = await api.retrieveUserGroups(testUserId);
+      expect(userGroupsResult!.rows[0].group_id).toBe(testGroupId);
+      const groupUsersResult = await api.retrieveGroupUsers(testGroupId);
+      await api.addUserCamera(testUserId, testCameraId);
+      const verifyResult = await api.verifyUserCamera(testUserId, testCameraId);
+      expect(verifyResult).toBe(true);
+      const testUserId2 = testUserId + 'GroupCamerasTest';
+      const testCameraId2 = testCameraId + 'GroupCamerasTest';
+      await api.addUserCamera(testUserId2, testCameraId2);
+      const verifyResult2 = await api.verifyUserCamera(
+        testUserId2,
+        testCameraId2
+      );
+      expect(verifyResult2).toBe(true);
+      await api.addUserGroup(testUserId2, testGroupId);
+      const userGroupsResult2 = await api.retrieveUserGroups(testUserId2);
+      expect(userGroupsResult2!.rows[0].group_id).toBe(testGroupId);
+      const groupCamerasResult = await api.retrieveGroupCameras(testGroupId);
+      expect(groupCamerasResult).toEqual(
+        expect.arrayContaining([testCameraId, testCameraId2])
+      );
+    });
+    it('should be able to store and retrieve users group cameras', async () => {
+      await api.addUserGroup(testUserId, testGroupId);
+      const userGroupsResult = await api.retrieveUserGroups(testUserId);
+      expect(userGroupsResult!.rows[0].group_id).toBe(testGroupId);
+      const groupUsersResult = await api.retrieveGroupUsers(testGroupId);
+      await api.addUserCamera(testUserId, testCameraId);
+      const verifyResult = await api.verifyUserCamera(testUserId, testCameraId);
+      expect(verifyResult).toBe(true);
+      const testUserId2 = testUserId + 'UserGroupCamerasTest';
+      const testCameraId2 = testCameraId + 'UserGroupCamerasTest';
+      const testGroupId2 = testGroupId + 'UserGroupCamerasTest';
+      await api.addUserCamera(testUserId2, testCameraId2);
+      const verifyResult2 = await api.verifyUserCamera(
+        testUserId2,
+        testCameraId2
+      );
+      expect(verifyResult2).toBe(true);
+      await api.addUserGroup(testUserId2, testGroupId2);
+      const userGroupsResult2 = await api.retrieveUserGroups(testUserId2);
+      expect(userGroupsResult2!.rows[0].group_id).toBe(testGroupId2);
+      await api.addUserGroup(testUserId, testGroupId2);
+      const bothGroupsResult = await api.retrieveUserGroups(testUserId);
+      expect(bothGroupsResult.rows).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            group_id: testGroupId,
+          }),
+          expect.objectContaining({
+            group_id: testGroupId2,
+          }),
+        ])
+      );
+      const allGroupsCamerasResult = await api.retrieveUserGroupCameras(
+        testUserId
+      );
+      expect(allGroupsCamerasResult).toEqual(
+        expect.arrayContaining([testCameraId, testCameraId2])
+      );
     });
   });
 });

@@ -6,6 +6,10 @@ import {
   SELECT_STREAMID_METADATA,
   SELECT_CAMERAID_STREAMID,
   SELECT_CAMERAID_STREAMID_SINGLE,
+  SELECT_GROUPID_USERID,
+  SELECT_USERID_GROUPID,
+  INSERT_USERID_GROUPID,
+  INSERT_GROUPID_USERID,
   INSERT_CAMERAID_STREAMID,
   INSERT_USERID_CAMERAID,
   INSERT_CAMERAID_USERID,
@@ -132,4 +136,89 @@ export const retrieveCameraIds = async (userId: string) => {
   return client.execute(SELECT_CAMERAID_USERID, [userId], {
     prepare: true,
   });
+};
+
+/**
+ * Assign user to group
+ * @param userId - The userId of the user
+ * @param groupId - The groupId of the group
+ */
+export const addUserGroup = async (userId: string, groupId: string) => {
+  const params = [userId, groupId];
+  await client.execute(INSERT_USERID_GROUPID, params, { prepare: true });
+  await client.execute(INSERT_GROUPID_USERID, params, { prepare: true });
+};
+
+/**
+ * Retrieve groupIds from database that user belongs to
+ * @param userId - The user id of the user
+ * @returns ResultSet - Contains rows of groupIds belonging to userId
+ */
+export const retrieveUserGroups = async (userId: string) => {
+  return client.execute(SELECT_GROUPID_USERID, [userId], {
+    prepare: true,
+  });
+};
+
+/**
+ * Retrieve userIds from database that belong in groupId
+ * @param groupId - The group id of the group
+ * @returns ResultSet - Contains rows of userIds belonging to groupId
+ */
+export const retrieveGroupUsers = async (groupId: string) => {
+  return client.execute(SELECT_USERID_GROUPID, [groupId], {
+    prepare: true,
+  });
+};
+
+/**
+ * Retrieve cameraIds from users in database that belong in groupId
+ * @param groupId - The group id of the group
+ * @returns Array<string> - Contains cameraIds of users belonging to groupId
+ */
+export const retrieveGroupCameras = async (groupId: string) => {
+  const groupUsers = await retrieveGroupUsers(groupId);
+  if (groupUsers === undefined || groupUsers.rows.length === 0) {
+    return undefined;
+  }
+  const groupCameras = groupUsers.rows.reduce(
+    async (oldCollection: Promise<string[]>, row: any) => {
+      const collection = await oldCollection;
+      const userCameras = await retrieveCameraIds(row['user_id']);
+      if (userCameras !== undefined && userCameras.rows.length > 0) {
+        collection.push(
+          ...userCameras.rows.map((row: any) => {
+            return row['camera_id'];
+          })
+        );
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve([]))
+  );
+  return groupCameras;
+};
+
+/**
+ * Retrieve cameraIds from database that userId can view in all groups
+ * @param userId - The user id of the user
+ * @returns Array<string> - Contains cameraIds of users belonging to groups userId belongs to
+ */
+export const retrieveUserGroupCameras = async (userId: string) => {
+  const userGroups = await retrieveUserGroups(userId);
+  if (userGroups === undefined || userGroups.rows.length === 0) {
+    return undefined;
+  }
+  const userCameras = userGroups.rows.reduce(
+    async (oldCollection: Promise<string[]>, row: any) => {
+      const collection = await oldCollection;
+      const groupCameras = await retrieveGroupCameras(row['group_id']);
+      if (groupCameras !== undefined) {
+        collection.push(...groupCameras);
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve([]))
+  );
+  return userCameras;
 };

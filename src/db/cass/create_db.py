@@ -35,5 +35,11 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_
 # Users table for querying with username
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, email text, username text, password text, sid text, PRIMARY KEY(username))')
 
+# User Groups table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS user_groups (user_id text, group_id text, PRIMARY KEY (user_id, group_id))')
+
+# Group Users table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS group_users (group_id text, user_id text, PRIMARY KEY (group_id, user_id))')
+
 # Tables for storing OpenCV frames
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (camera_id text, stream_id text, frame_id text, frame blob, objects_detected blob, PRIMARY KEY(frame_id))')
