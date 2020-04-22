@@ -1,20 +1,21 @@
-import sendEmail from './index';
-import * as nodemailer from 'nodemailer';
+import * as sendEmail from './sendEmail';
+import handleNotif from '.';
+import * as cassandra from 'cassandra-driver';
+import * as kafka from 'kafka-node';
 
-jest.mock('nodemailer');
+const message: kafka.Message = {
+    topic: 'notif',
+    value: '{"detections": { "faces": ["Joe"]},"camera_id": 1,"frame_id": 2}'
+}
 
-let sendMailMock: jest.Mock<any, any>;
-
-beforeEach(() => {
-    sendMailMock = jest.fn();
-    (nodemailer.createTransport as jest.Mock).mockReturnValue({sendMail: sendMailMock});
+it('should query the DB for useful info and store notification to DB', () => {
+    const cassClient = new cassandra.Client({
+        contactPoints: ['127.0.0.1'],
+        localDataCenter: 'datacenter1',
+        keyspace: 'streams',
+    });
+    cassClient.execute = jest.fn();
+    //const spy = jest.spyOn(cassClient, 'execute');
+    handleNotif(message, cassClient);
+    expect(cassClient.execute).toHaveBeenCalled();
 })
-
-it('should call nodemailer function', () => {
-    const req = {
-        'test': 'dummy'
-    }
-    sendEmail(req);
-    expect(sendMailMock).toHaveBeenCalled;
-
-});
