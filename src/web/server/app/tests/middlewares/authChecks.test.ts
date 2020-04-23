@@ -125,4 +125,26 @@ describe('middlewares', () => {
       expect(res.status).toHaveBeenCalledWith(400);
     });
   });
+
+  describe('isAdmin', () => {
+    const req: any = (admin: boolean) => {
+      return {
+        session: { admin },
+      };
+    };
+    it('should call next if the request is made by an admin', async () => {
+      const isAdminReq = req(true);
+      const res = mockRes();
+      const next = jest.fn();
+      await authChecks.isAdmin(isAdminReq, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return 403 if the request is not made by an admin', async () => {
+      const isAdminReq = req(false);
+      const res = mockRes();
+      const next = jest.fn();
+      await authChecks.isAdmin(isAdminReq, res, next);
+      expect(res.status).toHaveBeenCalledWith(403);
+    });
+  });
 });

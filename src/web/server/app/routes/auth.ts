@@ -6,6 +6,7 @@ import {
   isLoggedOut,
   isUsernameCollide,
   isValidCred,
+  isAdmin,
 } from '../middlewares/authChecks';
 import * as authController from '../controllers/auth';
 
@@ -16,7 +17,7 @@ app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
 });
 
 /**
- * Register a new user
+ * Register a new pending user to the pending accounts table
  */
 app.post(
   '/register',
@@ -45,6 +46,28 @@ app.post(
   isLoggedIn,
   (req: express.Request, res: express.Response) => {
     authController.logout(req, res);
+  }
+);
+
+/**
+ * Approve a registration
+ */
+app.post(
+  '/approveRegistration',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.approveRegistration(req, res);
+  }
+);
+
+/**
+ * Reject a registration
+ */
+app.post(
+  '/rejectRegistration',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.rejectRegistration(req, res);
   }
 );
 

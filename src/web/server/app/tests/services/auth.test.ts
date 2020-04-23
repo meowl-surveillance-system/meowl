@@ -6,29 +6,45 @@ describe('auth', () => {
   const testUser = 'servicesTestUser';
   const testPassword = 'password';
   const testEmail = 'test@email.com';
+  // For testing retrieveUser
+  const testApprovedUserId = 'approvedUserId';
+  const testApprovedUsername = 'approvedUsername';
+  const testApprovedEmail = 'approved@email.com';
+  const testApprovedPassword = 'approvedPassword';
   beforeAll(async () => {
-    await auth.storeUser(
+    await auth.addUserToPendingAccounts(
       testUserId,
       testEmail,
       testUser,
-      testSessionID,
       testPassword
     );
+    await auth.addUserToPendingAccounts(
+      testApprovedUserId,
+      testApprovedEmail,
+      testApprovedUsername,
+      testApprovedPassword
+    );
+    const result = await auth.retrievePendingAccount(testApprovedUsername);
+    const { user_id, email, username, password } = result.rows[0];
+    await auth.approveRegistration(user_id, email, username, password);
   });
   describe('storing and retrieving user', () => {
     it('should be able to check user exists', async () => {
       const userExistsResult = await auth.checkUserExists(testUser);
-      expect(userExistsResult.rows.length).toBe(1);
+      expect(userExistsResult).toBe(true);
     });
     it('should be able to retrieve user', async () => {
-      const userResult = await auth.retrieveUser(testUser);
+      const userResult = await auth.retrieveUser(testApprovedUsername);
       const userId = userResult.rows[0].user_id;
-      expect(userId).toBe(testUserId);
+      expect(userId).toBe(testApprovedUserId);
     });
     it('should be able to retrieve and compare user password', async () => {
-      const userResult = await auth.retrieveUser(testUser);
+      const userResult = await auth.retrieveUser(testApprovedUsername);
       const password = userResult.rows[0].password;
-      const compareResult = await auth.compareHash(testPassword, password);
+      const compareResult = await auth.compareHash(
+        testApprovedPassword,
+        password
+      );
       expect(compareResult).toBe(true);
     });
   });
