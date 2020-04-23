@@ -123,18 +123,25 @@ describe('auth', () => {
       res.send = jest.fn().mockReturnValue(res);
       return res;
     };
-    jest
-      .spyOn(authServices, 'approveRegistration')
-      .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(authServices, 'removePendingAccount')
-      .mockImplementation(() => Promise.resolve());
+    beforeEach(() => {
+      jest
+        .spyOn(authServices, 'approveRegistration')
+        .mockImplementationOnce(
+          (userId: string, email: string, username: string, password: string) =>
+            Promise.resolve()
+        );
+      jest
+        .spyOn(authServices, 'removePendingAccount')
+        .mockImplementationOnce((username: string) => Promise.resolve());
+    });
     it('should return 200 when a user registration is approved', async () => {
       const req = mockReq(testUser);
       const res = mockRes();
       jest
         .spyOn(authServices, 'retrievePendingAccount')
-        .mockImplementation(() => Promise.resolve({ rows: [testUser] } as any));
+        .mockImplementationOnce((username: string) =>
+          Promise.resolve({ rows: [testUser] } as any)
+        );
       await auth.approveRegistration(req, res);
       expect(res.status).toBeCalledWith(200);
     });
@@ -143,7 +150,7 @@ describe('auth', () => {
       const res = mockRes();
       jest
         .spyOn(authServices, 'retrievePendingAccount')
-        .mockImplementation(() =>
+        .mockImplementationOnce((username: string) =>
           Promise.resolve({ rows: [undefined] } as any)
         );
       await auth.approveRegistration(req, res);
@@ -166,15 +173,19 @@ describe('auth', () => {
       res.send = jest.fn().mockReturnValue(res);
       return res;
     };
-    jest
-      .spyOn(authServices, 'removePendingAccount')
-      .mockImplementation(() => Promise.resolve());
+    beforeEach(() => {
+      jest
+        .spyOn(authServices, 'removePendingAccount')
+        .mockImplementationOnce((username: string) => Promise.resolve());
+    });
     it('should return 200 when registration is rejected', async () => {
       const req = mockReq(testUser);
       const res = mockRes();
       jest
         .spyOn(authServices, 'retrievePendingAccount')
-        .mockImplementation(() => Promise.resolve({ rows: [testUser] } as any));
+        .mockImplementationOnce((username: string) =>
+          Promise.resolve({ rows: [testUser] } as any)
+        );
       await auth.rejectRegistration(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
     });
@@ -183,7 +194,7 @@ describe('auth', () => {
       const res = mockRes();
       jest
         .spyOn(authServices, 'retrievePendingAccount')
-        .mockImplementation(() =>
+        .mockImplementationOnce((username: string) =>
           Promise.resolve({ rows: [undefined] } as any)
         );
       await auth.rejectRegistration(req, res);
@@ -216,18 +227,26 @@ describe('auth', () => {
       res.send = jest.fn().mockReturnValue(res);
       return res;
     };
+    beforeEach(() => {
+      jest
+        .spyOn(authServices, 'retrieveUser')
+        .mockImplementationOnce((username: string) =>
+          Promise.resolve({ rows: [testUser] } as any)
+        );
+    });
     it('should return 200 on a successful login', async () => {
       const req = mockReq(testSessionID, testUser, testPassword, '');
       const res = mockRes();
       jest
-        .spyOn(authServices, 'retrieveUser')
-        .mockImplementation(() => Promise.resolve({ rows: [testUser] } as any));
-      jest
         .spyOn(authServices, 'compareHash')
-        .mockImplementation(() => Promise.resolve(true));
+        .mockImplementationOnce((password: string, hash: string) =>
+          Promise.resolve(true)
+        );
       jest
         .spyOn(authServices, 'updateSessionId')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementationOnce((sid: any, userId: string, username: string) =>
+          Promise.resolve()
+        );
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(200);
     });
@@ -236,11 +255,10 @@ describe('auth', () => {
       const req = mockReq('no', 'noSuchUser', 'whatever', '');
       const res = mockRes();
       jest
-        .spyOn(authServices, 'retrieveUser')
-        .mockImplementation(() => Promise.resolve({ rows: [testUser] } as any));
-      jest
         .spyOn(authServices, 'compareHash')
-        .mockImplementation(() => Promise.resolve(false));
+        .mockImplementationOnce((password: string, hash: string) =>
+          Promise.resolve(false)
+        );
       await auth.login(req, res);
       expect(res.status).toBeCalledWith(400);
     });
@@ -328,8 +346,8 @@ describe('auth', () => {
       const rtmpRes = rtmpMockRes();
       jest
         .spyOn(authServices, 'retrieveSID')
-        .mockImplementation(
-          () => ({ rows: [{ sid: 'testSessionId' }] } as any)
+        .mockImplementationOnce(
+          (userId: string) => ({ rows: [{ sid: 'testSessionId' }] } as any)
         );
       await auth.rtmpAuthPlay(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
@@ -339,7 +357,7 @@ describe('auth', () => {
       const rtmpRes = rtmpMockRes();
       jest
         .spyOn(authServices, 'retrieveSID')
-        .mockImplementation(() => ({ rows: [] } as any));
+        .mockImplementationOnce((userId: string) => ({ rows: [] } as any));
       await auth.rtmpAuthPlay(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(400);
     });
@@ -348,8 +366,8 @@ describe('auth', () => {
       const rtmpRes = rtmpMockRes();
       jest
         .spyOn(authServices, 'retrieveSID')
-        .mockImplementation(
-          () => ({ rows: [{ sid: 'fakeSessionId' }] } as any)
+        .mockImplementationOnce(
+          (userId: string) => ({ rows: [{ sid: 'fakeSessionId' }] } as any)
         );
       await auth.rtmpAuthPlay(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(400);
@@ -382,6 +400,24 @@ describe('auth', () => {
     };
     const testCameraId = 'randomCameraId';
     const testStreamId = 'randomStreamId';
+
+    beforeEach(() => {
+      jest
+        .spyOn(apiServices, 'addUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve()
+        );
+      jest
+        .spyOn(apiServices, 'storeStreamId')
+        .mockImplementationOnce((cameraId: string, streamId: string) =>
+          Promise.resolve()
+        );
+      jest
+        .spyOn(apiServices, 'updateCameraLive')
+        .mockImplementationOnce((cameraId: string, live: boolean) =>
+          Promise.resolve()
+        );
+    });
     it('should return 200 on a successful publish store', async () => {
       mockedAxios.get.mockImplementationOnce(() =>
         Promise.resolve({ status: 200 })
@@ -396,16 +432,9 @@ describe('auth', () => {
         );
       jest
         .spyOn(apiServices, 'verifyUserCamera')
-        .mockImplementation(() => Promise.resolve(true));
-      jest
-        .spyOn(apiServices, 'addUserCamera')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'storeStreamId')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'updateCameraLive')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementation((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
       const rtmpReq = rtmpMockReq(
         testSessionID,
         'wrry',
@@ -433,16 +462,9 @@ describe('auth', () => {
         );
       jest
         .spyOn(apiServices, 'verifyUserCamera')
-        .mockImplementation(() => Promise.resolve(true));
-      jest
-        .spyOn(apiServices, 'addUserCamera')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'storeStreamId')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'updateCameraLive')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementation((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
       const rtmpReq = rtmpMockReq(
         testSessionID,
         'wrry',
@@ -467,7 +489,9 @@ describe('auth', () => {
         );
       jest
         .spyOn(apiServices, 'verifyUserCamera')
-        .mockImplementation(() => Promise.resolve(false));
+        .mockImplementation((userId: string, cameraId: string) =>
+          Promise.resolve(false)
+        );
       const rtmpReq = rtmpMockReq(
         testSessionID,
         'za warudo',
@@ -511,16 +535,10 @@ describe('auth', () => {
         );
       jest
         .spyOn(apiServices, 'verifyUserCamera')
-        .mockImplementation(() => Promise.resolve(true));
-      jest
-        .spyOn(apiServices, 'addUserCamera')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'storeStreamId')
-        .mockImplementation(() => Promise.resolve());
-      jest
-        .spyOn(apiServices, 'updateCameraLive')
-        .mockImplementation(() => Promise.resolve());
+        .mockImplementation((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+
       const rtmpReq = rtmpMockReq(
         testSessionID,
         'wrry',
