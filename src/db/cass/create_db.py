@@ -30,10 +30,19 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS camera_users (u
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS sessions (sid text, session text, expires timestamp, PRIMARY KEY (sid))')
 
 # Users table for querying with user_id
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_id text, email text, username text, password text, sid text, PRIMARY KEY(user_id))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_id (user_id text, email text, username text, password text, sid text, admin boolean, PRIMARY KEY(user_id))')
 
 # Users table for querying with username
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, email text, username text, password text, sid text, PRIMARY KEY(username))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (user_id text, email text, username text, password text, sid text, admin boolean, PRIMARY KEY(username))')
+
+# Pending accounts table to be approved or rejected by an admin
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS pending_accounts (user_id text, email text, username text, password text, PRIMARY KEY(username))')
 
 # Tables for storing OpenCV frames
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (camera_id text, stream_id text, frame_id text, frame blob, objects_detected blob, PRIMARY KEY(frame_id))')
+
+# Table for storing training data
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (data_id uuid, class_name text, insert_date timestamp, data blob, PRIMARY KEY(data_id))')
+
+# Table for storing Notifications
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS notif (date timestamp, type text, email text, name text, frame_id text, PRIMARY KEY(date))')

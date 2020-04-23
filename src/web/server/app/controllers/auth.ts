@@ -19,22 +19,26 @@ export const isLoggedIn = (req: Request, res: Response) => {
 };
 
 /**
- * Stores a user's credentials if username does not exist
+ * Stores a user's credentials in pending_accounts table if username does not exist
  */
 export const register = async (req: Request, res: Response) => {
   const {email, username, password} = req.body;
   const sid = req.sessionID;
   const userId = uuidv4();
-  const userExistsResult = await authServices.checkUserExists(username);
-  if (userExistsResult === undefined) {
+  const userExists = await authServices.checkUserExists(username);
+  if (userExists === undefined) {
     res.status(500).send('server error');
   } else {
-    if (userExistsResult.rows.length > 0) {
+    if (userExists) {
       res.status(400).send('username already exists');
     } else {
-      await authServices.storeUser(userId, email, username, sid, password);
-      req.session!.userId = userId;
-      res.status(200).send('successfully registered');
+      await authServices.addUserToPendingAccounts(
+        userId,
+        email,
+        username,
+        password
+      );
+      res.status(200).send('successfully added to pending accounts');
     }
   }
 };
@@ -57,6 +61,7 @@ export const login = async (req: Request, res: Response) => {
       if (match) {
         await authServices.updateSessionId(sid, credentials.user_id, username);
         req.session!.userId = credentials.user_id;
+        req.session!.admin = credentials.admin;
         res.status(200).send('successfully logged in');
       } else {
         res.status(400).send('Invalid username or password');
@@ -79,6 +84,52 @@ export const logout = (req: Request, res: Response) => {
       res.status(200).send('logged out');
     }
   });
+};
+
+/**
+ * Approves a registration by transferring the pending account to the users_id and users_name tables
+ */
+export const approveRegistration = async (req: Request, res: Response) => {
+  try {
+    const result = await authServices.retrievePendingAccount(req.body.username);
+    const credentials = result.rows[0];
+    if (credentials === undefined) {
+      res.status(400).send('Pending account does not exist');
+    } else {
+      const { user_id, email, username, password } = credentials;
+      await authServices.approveRegistration(
+        user_id,
+        email,
+        username,
+        password
+      );
+      await authServices.removePendingAccount(username);
+      res.status(200).send('Successfully registered');
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Rejects a registration by deleting the pending account from the pending_accounts table
+ */
+export const rejectRegistration = async (req: Request, res: Response) => {
+  try {
+    const { username } = req.body;
+    const result = await authServices.retrievePendingAccount(username);
+    const credentials = result.rows[0];
+    if (credentials === undefined) {
+      res.status(400).send('Pending account does not exist');
+    } else {
+      await authServices.removePendingAccount(username);
+      res.status(200).send('Successfully deleted pending account');
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
 };
 
 /**

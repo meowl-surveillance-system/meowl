@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cassandra-driver": "^4.5.0",
     "dotenv": "^8.2.0",
     "email-templates": "^7.0.2",
+    "kafka-node": "^5.0.0",
     "nodemailer": "^6.4.2",
     "pug": "^2.0.4"
   },

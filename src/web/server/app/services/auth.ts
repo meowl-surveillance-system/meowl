@@ -3,12 +3,16 @@ import bcrypt from 'bcrypt';
 import {
   INSERT_USERSID,
   INSERT_USERSNAME,
-  SELECT_USERSID_USERID_PASSWORD,
+  INSERT_PENDINGACCOUNTS,
+  SELECT_USERSID_USERID_PASSWORD_ADMIN,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
   SELECT_USERSNAME_USERID,
+  SELECT_PENDINGACCOUNTS_USERID,
   SELECT_SID_SESSION,
+  SELECT_PENDINGACCOUNTS_ALL,
+  DELETE_PENDINGACCOUNTS_ALL,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -20,25 +24,42 @@ import { client } from '../utils/client';
  * @param sid - The sessionID of the user
  * @param password - The password of the user
  */
-export const storeUser = async (
+export const addUserToPendingAccounts = async (
   userId: string,
   email: string,
   username: string,
-  sid: any,
   password: string
 ) => {
   const hash = await bcrypt.hash(password, 12);
-  const params = [userId, email, username, hash, sid];
-  await client.execute(INSERT_USERSID, params, { prepare: true });
-  await client.execute(INSERT_USERSNAME, params, { prepare: true });
+  const params = [userId, email, username, hash];
+  await client.execute(INSERT_PENDINGACCOUNTS, params, { prepare: true });
 };
 /**
- * Check if user exists
+ * Check if user exists in both pending accounts and approved accounts
  * @param username - The username of the user
  * @returns ResultSet - Contains row of user_id
  */
-export const checkUserExists = (username: string) => {
-  return client.execute(SELECT_USERSNAME_USERID, [username], { prepare: true });
+export const checkUserExists = async (username: string) => {
+  const pendingAccountResult = await client.execute(
+    SELECT_PENDINGACCOUNTS_USERID,
+    [username],
+    { prepare: true }
+  );
+  const approvedAccountResult = await client.execute(
+    SELECT_USERSNAME_USERID,
+    [username],
+    { prepare: true }
+  );
+  if (
+    pendingAccountResult === undefined ||
+    approvedAccountResult === undefined
+  ) {
+    return undefined;
+  }
+  return (
+    pendingAccountResult.rows.length > 0 ||
+    approvedAccountResult.rows.length > 0
+  );
 };
 /**
  * Retrieve user information from database
@@ -46,7 +67,7 @@ export const checkUserExists = (username: string) => {
  * @returns ResultSet - Contains row of user_id and password
  */
 export const retrieveUser = async (username: string) => {
-  return client.execute(SELECT_USERSID_USERID_PASSWORD, [username], {
+  return client.execute(SELECT_USERSID_USERID_PASSWORD_ADMIN, [username], {
     prepare: true,
   });
 };
@@ -94,4 +115,41 @@ export const retrieveSID = async (userId: string) => {
  */
 export const retrieveSession = async (sessionID: string) => {
   return client.execute(SELECT_SID_SESSION, [sessionID], { prepare: true });
+};
+
+/**
+ * Retrieve the pending account using the username
+ * @param username - The value used to lookup the pending account
+ * @returns ResultSet - Contains all the fields of the pending account
+ */
+export const retrievePendingAccount = (username: string) => {
+  return client.execute(SELECT_PENDINGACCOUNTS_ALL, [username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Store user information into users_id and users_name tables
+ * @param userId - The userId of the user
+ * @param email - The email of the user
+ * @param username - The username of the user
+ * @param password - The password of the user
+ */
+export const approveRegistration = (
+  userId: string,
+  email: string,
+  username: string,
+  password: string
+) => {
+  const params = [userId, email, username, password, false];
+  client.execute(INSERT_USERSID, params, { prepare: true });
+  client.execute(INSERT_USERSNAME, params, { prepare: true });
+};
+
+/**
+ * Remove pending account from the pending_accounts table
+ * @param username - The username used to lookup the to-be-deleted account
+ */
+export const removePendingAccount = (username: string) => {
+  client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
 };
