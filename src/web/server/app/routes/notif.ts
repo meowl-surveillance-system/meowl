@@ -9,3 +9,5 @@ app.get(
     notifController.retrieveNotifications(req, res);
   }
 );
+
+module.exports = app;
