@@ -21,7 +21,10 @@ if USERNAME is None :
 PASSWORD = os.environ.get("MEOWL_PASSWORD")
 if PASSWORD is None :
     PASSWORD = getpass()
-    
+EMAIL = os.environ.get("MEOWL_EMAIL")
+if EMAIL is None:
+  EMAIL = input("Enter admin email: ")
+
 try:
   CASSANDRA_CLUSTER_IPS = os.environ['CASSANDRA_CLUSTER_IPS'].split(' ')
 except KeyError:
