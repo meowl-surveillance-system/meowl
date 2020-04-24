@@ -130,7 +130,6 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
    * @param props - Property to be updated
    */
   updateProps(props: object) {
-    console.log('loginform', props);
     this.props.updateProps(props);
   }
 
