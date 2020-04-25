@@ -29,7 +29,7 @@ export YOLO_CONFIG_PATH=${PARENT}/${YOLO}/${YOLO_CONFIG}
 export YOLO_WEIGHTS_PATH=${PARENT}/${YOLO}/${YOLO_WEIGHTS}
 
 export CV_PRODUCER_TOPIC='cvdata'
-export KAFKA_BROKER=${KAFKA_BROKER_URL:-localhost:9092}
+export KAFKA_BROKER=${KAFKA_BROKER_URL:-localhost:9093}
 
 # Start stunnel in background
 # sudo stunnel /etc/stunnel/stunnel.conf 2>&1 | tee stunnel-service.log &
