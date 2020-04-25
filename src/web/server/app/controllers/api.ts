@@ -124,7 +124,7 @@ export const retrieveUserGroups = async (req: Request, res: Response) => {
  * Retrieves userIds in a group
  */
 export const retrieveGroupUsers = async (req: Request, res: Response) => {
-  const result = await apiServices.retrieveGroupUsers(req.body.groupId);
+  const result = await apiServices.retrieveGroupUsers(req.params.groupId);
   if (result === undefined) {
     res.status(400).send('Can not retrieve group users');
   } else {
@@ -140,7 +140,7 @@ export const retrieveGroupUsers = async (req: Request, res: Response) => {
  * Retrieves all cameraIds belonging to users in a group
  */
 export const retrieveGroupCameras = async (req: Request, res: Response) => {
-  const result = await apiServices.retrieveGroupCameras(req.body.groupId);
+  const result = await apiServices.retrieveGroupCameras(req.params.groupId);
   if (result === undefined) {
     res.status(400).send('Unable to retrieve group cameras');
   } else {

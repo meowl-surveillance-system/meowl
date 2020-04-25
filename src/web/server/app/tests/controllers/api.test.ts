@@ -346,7 +346,7 @@ describe('api', () => {
   describe('retrieveGroupUsers', () => {
     const mockReq: any = (groupId: string) => {
       return {
-        body: { groupId },
+        params: { groupId },
       };
     };
     const mockRes: any = () => {
@@ -391,7 +391,7 @@ describe('api', () => {
   describe('retrieveGroupCameras', () => {
     const mockReq: any = (groupId: string) => {
       return {
-        body: { groupId },
+        params: { groupId },
       };
     };
     const mockRes: any = () => {
