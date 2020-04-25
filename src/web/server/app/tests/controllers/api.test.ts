@@ -263,8 +263,7 @@ describe('api', () => {
   describe('addUserGroup', () => {
     const mockReq: any = (groupId: string, userId: string) => {
       return {
-        body: { groupId },
-        session: { userId },
+        body: { userId, groupId },
       };
     };
     const mockRes: any = () => {

@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import express from 'express';
 
-import { isLoggedIn } from '../middlewares/authChecks';
+import { isLoggedIn, isAdmin } from '../middlewares/authChecks';
 
 import { client } from '../utils/client';
 import * as apiController from '../controllers/api';
@@ -87,6 +87,17 @@ app.get(
   isLoggedIn,
   async (req: express.Request, res: express.Response) => {
     apiController.retrieveCameraIds(req, res);
+  }
+);
+
+/**
+ * Add a user to group, admin locked
+ */
+app.post(
+  '/addUserGroup',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    apiController.addUserGroup(req, res);
   }
 );
 

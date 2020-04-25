@@ -96,7 +96,7 @@ export const retrieveCameraIds = async (req: Request, res: Response) => {
  */
 export const addUserGroup = async (req: Request, res: Response) => {
   try {
-    await apiServices.addUserGroup(req.session!.userId, req.body.groupId);
+    await apiServices.addUserGroup(req.body.userId, req.body.groupId);
     res.status(200).send('OK');
   } catch (e) {
     console.error(e);
