@@ -2,15 +2,18 @@ FROM ubuntu:18.04
 
 WORKDIR /kafka
 
+# Setting environment variables 
 ENV EMAIL_ADDRESS=${EMAIL_ADDRESS:-meowl@mail.com}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD:-password}
 ENV CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
 ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-4043}
 
+# Install required packages
 RUN apt update -y
 RUN apt install -y sudo
 RUN apt install -y curl
 
+# Install Kafka via install script
 COPY install install
 RUN sudo ./install 
 
@@ -22,11 +25,16 @@ RUN apt install -y nodejs
 RUN node --version
 RUN npm --version
 
-# Node server might need to stop with proccess.exit or something (since it's a script)
+# Install notifications and runs the script in the background
 COPY notifications notifications
-RUN cd notifications && npm install --production && npm run build
+RUN cd notifications && npm install --production
 RUN cd notifications && npm start &
 
-EXPOSE 9042
+# Copy the start script over
+COPY start start
 
+# 9042: Kafka port
+EXPOSE 9092
+
+# Runs this command forever in the container
 CMD [ "./start" ]

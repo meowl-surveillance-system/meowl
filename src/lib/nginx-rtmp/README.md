@@ -23,3 +23,4 @@ sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0
 sudo docker stop meowl-kafka
 sudo docker rm meowl-kafka
 sudo docker build --tag meowl-kafka:1.0 .
+sudo docker run --detach --publish 9043 --name meowl-kafka meowl-kafka:1.0 

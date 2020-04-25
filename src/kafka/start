@@ -1,2 +1,3 @@
+#!/bin/bash
 cd /usr/local/kafka && ./bin/zookeeper-server-start.sh config/zookeeper.properties &
 cd /usr/local/kafka && ./bin/kafka-server-start.sh config/server.properties
