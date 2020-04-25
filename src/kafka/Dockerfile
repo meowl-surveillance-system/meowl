@@ -1,3 +1,4 @@
+#TODO(chc5): Test this Docker container alongside OpenCV container
 FROM ubuntu:18.04
 
 WORKDIR /kafka
