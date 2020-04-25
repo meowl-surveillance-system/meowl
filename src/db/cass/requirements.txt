@@ -1,3 +1,4 @@
+bcrypt==3.1.7
 cassandra-driver==3.21.0
 certifi==2020.4.5.1
 cffi==1.14.0
@@ -9,6 +10,7 @@ idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.1
 MarkupSafe==1.1.1
+pkg-resources==0.0.0
 pycparser==2.19
 python-librtmp==0.3.0
 requests==2.23.0
