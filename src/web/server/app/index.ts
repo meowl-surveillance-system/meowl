@@ -5,11 +5,18 @@ import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
 import path from 'path';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
-import {routes} from './routes/index';
-import {client} from './utils/client';
-import {CASSANDRA_CLUSTER_IPS, CASSANDRA_CLUSTER_PORT, ENABLE_HTTPS, NODE_ENV, SESSION_SECRET, WEB_SERVER_PORT} from './utils/settings';
+import { routes } from './routes/index';
+import { client } from './utils/client';
+import {
+  CASSANDRA_CLUSTER_IPS,
+  CASSANDRA_CLUSTER_PORT,
+  ENABLE_HTTPS,
+  NODE_ENV,
+  SESSION_SECRET,
+  WEB_SERVER_PORT,
+} from './utils/settings';
 
 const app = express();
 const port = WEB_SERVER_PORT;
@@ -20,10 +27,10 @@ const cassandraStoreOptions = {
   clientOptions: {
     contactPoints: CASSANDRA_CLUSTER_IPS,
     keyspace: 'streams',
-    queryOptions: {prepare: true},
+    queryOptions: { prepare: true },
     protocolOptions: {
       port: CASSANDRA_CLUSTER_PORT,
-    }
+    },
   },
 };
 
@@ -32,20 +39,22 @@ if (NODE_ENV !== 'production') {
 }
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: SESSION_SECRET,
-  genid: req => uuidv4(),
-  cookie: {
-    maxAge: 60000000,
-    secure: ENABLE_HTTPS,
-    sameSite: true,
-  },
-  resave: false,
-  saveUninitialized: true,
-  store: new CassandraStore(cassandraStoreOptions),
-}));
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    genid: req => uuidv4(),
+    cookie: {
+      maxAge: 60000000,
+      secure: ENABLE_HTTPS,
+      sameSite: true,
+    },
+    resave: false,
+    saveUninitialized: true,
+    store: new CassandraStore(cassandraStoreOptions),
+  })
+);
 
 // Mount the routes
 app.use(routes);
@@ -56,7 +65,7 @@ if (NODE_ENV === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, './../../../client/build')));
   // Handle React routing, return all requests to React app
-  app.get('/*', function(req, res) {
+  app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, './../../../client/build', 'index.html'));
   });
 }
