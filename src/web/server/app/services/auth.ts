@@ -4,6 +4,7 @@ import {
   INSERT_USERSID,
   INSERT_USERSNAME,
   INSERT_PENDINGACCOUNTS,
+  INSERT_PASSWORDRESETTOKENS,
   SELECT_USERSID_USERID_PASSWORD_ADMIN,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
@@ -152,4 +153,15 @@ export const approveRegistration = (
  */
 export const removePendingAccount = (username: string) => {
   client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
+};
+
+/**
+ * Store the token and userId into password_reset_tokens table
+ * @params token - The password reset token
+ * @params userId - The user ID associated with the token
+ */
+export const storeResetToken = (token: string, userId: string) => {
+  client.execute(INSERT_PASSWORDRESETTOKENS, [token, userId], {
+    prepare: true,
+  });
 };

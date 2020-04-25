@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as apiServices from '../services/api';
 import * as authServices from '../services/auth';
 import { CASSANDRA_FLASK_SERVER_URL } from '../utils/settings';
+import { sendEmail } from '../utils/mailer';
 
 /**
  * Sends 200 if session of user contains its userId, 400 otherwise
@@ -128,6 +129,22 @@ export const rejectRegistration = async (req: Request, res: Response) => {
       await authServices.removePendingAccount(username);
       res.status(200).send('Successfully deleted pending account');
     }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Save the reset token along with the userId in table.
+ * Then send email to the user along with the token.
+ */
+export const beginPasswordReset = (req: Request, res: Response) => {
+  try {
+    const token = uuidv4();
+    authServices.storeResetToken(token, req.session!.userId);
+    sendEmail(req.body.email, token);
+    res.status(200).send('Successfully sent password reset email');
   } catch (e) {
     console.error(e);
     res.status(500).send('Server error');
