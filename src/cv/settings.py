@@ -29,3 +29,10 @@ KAFKA_BROKER = os.environ.get('KAFKA_BROKER')
   Training Data Storage
 """
 TRAINING_DATA = 'frame_extractions'
+
+"""
+  Cassanda Clusters
+"""
+CASSANDRA_CLUSTER_IPS = os.environ.get('CASSANDRA_CLUSTER_IPS', '127.0.0.1').split(' ')
+CASSANDRA_CLUSTER_PORT = int(os.environ.get('CASSANDRA_CLUSTER_PORT', 9042))
+

@@ -1,3 +1,4 @@
+#!/bin/bash
 APP_NAME='app'
 DETECTOR_PROTOTXT='deploy.prototxt'
 DETECTOR_MODEL='res10_300x300_ssd_iter_140000.caffemodel'
@@ -28,10 +29,15 @@ export YOLO_CONFIG_PATH=${PARENT}/${YOLO}/${YOLO_CONFIG}
 export YOLO_WEIGHTS_PATH=${PARENT}/${YOLO}/${YOLO_WEIGHTS}
 
 export CV_PRODUCER_TOPIC='cvdata'
-export KAFKA_BROKER='localhost:9092'
+export KAFKA_BROKER=${KAFKA_BROKER_URL:-localhost:9092}
 
-# Run Opencv Server
-source venv/bin/activate
+# Start stunnel in background
+# sudo stunnel /etc/stunnel/stunnel.conf 2>&1 | tee stunnel-service.log &
+
+# Open the Python virtual environment if it exists
+[[ -d "./venv" ]] && source venv/bin/activate
+
+# Run Flask
 export FLASK_APP=${APP_NAME}
 # Runs on port 5000 by default
 flask run
