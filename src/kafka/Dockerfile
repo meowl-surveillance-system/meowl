@@ -34,7 +34,7 @@ RUN cd notifications && npm start &
 # Copy the start script over
 COPY start start
 
-# 9042: Kafka port
+# 9092: Kafka port
 EXPOSE 9092
 
 # Runs this command forever in the container
