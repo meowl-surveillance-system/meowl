@@ -6,7 +6,11 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 
 import ResponsivePlayer from "../ResponsivePlayer/ResponsivePlayer";
-import { NGINX_HLS_SERVER_IP, NGINX_HLS_SERVER_PORT } from "../../settings";
+import {
+  NGINX_HLS_SERVER_IP,
+  NGINX_HLS_SERVER_PORT,
+  ENABLE_HTTPS,
+} from "../../settings";
 
 interface Props {}
 interface State {
@@ -73,9 +77,15 @@ export default class LiveStream extends Component<Props, State> {
    * @params streamId - The ID of a particular stream
    */
   getURL = (streamId: string) => {
-    this.setState({
-      url: `http://${this.state.ip}:${this.state.port}/hls/${streamId}.m3u8`,
-    });
+    if (ENABLE_HTTPS) {
+      this.setState({
+        url: `https://${this.state.ip}/hls/${streamId}.m3u8`,
+      });
+    } else {
+      this.setState({
+        url: `http://${this.state.ip}:${this.state.port}/hls/${streamId}.m3u8`,
+      });
+    }
   };
 
   /**
