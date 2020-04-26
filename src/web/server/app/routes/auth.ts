@@ -7,6 +7,7 @@ import {
   isUsernameCollide,
   isValidCred,
   isAdmin,
+  isValidToken,
 } from '../middlewares/authChecks';
 import * as authController from '../controllers/auth';
 
@@ -87,6 +88,17 @@ app.post(
 app.post('/verifyToken', (req: express.Request, res: express.Response) => {
   authController.verifyToken(req, res);
 });
+
+/**
+ * Update the password to the user submitted password
+ */
+app.post(
+  '/submitPasswordReset',
+  [isValidCred, isValidToken],
+  (req: express.Request, res: express.Response) => {
+    authController.submitPasswordReset(req, res);
+  }
+);
 
 /**
  * Extract sessionID and userId from cookie and send it back in the response body

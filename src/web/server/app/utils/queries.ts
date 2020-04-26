@@ -52,3 +52,11 @@ export const SELECT_USERSNAME_USERID_EMAIL =
   'SELECT user_id, email FROM users_name WHERE username = ?';
 export const SELECT_PASSWORDRESETTOKENS =
   'SELECT * FROM password_reset_tokens WHERE reset_token = ?';
+export const SELECT_PASSWORDRESETTOKENS_USERID =
+  'SELECT user_id FROM password_reset_tokens WHERE reset_token = ?';
+export const UPDATE_USERSID_PASSWORD =
+  'UPDATE users_id SET password = ? WHERE user_id = ?';
+export const UPDATE_USERSNAME_PASSWORD =
+  'UPDATE users_name SET password = ? WHERE username = ?';
+export const DELETE_PASSWORDRESETTOKENS =
+  'DELETE FROM password_reset_tokens WHERE reset_token = ?';

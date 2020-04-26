@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import url from 'url';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 import * as apiServices from '../services/api';
 import * as authServices from '../services/auth';
@@ -171,6 +172,23 @@ export const verifyToken = async (req: Request, res: Response) => {
     } else {
       res.status(400).json('Bad token');
     }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Update the password for the user and delete the reset token after use
+ */
+export const submitPasswordReset = async (req: Request, res: Response) => {
+  try {
+    const { username, password, resetToken } = req.body;
+    const userId = await authServices.retrieveUserIdFromToken(resetToken);
+    const hash = await bcrypt.hash(password, 12);
+    authServices.updatePassword(userId, username, hash);
+    authServices.deleteToken(resetToken);
+    res.status(200).send('Successfully updated password');
   } catch (e) {
     console.error(e);
     res.status(500).send('Server error');

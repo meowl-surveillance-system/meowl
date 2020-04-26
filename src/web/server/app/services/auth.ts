@@ -5,6 +5,7 @@ import {
   INSERT_USERSNAME,
   INSERT_PENDINGACCOUNTS,
   INSERT_PASSWORDRESETTOKENS,
+  SELECT_PASSWORDRESETTOKENS,
   SELECT_USERSID_USERID_PASSWORD_ADMIN,
   SELECT_USERSNAME_USERID_EMAIL,
   UPDATE_USERSID_SID,
@@ -15,6 +16,10 @@ import {
   SELECT_SID_SESSION,
   SELECT_PENDINGACCOUNTS_ALL,
   DELETE_PENDINGACCOUNTS_ALL,
+  SELECT_PASSWORDRESETTOKENS_USERID,
+  UPDATE_USERSID_PASSWORD,
+  UPDATE_USERSNAME_PASSWORD,
+  DELETE_PASSWORDRESETTOKENS,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -186,4 +191,44 @@ export const verifyToken = async (token: string) => {
     prepare: true,
   });
   return result.rows.length === 1;
+};
+
+/**
+ * Retrieve the associated user ID using the reset token
+ * @params token - The password reset token
+ */
+export const retrieveUserIdFromToken = async (token: string) => {
+  const result = await client.execute(
+    SELECT_PASSWORDRESETTOKENS_USERID,
+    [token],
+    { prepare: true }
+  );
+  return result.rows[0].user_id;
+};
+
+/**
+ * Update the password field in users_id and users_name table to the provided password
+ * @params userId - The ID of the user
+ * @params username - The username of the user
+ * @params password - The updated password
+ */
+export const updatePassword = (
+  userId: string,
+  username: string,
+  password: string
+) => {
+  client.execute(UPDATE_USERSID_PASSWORD, [password, userId], {
+    prepare: true,
+  });
+  client.execute(UPDATE_USERSNAME_PASSWORD, [password, username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Delete the password reset token from the password_reset_tokens table
+ * @params token - The token to be deleted
+ */
+export const deleteToken = (token: string) => {
+  client.execute(DELETE_PASSWORDRESETTOKENS, [token], { prepare: true });
 };
