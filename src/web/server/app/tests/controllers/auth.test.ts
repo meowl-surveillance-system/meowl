@@ -263,6 +263,38 @@ describe('auth', () => {
       expect(res.status).toBeCalledWith(400);
     });
   });
+  describe('isAdmin', () => {
+    const mockReq: any = (userId: string, admin: boolean) => {
+      return {
+        session: { userId, admin },
+      };
+    };
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+
+    it('should return 200 and true if admin is true', async () => {
+      const req = mockReq('ongod', true);
+      const res = mockRes();
+      await auth.isAdmin(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(true);
+    });
+
+    it('should return 400 and false if not admin', async () => {
+      const req = mockReq('ongod', false);
+      const res = mockRes();
+      await auth.isAdmin(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.json).toBeCalledWith(false);
+    });
+  });
   describe('isLoggedIn', () => {
     const mockReq: any = (userId: string) => {
       return {

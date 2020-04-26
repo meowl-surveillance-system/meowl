@@ -16,6 +16,14 @@ app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
   authController.isLoggedIn(req, res);
 });
 
+app.get(
+  '/isAdmin',
+  isLoggedIn,
+  (req: express.Request, res: express.Response) => {
+    authController.isAdmin(req, res);
+  }
+);
+
 /**
  * Register a new pending user to the pending accounts table
  */
