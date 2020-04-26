@@ -1,6 +1,7 @@
 import * as auth from '../../controllers/auth';
 import * as authServices from '../../services/auth';
 import * as apiServices from '../../services/api';
+import * as mailer from '../../utils/mailer';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -201,7 +202,74 @@ describe('auth', () => {
       expect(res.status).toBeCalledWith(400);
     });
   });
-
+  describe('beginPasswordReset', () => {
+    const mockReq: any = (username: string) => {
+      return {
+        body: {
+          username,
+        }
+      }
+    };
+     const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        send: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.send = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    it('should return 200 on successful email and userId retrieval', async () => {
+      const req = mockReq(testUser);
+      const res = mockRes();
+      jest.spyOn(authServices, 'retrieveUserIdAndEmail')
+      .mockImplementationOnce((username: string) => Promise.resolve({ rows: [testUser] } as any));
+      jest.spyOn(authServices, 'storeResetToken').mockImplementationOnce((token: string, userId: string) => Promise.resolve());
+      jest.spyOn(mailer, 'sendEmail').mockImplementationOnce((recipient: string, token: string) => Promise.resolve());
+      await auth.beginPasswordReset(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+    it('should return 400 on unsuccessful email and userId retrieval', async () => {
+      const req = mockReq(testUser);
+      const res = mockRes();
+      jest.spyOn(authServices, 'retrieveUserIdAndEmail')
+      .mockImplementationOnce((username: string) => Promise.resolve({ rows: [] } as any));
+      await auth.beginPasswordReset(req, res);
+      expect(res.status).toHaveBeenLastCalledWith(400);
+    });
+  });
+  describe('verifyToken', () => {
+    const mockReq: any = (resetToken: string) => {
+      return {
+        body: {
+          resetToken,
+        }
+      }
+    };
+     const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    it('should return 200 if a token is valid', async () => {
+      const req = mockReq('good_token');
+      const res = mockRes();
+      jest.spyOn(authServices, 'verifyToken').mockImplementationOnce((token: string) => Promise.resolve(true));
+      await auth.verifyToken(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+    it('should return 400 if a token is not valid', async () => {
+      const req = mockReq('bad_token');
+      const res = mockRes();
+      jest.spyOn(authServices, 'verifyToken').mockImplementationOnce((token: string) => Promise.resolve(false));
+      await auth.verifyToken(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+  });
   describe('login', () => {
     const mockReq: any = (
       sid: string,
