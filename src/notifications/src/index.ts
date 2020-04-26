@@ -51,7 +51,7 @@ export default async function handleNotif(message: any, cassClient: cassandra.Cl
                         }
                     }
                     sendEmail(req)
-                    await cassClient.execute(storeNotif, (Date.now(),req.template, userEmail, person, message.frame_id), {prepare:true});
+                    await cassClient.execute(storeNotif, (Date.now(),req.template, userEmail, person, img), {prepare:true});
                 }
             })    
         });
