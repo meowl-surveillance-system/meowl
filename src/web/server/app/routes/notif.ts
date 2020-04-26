@@ -9,3 +9,10 @@ app.get(
     notifController.retrieveNotifications(req, res);
   }
 );
+
+app.get(
+  '/retrieveFrame/:frame_id',
+  async (req: express.Request, res: express.Response) => {
+    notifController.retrieveFrame(req, res);
+  }
+);

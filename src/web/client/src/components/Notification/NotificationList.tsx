@@ -9,9 +9,9 @@ interface State {
 
 interface Notif {
     date: Date,
-    type: String,
-    name: String,
-    img: Buffer
+    type: string,
+    name: string,
+    frame_id: String
 }
 
 export default class NotificationList extends Component<Props, State> {
@@ -27,7 +27,21 @@ export default class NotificationList extends Component<Props, State> {
             .then((res) => res.json())
             .then((result) => {
                 result.array.forEach((element: Notif) => {
-                    this.state.list.push(element)
+                    let tmp = {
+                        date: new Date,
+                        type: '',
+                        name: '',
+                        img: ''
+                    }
+                    fetch(`/notif/retrieveFrame/${element.frame_id}`)
+                        .then((res) => res.json())
+                        .then((result) => {
+                            tmp.date = element.date;
+                            tmp.type = element.type;
+                            tmp.name = element.name;
+                            tmp.img = result;
+                            this.state.list.push(tmp)
+                        })
                 });
             })
     }
