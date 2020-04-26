@@ -175,6 +175,7 @@ export const storeResetToken = async (token: string, userId: string) => {
 /**
  * Retrieve the userId and email using username as lookup
  * @params username - The username of the user
+ * @params ResultSet - Contains the user_id and email field of the user
  */
 export const retrieveUserIdAndEmail = async (username: string) => {
   return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], {
@@ -185,6 +186,7 @@ export const retrieveUserIdAndEmail = async (username: string) => {
 /**
  * Verify the reset token exists in the table
  * @params token - The token to be verified
+ * @returns boolean - True if token is valid, false otherwise
  */
 export const verifyToken = async (token: string) => {
   const result = await client.execute(SELECT_PASSWORDRESETTOKENS, [token], {
@@ -196,6 +198,7 @@ export const verifyToken = async (token: string) => {
 /**
  * Retrieve the associated user ID using the reset token
  * @params token - The password reset token
+ * @returns any - The id of the retrieved user
  */
 export const retrieveUserIdFromToken = async (token: string) => {
   const result = await client.execute(
