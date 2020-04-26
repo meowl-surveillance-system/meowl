@@ -166,8 +166,8 @@ export const removePendingAccount = (username: string) => {
  * @params token - The password reset token
  * @params userId - The user ID associated with the token
  */
-export const storeResetToken = (token: string, userId: string) => {
-  client.execute(INSERT_PASSWORDRESETTOKENS, [token, userId], {
+export const storeResetToken = async (token: string, userId: string) => {
+  await client.execute(INSERT_PASSWORDRESETTOKENS, [token, userId], {
     prepare: true,
   });
 };
@@ -176,7 +176,7 @@ export const storeResetToken = (token: string, userId: string) => {
  * Retrieve the userId and email using username as lookup
  * @params username - The username of the user
  */
-export const retrieveUserIdAndEmail = (username: string) => {
+export const retrieveUserIdAndEmail = async (username: string) => {
   return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], {
     prepare: true,
   });
@@ -229,6 +229,6 @@ export const updatePassword = (
  * Delete the password reset token from the password_reset_tokens table
  * @params token - The token to be deleted
  */
-export const deleteToken = (token: string) => {
-  client.execute(DELETE_PASSWORDRESETTOKENS, [token], { prepare: true });
+export const deleteToken = async (token: string) => {
+  await client.execute(DELETE_PASSWORDRESETTOKENS, [token], { prepare: true });
 };
