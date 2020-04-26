@@ -144,10 +144,9 @@ export const beginPasswordReset = async (req: Request, res: Response) => {
     const { username } = req.body;
     const result = await authServices.retrieveUserIdAndEmail(username);
     const credentials = result.rows[0];
-    if(credentials === undefined) {
+    if (credentials === undefined) {
       res.status(400).send('Something went wrong');
-    }
-    else {
+    } else {
       const token = uuidv4();
       const { user_id, email } = credentials;
       authServices.storeResetToken(token, user_id);
@@ -167,18 +166,16 @@ export const verifyToken = async (req: Request, res: Response) => {
   try {
     const { resetToken } = req.body;
     const tokenExists = await authServices.verifyToken(resetToken);
-    if(tokenExists) {
+    if (tokenExists) {
       res.status(200).json('Good token');
-    }
-    else {
+    } else {
       res.status(400).json('Bad token');
     }
-  }
-  catch(e) {
+  } catch (e) {
     console.error(e);
     res.status(500).send('Server error');
   }
-}
+};
 
 /**
  * Sends sessionID and userID of active session in response

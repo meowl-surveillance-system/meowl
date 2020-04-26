@@ -172,7 +172,9 @@ export const storeResetToken = (token: string, userId: string) => {
  * @params username - The username of the user
  */
 export const retrieveUserIdAndEmail = (username: string) => {
-  return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], { prepare: true });
+  return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], {
+    prepare: true,
+  });
 };
 
 /**
@@ -180,6 +182,8 @@ export const retrieveUserIdAndEmail = (username: string) => {
  * @params token - The token to be verified
  */
 export const verifyToken = async (token: string) => {
-  const result = await client.execute(SELECT_PASSWORDRESETTOKENS, [token], { prepare: true });
+  const result = await client.execute(SELECT_PASSWORDRESETTOKENS, [token], {
+    prepare: true,
+  });
   return result.rows.length === 1;
 };

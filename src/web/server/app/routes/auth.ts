@@ -74,16 +74,19 @@ app.post(
 /**
  * Begin the password reset process
  */
-app.post('/beginPasswordReset', (req: express.Request, res: express.Response) => {
-  authController.beginPasswordReset(req, res);
-});
+app.post(
+  '/beginPasswordReset',
+  (req: express.Request, res: express.Response) => {
+    authController.beginPasswordReset(req, res);
+  }
+);
 
 /**
  * Check if the reset token is valid
  */
 app.post('/verifyToken', (req: express.Request, res: express.Response) => {
   authController.verifyToken(req, res);
-})
+});
 
 /**
  * Extract sessionID and userId from cookie and send it back in the response body
