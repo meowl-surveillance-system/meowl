@@ -19,7 +19,7 @@ export const sendEmail = async (recipient: string, token: string) => {
         'You (or someone else) requested a password reset of a Meowl account using this email address.\n\n' +
         'If you have requested for a password reset please click on the following link to begin the password reset process:\n\n' +
         `${REACT_SERVER_IP}/reset-password/${token}\n\n` +
-        'If you did not request for a password rest, please ignore this email.',
+        'If you did not request for a password reset, please ignore this email.',
     };
 
     const info = await transporter.sendMail(emailOptions);
