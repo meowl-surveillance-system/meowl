@@ -6,6 +6,7 @@ import {
   INSERT_PENDINGACCOUNTS,
   INSERT_PASSWORDRESETTOKENS,
   SELECT_USERSID_USERID_PASSWORD_ADMIN,
+  SELECT_USERSNAME_USERID_EMAIL,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
@@ -164,4 +165,21 @@ export const storeResetToken = (token: string, userId: string) => {
   client.execute(INSERT_PASSWORDRESETTOKENS, [token, userId], {
     prepare: true,
   });
+};
+
+/**
+ * Retrieve the userId and email using username as lookup
+ * @params username - The username of the user
+ */
+export const retrieveUserIdAndEmail = (username: string) => {
+  return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], { prepare: true });
+};
+
+/**
+ * Verify the reset token exists in the table
+ * @params token - The token to be verified
+ */
+export const verifyToken = async (token: string) => {
+  const result = await client.execute(SELECT_PASSWORDRESETTOKENS, [token], { prepare: true });
+  return result.rows.length === 1;
 };

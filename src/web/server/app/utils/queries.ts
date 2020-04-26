@@ -48,3 +48,5 @@ export const SELECT_LIVE_CAMERAID =
 export const SELECT_NOTIFICATIONS = 'SELECT * from notif';
 export const INSERT_PASSWORDRESETTOKENS =
   'INSERT INTO password_reset_tokens (reset_token, user_id) VALUES (?, ?) USING TTL 1800';
+export const SELECT_USERSNAME_USERID_EMAIL = 'SELECT user_id, email FROM users_name WHERE username = ?';
+export const SELECT_PASSWORDRESETTOKENS = 'SELECT * FROM password_reset_tokens WHERE reset_token = ?';
