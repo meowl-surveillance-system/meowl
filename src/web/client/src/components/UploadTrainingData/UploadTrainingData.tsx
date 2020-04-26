@@ -1,69 +1,114 @@
 import React, { Component } from "react";
-import Grid from "@material-ui/core/Grid";
-
-const inputUploadFile: React.CSSProperties = {
-    display: 'none',
-};
-
-const buttonUploadFile: React.CSSProperties = {
-    margin: 8,
-};
+import { Grid, Button, Container, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
+import { cpuUsage } from "process";
 
 interface Props {
-  isLoggedIn: boolean;
-  onAuthChange: (authState: boolean) => void;
+    isLoggedIn: boolean;
+    onAuthChange: (authState: boolean) => void;
 }
 interface State {
-  dragging: boolean;
-  file: File | null;
+    dragging: boolean;
+    selectedFiles: File[]
 }
 
-class UploadTrainingData extends Component<Props, State> {
-    // function to read file as binary and return
-    private getFileFromInput(file: File): Promise<any> {
-        return new Promise(function (resolve, reject) {
-            const reader = new FileReader();
-            reader.onerror = reject;
-            reader.onload = function () { resolve(reader.result); };
-            reader.readAsBinaryString(file); // here the file can be read in different way Text, DataUrl, ArrayBuffer
-        });
+export default class UploadTrainingData extends Component<Props, State> {
+    private fileInputRef: HTMLInputElement | null;
+
+    constructor(props: Props) {
+        super(props);
+        this.fileInputRef = null;
+        this.state = {
+            dragging: false,
+            selectedFiles: []
+        };
     }
 
-    private manageUploadedFile(binary: String, file: File) {
-        // do what you need with your file (fetch POST, ect ....)
-        console.log(`The file size is ${binary.length}`);
-        console.log(`The file name is ${file.name}`);
-    }
-
-    private handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    private onFilesChange(event: React.ChangeEvent<HTMLInputElement>) {
         event.persist();
-        if(!event.target || !event.target.files){
-            Array.from(event.target.files).forEach(file => {
-                this.getFileFromInput(file)
-                    .then((binary) => {
-                        this.manageUploadedFile(binary, file);
-                    }).catch(function (reason) {
-                        console.log(`Error during upload ${reason}`);
-                        event.target.value = ''; // to allow upload of same file if error occurs
-                    });
-            });
+        if (event.target && event.target.files) {
+            this.setState({ selectedFiles: Array.from(event.target.files) });
+        } else {
+            this.setState({ selectedFiles: [] });
         }
     }
 
+    private onFilesUpload() {
+        this.state.selectedFiles.forEach(async (file) => {
+            return await this.uploadFile(file);
+        });
+        this.setState({ selectedFiles: [] });
+    }
+
+    private async uploadFile(file: File): Promise<boolean> {
+        const formData = new FormData();
+        formData.append('TrainingData', file, file.name);
+        return await fetch('/', {
+            method: 'PUT',
+            mode: 'same-origin',
+            credentials: 'same-origin',
+            body: formData,
+        }).then((response) => {
+            if (response.ok) {
+                return true;
+            } else {
+                console.error(response.json());
+                return false;
+            }
+        }).catch((error) => {
+            console.error(error);
+            return false;
+        });
+    }
+
+    promptFileInput() {
+        if (this.fileInputRef) {
+            this.fileInputRef.click();
+        } else {
+            console.error('Unable to click on file input element.')
+        }
+    }
 
     public render(): JSX.Element {
         return (
-            <Grid container style={grid}>
-                <Grid item xs={12}>
-                    <input accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" style={inputUploadFile} id="file" multiple={true} type="file"
-                        onChange={this.handleFileChange} />
-                    <label htmlFor="file">
-                        <Button raised component="span" style={buttonUploadFile} onClick={e => e.stopPropagation()}>
-                            Upload
-                        </Button>
-                    </label>
-                </Grid>
-            </Grid>
+            <Container component="main" maxWidth="xs">
+                <TableContainer component={Paper}>
+                    <Table className='trainingDataFile' aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="right">File Name</TableCell>
+                                <TableCell align="right">Size</TableCell>
+                                <TableCell align="right">Last Modified</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {this.state.selectedFiles.map((file) => (
+                                <TableRow key={file.name}>
+                                    <TableCell component="th" scope="row">
+                                        {file.name}
+                                    </TableCell>
+                                    <TableCell align="right">{file.size}</TableCell>
+                                    <TableCell align="right">{new Date(file.lastModified).toDateString()}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <input
+                    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                    id="file"
+                    ref={(ref) => { this.fileInputRef = ref }}
+                    multiple={true}
+                    style={{ display: 'none' }}
+                    type="file"
+                    onChange={(e) => this.onFilesChange(e)}
+                />
+                <Button onClick={() => this.promptFileInput()}>
+                    Select
+                    </Button>
+                <Button onClick={() => this.onFilesUpload()}>
+                    Upload
+                    </Button>
+            </Container>
         );
     }
 }

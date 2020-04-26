@@ -7,9 +7,10 @@ import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
+import UploadTrainingData from './components/UploadTrainingData/UploadTrainingData';
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
-interface Props {}
+interface Props { }
 interface State {
   isLoggedIn: boolean;
 }
@@ -41,7 +42,6 @@ class App extends Component<Props, State> {
       .then((res) => res.json())
       .then((isLoggedIn) => {
         this.setState({ isLoggedIn: isLoggedIn });
-        console.log(this.state.isLoggedIn);
       })
       .catch((e) => console.error(e));
   }
@@ -59,6 +59,13 @@ class App extends Component<Props, State> {
               onAuthChange={this.onAuthChange}
             />
             <Switch>
+              <ProtectedRoute
+                exact
+                path="/uploadTrainingData"
+                component={UploadTrainingData}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
               <ProtectedRoute
                 exact
                 path="/liveStreams"
