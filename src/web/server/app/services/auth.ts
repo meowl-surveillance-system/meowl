@@ -175,7 +175,7 @@ export const storeResetToken = async (token: string, userId: string) => {
 /**
  * Retrieve the userId and email using username as lookup
  * @params username - The username of the user
- * @params ResultSet - Contains the user_id and email field of the user
+ * @returns ResultSet - Contains the user_id and email field of the user
  */
 export const retrieveUserIdAndEmail = async (username: string) => {
   return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], {
