@@ -76,3 +76,21 @@ export async function isUsernameCollide(
     res.status(400).send('Bad username');
   }
 }
+
+/**
+ * Checks if the user making the request is an admin
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
+export async function isAdmin(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  if (req.session!.admin) {
+    return next();
+  } else {
+    res.status(403).send('Not an admin');
+  }
+}

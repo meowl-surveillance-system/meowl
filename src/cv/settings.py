@@ -25,3 +25,7 @@ TRACK_TIME = 600
 CV_TOPIC = os.environ.get('CV_PRODUCER_TOPIC')
 KAFKA_BROKER = os.environ.get('KAFKA_BROKER')
 
+"""
+  Training Data Storage
+"""
+TRAINING_DATA = 'frame_extractions'
