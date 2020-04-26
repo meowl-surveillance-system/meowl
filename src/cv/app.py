@@ -58,8 +58,9 @@ def extract_embeddings():
     args = {
         'confidence': .5
     }
-    embed_ex.extract_embeddings(args)
-    return "Finished extracting embeddings"
+    res = embed_ex.extract_embeddings(args)
+    print(res)
+    return res
 
 @app.route('/train_face_rec/')
 def train_face_rec():
