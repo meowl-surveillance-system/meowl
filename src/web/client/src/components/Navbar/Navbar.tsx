@@ -28,6 +28,24 @@ export default class Navbar extends Component<Props, State> {
   };
 
   /**
+   * Renders the button on navbar when user is admin
+   */
+  renderIsAdmin = () => {
+    return (
+      <RouterLink
+        to="/pendingAccounts"
+        style={{
+          paddingLeft: "10px",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        PendingAccounts
+      </RouterLink>
+    );
+  };
+
+  /**
    * Renders the buttons on the navbar when the user is authenticated
    */
   renderIsLoggedIn = () => {
@@ -49,19 +67,7 @@ export default class Navbar extends Component<Props, State> {
         >
           Streams
         </RouterLink>
-        {this.props.isAdmin
-          &&
-          <RouterLink
-            to="/pendingAccounts"
-            style={{
-              paddingLeft: "10px",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            PendingAccounts
-          </RouterLink>
-          }
+        {this.props.isAdmin && this.renderIsAdmin()}
         <RouterLink
           to="/"
           style={{

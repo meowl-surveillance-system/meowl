@@ -3,8 +3,7 @@ import { Container, Typography } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import Button from '@material-ui/core/Button';
-
+import Button from "@material-ui/core/Button";
 
 interface Props {}
 interface State {
@@ -68,7 +67,7 @@ export default class PendingAccounts extends Component<Props, State> {
     fetch(`/auth/rejectRegistration`, requestOptions)
       .then((res) => res.text())
       .then((msg) => {
-        console.log(msg);
+        alert(msg);
       })
       .catch((e) => console.log(e));
   };
@@ -90,9 +89,9 @@ export default class PendingAccounts extends Component<Props, State> {
     fetch(`/auth/approveRegistration`, requestOptions)
       .then((res) => res.text())
       .then((msg) => {
-        console.log(msg);
+        alert(msg);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   };
 
   /**
@@ -101,10 +100,18 @@ export default class PendingAccounts extends Component<Props, State> {
   render() {
     return (
       <Container>
-        <Button variant="contained" color="secondary" onClick={() => this.rejectAccount()}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => this.rejectAccount()}
+        >
           Reject
         </Button>
-        <Button variant="contained" color="primary" onClick={() => this.approveAccount()}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.approveAccount()}
+        >
           Approve
         </Button>
         <List
