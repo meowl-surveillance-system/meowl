@@ -1,4 +1,5 @@
 import * as auth from '../../services/auth';
+import {client} from '../../utils/client';
 
 describe('auth', () => {
   const testSessionID = 'yes';
@@ -55,6 +56,14 @@ describe('auth', () => {
       const result = await auth.retrieveSID(testUserId);
       expect(result.rows.length).toBe(1);
       expect(result.rows[0].sid).toBe(newSessionID);
+    });
+  });
+  describe('retrievePendingAccounts', () => {
+    it('should retrieve pending accounts', async () => {
+      const mockPendingAccounts: any = {rows: [{username: testUser}]};
+      jest.spyOn(client, 'execute').mockImplementationOnce(() => Promise.resolve(mockPendingAccounts as any));
+      const result = await auth.retrievePendingAccounts();
+      expect(result).toStrictEqual(mockPendingAccounts.rows);
     });
   });
 });

@@ -146,6 +146,22 @@ export const rejectRegistration = async (req: Request, res: Response) => {
 };
 
 /**
+ * Retrieve all pending accounts
+ */
+export const getPendingAccounts = async (req: Request, res: Response) => {
+  try {
+    const pendingAccounts = await authServices.retrievePendingAccounts();
+    const usernames = pendingAccounts.map(row => {
+      return row.username;
+    });
+    res.status(200).json(usernames);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json('Server error');
+  }
+};
+
+/**
  * Sends sessionID and userID of active session in response
  */
 export const rtmpRequest = (req: Request, res: Response) => {
