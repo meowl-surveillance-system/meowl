@@ -14,7 +14,7 @@ import Container from "@material-ui/core/Container";
 interface Props {
   isLoggedIn: boolean;
   history: any;
-  onAuthChange: (authState: boolean) => void;
+  onAuthChange: (authState: boolean, adminState: boolean) => void;
 }
 interface State {
   email: string;
@@ -77,7 +77,7 @@ export default class Register extends Component<Props, State> {
       }
       // Successfully registered
       else {
-        this.props.onAuthChange(true);
+        this.props.onAuthChange(true, false);
         this.props.history.push("/streams");
       }
     } catch (error) {
