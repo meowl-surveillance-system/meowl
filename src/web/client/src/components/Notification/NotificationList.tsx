@@ -26,7 +26,7 @@ export default class NotificationList extends Component<Props, State> {
         fetch(`/notif/retrieveNotifications`)
             .then((res) => res.json())
             .then((result) => {
-                result.array.forEach((element: Notif) => {
+                result.forEach((element: Notif) => {
                     let tmp = {
                         date: new Date,
                         type: '',
