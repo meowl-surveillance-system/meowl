@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import * as apiServices from '../services/api';
 import * as authServices from '../services/auth';
-import { CASSANDRA_FLASK_SERVER_URL } from '../utils/settings';
+import { CASSANDRA_FLASK_SERVICE_URL } from '../utils/settings';
 
 /**
  * Sends 200 if session of user contains its userId, 400 otherwise
@@ -193,7 +193,7 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
         await apiServices.storeStreamId(req.body.cameraId, req.body.name);
         await apiServices.updateCameraLive(req.body.cameraId, start);
         const saverUrl = url.resolve(
-          CASSANDRA_FLASK_SERVER_URL,
+          CASSANDRA_FLASK_SERVICE_URL,
           (start ? 'store/' : 'stop/') + req.body.name
         );
         const saverResponse = await axios.get(saverUrl);

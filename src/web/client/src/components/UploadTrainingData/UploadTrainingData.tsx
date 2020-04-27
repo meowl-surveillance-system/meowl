@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Grid, Button, Container, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
-import { cpuUsage } from "process";
+import { Button, Container, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
 
 interface Props {
     isLoggedIn: boolean;
     onAuthChange: (authState: boolean) => void;
 }
+
 interface State {
     dragging: boolean;
     selectedFiles: File[]
@@ -42,7 +42,7 @@ export default class UploadTrainingData extends Component<Props, State> {
     private async uploadFile(file: File): Promise<boolean> {
         const formData = new FormData();
         formData.append('TrainingData', file, file.name);
-        return await fetch('/', {
+        return await fetch('/cv/upload/trainingData', {
             method: 'PUT',
             mode: 'same-origin',
             credentials: 'same-origin',
