@@ -6,7 +6,7 @@ import { client } from '../utils/client';
  * @returns ResultSet - Contains rows of notifications belonging to owner
  */
 export const retrieveNotif = async () => {
-  return client.execute(SELECT_NOTIFICATIONS, {
+  return client.execute(SELECT_NOTIFICATIONS, [], {
     prepare: true,
   });
 };
