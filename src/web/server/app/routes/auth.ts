@@ -12,9 +12,23 @@ import * as authController from '../controllers/auth';
 
 const app = express();
 
+/**
+ * Sends true if user is logged in
+ */
 app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
   authController.isLoggedIn(req, res);
 });
+
+/**
+ * Sends true if logged in user is an admin
+ */
+app.get(
+  '/isAdmin',
+  isLoggedIn,
+  (req: express.Request, res: express.Response) => {
+    authController.isAdmin(req, res);
+  }
+);
 
 /**
  * Register a new pending user to the pending accounts table

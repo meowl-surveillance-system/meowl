@@ -19,6 +19,17 @@ export const isLoggedIn = (req: Request, res: Response) => {
 };
 
 /**
+ * Sends 200 if session of user has admin true, 400 otherwise
+ */
+export const isAdmin = (req: Request, res: Response) => {
+  if (req.session!.admin) {
+    res.status(200).json(true);
+  } else {
+    res.status(400).json(false);
+  }
+};
+
+/**
  * Stores a user's credentials in pending_accounts table if username does not exist
  */
 export const register = async (req: Request, res: Response) => {
