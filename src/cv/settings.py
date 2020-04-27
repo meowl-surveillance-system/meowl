@@ -21,7 +21,6 @@ EMBEDDINGS = WORKDIR + os.environ.get('EMBEDDINGS_PATH')
 RECOGNIZER = WORKDIR + os.environ.get('RECOGNIZER_PATH')
 LABEL_ENCODER = WORKDIR + os.environ.get('LABEL_ENCODER_PATH')
 TRACK_TIME = 600
-print(RECOGNIZER, os.path.exists(RECOGNIZER))
 """
   Kafka cv topic
 """
