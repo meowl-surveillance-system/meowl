@@ -1,1 +1,4 @@
-venv
+venv/
+yolo-coco/
+face_model_resources/
+__pycache__/
