@@ -11,7 +11,8 @@ import uuid
 from cassandra.cluster import Cluster
 from cassandra.query import tuple_factory
 
-cluster = Cluster()
+
+cluster = Cluster(settings.CASSANDRA_CLUSTER_IPS, port=settings.CASSANDRA_CLUSTER_PORT)
 session = cluster.connect()
 session.row_factory = tuple_factory
 
