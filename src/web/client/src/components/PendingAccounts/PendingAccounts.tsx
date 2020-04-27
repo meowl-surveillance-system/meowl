@@ -65,7 +65,7 @@ export default class PendingAccounts extends Component<Props, State> {
         username: this.state.selectedAccount,
       }),
     };
-    fetch(`/auth/rejectRegistration}`, requestOptions)
+    fetch(`/auth/rejectRegistration`, requestOptions)
       .then((res) => res.text())
       .then((msg) => {
         console.log(msg);
@@ -87,7 +87,7 @@ export default class PendingAccounts extends Component<Props, State> {
         username: this.state.selectedAccount,
       }),
     };
-    fetch(`/auth/approveRegistration}`, requestOptions)
+    fetch(`/auth/approveRegistration`, requestOptions)
       .then((res) => res.text())
       .then((msg) => {
         console.log(msg);
@@ -101,10 +101,10 @@ export default class PendingAccounts extends Component<Props, State> {
   render() {
     return (
       <Container>
-        <Button variant="contained" color="secondary" onClick={() => this.rejectAccount}>
+        <Button variant="contained" color="secondary" onClick={() => this.rejectAccount()}>
           Reject
         </Button>
-        <Button variant="contained" color="primary" onClick={() => this.approveAccount}>
+        <Button variant="contained" color="primary" onClick={() => this.approveAccount()}>
           Approve
         </Button>
         <List
