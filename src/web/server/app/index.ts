@@ -16,6 +16,8 @@ import {
   NODE_ENV,
   SESSION_SECRET,
   WEB_SERVER_PORT,
+  NGINX_HLS_SERVER_PORT,
+  NGINX_HLS_SERVER_IP,
 } from './utils/settings';
 
 const app = express();
@@ -34,7 +36,16 @@ const cassandraStoreOptions = {
   },
 };
 
-if (NODE_ENV !== 'production') {
+const corsOptions = {
+  origin: `http${
+    ENABLE_HTTPS ? 's' : ''
+  }://${NGINX_HLS_SERVER_IP}:${NGINX_HLS_SERVER_PORT}`,
+  optionsSuccessStatus: 200,
+};
+
+if (NODE_ENV === 'production') {
+  app.use(cors(corsOptions));
+} else {
   app.use(cors());
 }
 

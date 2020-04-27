@@ -79,7 +79,7 @@ export default class LiveStream extends Component<Props, State> {
   getURL = (streamId: string) => {
     if (ENABLE_HTTPS) {
       this.setState({
-        url: `https://${this.state.ip}/hls/${streamId}.m3u8`,
+        url: `https://${this.state.ip}:${this.state.port}/hls/${streamId}.m3u8`,
       });
     } else {
       this.setState({
