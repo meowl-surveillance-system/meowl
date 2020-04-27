@@ -19,14 +19,6 @@ app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
   authController.isLoggedIn(req, res);
 });
 
-app.get(
-  '/isAdmin',
-  isLoggedIn,
-  (req: express.Request, res: express.Response) => {
-    authController.isAdmin(req, res);
-  }
-);
-
 /**
  * Sends true if logged in user is an admin
  */
