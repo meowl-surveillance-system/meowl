@@ -18,8 +18,6 @@ RUN apt-get install -y curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
 RUN apt-get update -y
 RUN apt install -y nodejs
-RUN node --version
-RUN npm --version
 
 
 # Installing ffmpeg

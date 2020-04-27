@@ -1,4 +1,4 @@
-mkdir yolo-coco
+mkdir yolo-coco dataset output
 cd yolo-coco
 
 curl -O https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
