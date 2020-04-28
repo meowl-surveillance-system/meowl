@@ -86,6 +86,17 @@ app.post(
 );
 
 /**
+ * Retrieve all pending accounts
+ */
+app.get(
+  '/getPendingAccounts',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.getPendingAccounts(req, res);
+  }
+);
+
+/**
  * Extract sessionID and userId from cookie and send it back in the response body
  */
 app.post(

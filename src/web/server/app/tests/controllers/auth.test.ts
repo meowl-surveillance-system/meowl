@@ -201,7 +201,26 @@ describe('auth', () => {
       expect(res.status).toBeCalledWith(400);
     });
   });
-
+  describe('getPendingAccounts', () => {
+    const mockReq: any = () => {}
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    it('should return 200 on successful retrieval', async () => {
+      const req = mockReq();
+      const res = mockRes();
+      const rows = [{username: 'IT'}, {username: 'WAS'}, {username: 'I'}, {username: 'DIO'}];
+      jest.spyOn(authServices, 'retrievePendingAccounts').mockImplementationOnce(() => Promise.resolve(rows as any));
+      await auth.getPendingAccounts(req, res);
+      expect(res.status).toBeCalledWith(200);
+    });
+  });
   describe('login', () => {
     const mockReq: any = (
       sid: string,
