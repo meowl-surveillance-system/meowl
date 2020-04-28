@@ -50,13 +50,11 @@ def extract_resources(file_name, class_name):
     insert_frame.store_training_data(class_name)    
     return "Finishing extracting resources"
 
-@app.route('/retrieve_dataset/')
-def retrieve_dataset_res():
+def retrieve_dataset_res(start_time):
     """ Retrieves the dataset resources """
-    insert_frame.retrieve_training_data(request.args.get("start_time"))
+    insert_frame.retrieve_training_data(start_time)
     return "Finished retrieving dataset resources"
 
-@app.route('/extract_embeddings/')
 def extract_embeddings():
     """ Extracts the embeddings"""
     args = {
@@ -66,7 +64,6 @@ def extract_embeddings():
     print(res)
     return res
 
-@app.route('/train_face_rec/')
 def train_face_rec():
     """ Trains the Face Recognizer """
     trainer.train_recognizer()
@@ -112,6 +109,9 @@ def upload_training_data():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
         print(file_name, file_path)
         file.save(file_path)
-        # extract_resources(file_path, user_id)
+        extract_resources(file_path, user_id)
+    retrieve_dataset_res(0)
+    extract_embeddings()
+    train_face_rec()
        
     return 'Successfully processed the training data'
