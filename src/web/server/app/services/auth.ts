@@ -198,7 +198,7 @@ export const verifyToken = async (token: string) => {
 /**
  * Retrieve the associated user ID using the reset token
  * @params token - The password reset token
- * @returns any - The id of the retrieved user
+ * @returns string - The id of the retrieved user
  */
 export const retrieveUserIdFromToken = async (token: string) => {
   const result = await client.execute(
