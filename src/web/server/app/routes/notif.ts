@@ -16,3 +16,5 @@ app.get(
     notifController.retrieveFrame(req, res);
   }
 );
+
+module.exports = app;

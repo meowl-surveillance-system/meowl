@@ -5,7 +5,7 @@ interface Props {
     date: Date,
     type: String,
     name: String,
-    img: Buffer
+    img: any
 }
 interface State {}
 
@@ -22,12 +22,13 @@ export default class Notification extends Component<Props, State> {
      */
     render() {
         const info = this.props;
+        const b64encoded = btoa(String.fromCharCode.apply(null, info.img));
         return (
             <Container>
                 <Typography>Date: {info.date}</Typography>
                 <Typography>Type: {info.type}</Typography>
                 <Typography>Name: {info.name}</Typography>
-                <img src={`data:image/jpeg;base64,${info.img}`} />
+                <img src={`data:image/jpeg;base64,${b64encoded}`} />
             </Container>
         );
     }

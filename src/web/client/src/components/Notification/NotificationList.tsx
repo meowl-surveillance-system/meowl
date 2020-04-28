@@ -26,7 +26,7 @@ export default class NotificationList extends Component<Props, State> {
         fetch(`/notif/retrieveNotifications`)
             .then((res) => res.json())
             .then((result) => {
-                result.forEach((element: Notif) => {
+                result.map((element: Notif) => {
                     let tmp = {
                         date: new Date,
                         type: '',
@@ -39,8 +39,8 @@ export default class NotificationList extends Component<Props, State> {
                             tmp.date = element.date;
                             tmp.type = element.type;
                             tmp.name = element.name;
-                            tmp.img = result;
-                            this.state.list.push(tmp)
+                            tmp.img = result.frame.data;
+                            this.setState({ list: [...this.state.list, tmp]});
                         })
                 });
             })
@@ -49,8 +49,9 @@ export default class NotificationList extends Component<Props, State> {
     render() {
         return (
             <Container>
-                {this.state.list.map((notif: any) => 
-                    <Notification 
+                {this.state.list.map((notif: any, index: number) => 
+                    <Notification
+                        key={index} 
                         date={notif.date} 
                         type={notif.type}
                         name={notif.name}
