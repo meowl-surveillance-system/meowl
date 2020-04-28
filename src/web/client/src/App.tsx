@@ -7,8 +7,8 @@ import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
-import UploadTrainingData from './components/UploadTrainingData/UploadTrainingData';
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 
 interface Props { }
 interface State {
@@ -62,7 +62,7 @@ class App extends Component<Props, State> {
               <ProtectedRoute
                 exact
                 path="/uploadTrainingData"
-                component={UploadTrainingData}
+                component={TrainingDataUploader}
                 isLoggedIn={this.state.isLoggedIn}
                 redirectPath="/"
               />

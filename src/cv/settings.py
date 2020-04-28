@@ -20,6 +20,12 @@ LABEL_ENCODER = os.environ.get('LABEL_ENCODER_PATH')
 TRACK_TIME = 600
 
 """
+  Directories
+"""
+UPLOAD_FOLDER_PATH = '/tmp'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+"""
   Kafka cv topic
 """
 CV_TOPIC = os.environ.get('CV_PRODUCER_TOPIC')

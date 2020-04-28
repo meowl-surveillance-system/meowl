@@ -1,34 +1,23 @@
 import express from 'express';
 import { isLoggedIn } from '../middlewares/authChecks';
-import axios from 'axios';
-import formidible from 'formidable';
-import url from 'url';
 import { OPENCV_SERVICE_URL } from '../utils/settings';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 const app = express();
 
 app.put(
   '/upload/trainingData',
   isLoggedIn,
-  (req: express.Request, res: express.Response) => {
-    const openCVServiceUrl: string = url.resolve(
+  createProxyMiddleware({
+    onProxyReq: (proxyReq, req, res) => {
+      console.log(req.session!.userId);
+      proxyReq.setHeader('User-Id', req.session!.userId);
+    },
+    // changeOrigin: true,
+    pathRewrite: {
+      '^/cv/upload/trainingData': 'upload_training_data/',
+    },
+    target:
       OPENCV_SERVICE_URL,
-      ''
-    );
-    const form = new formidible.IncomingForm();
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        res.status(400).send(err);
-      }
-      else {
-        axios.put(openCVServiceUrl, files, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        res.status(200).send(`Successfully recieved ${Object.keys(files).toString()}`);
-      }
-    });
-  }
-);
+  }));
 
 module.exports = app;

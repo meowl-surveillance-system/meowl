@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TrainingDataUploader component should render the TrainingDataUploader component 1`] = `
+<main
+  class="MuiContainer-root MuiContainer-maxWidthXs"
+>
+  <div
+    class="MuiPaper-root MuiTableContainer-root MuiPaper-elevation1 MuiPaper-rounded"
+  >
+    <table
+      aria-label="simple table"
+      class="MuiTable-root trainingDataFile"
+    >
+      <thead
+        class="MuiTableHead-root"
+      >
+        <tr
+          class="MuiTableRow-root MuiTableRow-head"
+        >
+          <th
+            class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignRight"
+            scope="col"
+          >
+            File Name
+          </th>
+          <th
+            class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignRight"
+            scope="col"
+          >
+            Size
+          </th>
+          <th
+            class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignRight"
+            scope="col"
+          >
+            Last Modified
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="MuiTableBody-root"
+      />
+    </table>
+  </div>
+  <input
+    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+    id="file-input"
+    multiple=""
+    style="display: none;"
+    type="file"
+  />
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      Select
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      Upload
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+</main>
+`;

@@ -1,4 +1,7 @@
 from flask import Flask, request
+from werkzeug.utils import secure_filename
+import os
+import requests
 import cv2
 import numpy as np
 import add_dataset_resources as add_data
@@ -9,7 +12,9 @@ import train_face_recognizer as trainer
 import recognize_faces as recognizer
 import yolo_video_detect as obj_detector
 import settings
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER_PATH
 
 @app.route('/')
 def hello_world():
@@ -38,11 +43,10 @@ def display_vid():
 
     print("Finished Displaying Video")
 
-@app.route('/extract_resources/')
-def extract_resources():
+def extract_resources(file_name, class_name):
     """ Extracts resources from video """
-    add_data.extract_resources(request.args.get("file_name"), -1)
-    insert_frame.store_training_data(request.args.get('class_name'))    
+    add_data.extract_resources(file_name, -1)
+    insert_frame.store_training_data(class_name)    
     return "Finishing extracting resources"
 
 @app.route('/retrieve_dataset/')
@@ -80,3 +84,23 @@ def process_detections():
     apply_detections.process(args)
     return "Finished Processing detections"
 
+@app.route('/upload_training_data/', methods=['PUT'])
+def upload_training_data():
+    """ Uploads data to train the models """
+    # TODO(mli): using that file_path, extract_resources and
+    # do whatever you can to train that model in this call
+    # and please make extract embeddings andtrain_face_rec just
+    # a normal method to call. It doesn't seem like we would
+    # need to call this from our front-end.
+    # Have fun! :)
+    files = dict(request.files)
+    user_id = request.headers.get('User-Id')
+    for key in files:
+        file = files[key]
+        file_name = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+        print(file_name, file_path)
+        file.save(file_path)
+        # extract_resources(file_path, user_id)
+       
+    return 'Successfully processed the training data'

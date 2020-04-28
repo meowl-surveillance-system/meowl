@@ -1,29 +1,27 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { Button, Container, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
 
-interface Props {
+export interface Props {
     isLoggedIn: boolean;
     onAuthChange: (authState: boolean) => void;
 }
 
-interface State {
-    dragging: boolean;
+export interface State {
     selectedFiles: File[]
 }
 
-export default class UploadTrainingData extends Component<Props, State> {
-    private fileInputRef: HTMLInputElement | null;
+export default class TrainingDataUploader extends Component<Props, State> {
+    fileInputRef: HTMLInputElement | null;
 
     constructor(props: Props) {
         super(props);
         this.fileInputRef = null;
         this.state = {
-            dragging: false,
             selectedFiles: []
         };
     }
 
-    private onFilesChange(event: React.ChangeEvent<HTMLInputElement>) {
+    onFilesChange(event: ChangeEvent<HTMLInputElement>) {
         event.persist();
         if (event.target && event.target.files) {
             this.setState({ selectedFiles: Array.from(event.target.files) });
@@ -32,14 +30,14 @@ export default class UploadTrainingData extends Component<Props, State> {
         }
     }
 
-    private onFilesUpload() {
+    onFilesUpload() {
         this.state.selectedFiles.forEach(async (file) => {
             return await this.uploadFile(file);
         });
         this.setState({ selectedFiles: [] });
     }
 
-    private async uploadFile(file: File): Promise<boolean> {
+    async uploadFile(file: File): Promise<boolean> {
         const formData = new FormData();
         formData.append('TrainingData', file, file.name);
         return await fetch('/cv/upload/trainingData', {
@@ -68,7 +66,7 @@ export default class UploadTrainingData extends Component<Props, State> {
         }
     }
 
-    public render(): JSX.Element {
+    render(): JSX.Element {
         return (
             <Container component="main" maxWidth="xs">
                 <TableContainer component={Paper}>
@@ -95,7 +93,7 @@ export default class UploadTrainingData extends Component<Props, State> {
                 </TableContainer>
                 <input
                     accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
-                    id="file"
+                    id="file-input"
                     ref={(ref) => { this.fileInputRef = ref }}
                     multiple={true}
                     style={{ display: 'none' }}
