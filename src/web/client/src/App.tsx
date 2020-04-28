@@ -104,7 +104,6 @@ class App extends Component<Props, State> {
                   <Register
                     {...props}
                     isLoggedIn={this.state.isLoggedIn}
-                    onAuthChange={this.onAuthChange}
                   />
                 )}
               />

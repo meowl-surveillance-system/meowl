@@ -6,8 +6,6 @@ import Register from "./Register";
 
 describe("Register component", () => {
   let registerWrapper: ShallowWrapper<{}, {}, Register>;
-  let onAuthChangeMock: jest.Mock;
-  let historyMock: object;
   let eventMock: any;
   let preventDefaultMock: jest.Mock;
   beforeEach(() => {
@@ -32,17 +30,9 @@ describe("Register component", () => {
       },
     };
 
-    historyMock = {
-      push: jest.fn(),
-    };
-
-    onAuthChangeMock = jest.fn();
-
     registerWrapper = shallow(
       <Register
         isLoggedIn={false}
-        onAuthChange={onAuthChangeMock}
-        history={historyMock}
       />,
     );
   });
@@ -52,8 +42,6 @@ describe("Register component", () => {
       <Router>
         <Register
           isLoggedIn={false}
-          onAuthChange={onAuthChangeMock}
-          history={historyMock}
         />
       </Router>,
     );
@@ -63,11 +51,6 @@ describe("Register component", () => {
   it("should call preventDefault on onSubmit", async () => {
     await registerWrapper.instance().onSubmit(eventMock);
     expect(preventDefaultMock).toHaveBeenCalled();
-  });
-
-  it("should call onAuthChange on onSubmit", async () => {
-    await registerWrapper.instance().onSubmit(eventMock);
-    expect(onAuthChangeMock).toHaveBeenCalled();
   });
 
   it("should set email field when onChange is called", () => {
