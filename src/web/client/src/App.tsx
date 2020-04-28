@@ -99,11 +99,7 @@ class App extends Component<Props, State> {
               <Route
                 exact
                 path="/notifications"
-                render={(props) => (
-                  <NotificationList
-                    {...props}
-                  />
-                )}
+                render={(props) => <NotificationList {...props} />}
               />
             </Switch>
           </div>
