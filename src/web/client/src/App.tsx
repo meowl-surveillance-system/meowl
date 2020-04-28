@@ -8,10 +8,13 @@ import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute/AdminRoute";
+import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
 
 interface Props {}
 interface State {
   isLoggedIn: boolean;
+  isAdmin: boolean;
 }
 
 /**
@@ -20,15 +23,15 @@ interface State {
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { isLoggedIn: false };
+    this.state = { isLoggedIn: false, isAdmin: false };
   }
 
   /**
    * To be passed as a callback to handle authentication changes
    * @params authState - The authentication state of the user
    */
-  onAuthChange = (authState: boolean) => {
-    this.setState({ isLoggedIn: authState });
+  onAuthChange = (authState: boolean, adminState: boolean) => {
+    this.setState({ isLoggedIn: authState, isAdmin: adminState });
   };
 
   /**
@@ -42,6 +45,15 @@ class App extends Component<Props, State> {
       .then((isLoggedIn) => {
         this.setState({ isLoggedIn: isLoggedIn });
         console.log(this.state.isLoggedIn);
+        if (isLoggedIn === true) {
+          fetch("/auth/isAdmin")
+            .then((res) => res.json())
+            .then((isAdmin) => {
+              this.setState({ isAdmin: isAdmin });
+              console.log(this.state.isAdmin);
+            })
+            .catch((e) => console.error(e));
+        }
       })
       .catch((e) => console.error(e));
   }
@@ -56,6 +68,7 @@ class App extends Component<Props, State> {
           <div>
             <Navbar
               isLoggedIn={this.state.isLoggedIn}
+              isAdmin={this.state.isAdmin}
               onAuthChange={this.onAuthChange}
             />
             <Switch>
@@ -94,6 +107,14 @@ class App extends Component<Props, State> {
                     onAuthChange={this.onAuthChange}
                   />
                 )}
+              />
+              <AdminRoute
+                exact
+                path="/pendingAccounts"
+                component={PendingAccounts}
+                isLoggedIn={this.state.isLoggedIn}
+                isAdmin={this.state.isAdmin}
+                redirectPath="/"
               />
             </Switch>
           </div>

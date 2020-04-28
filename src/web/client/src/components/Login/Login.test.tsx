@@ -18,9 +18,19 @@ describe("Login component", () => {
     const mockFetchPromise: Promise<object> = Promise.resolve({
       text: () => mockTextPromise,
     });
+    const mockSuccessResponseAdmin = "successfully logged in";
+    const mockTextPromiseAdmin: Promise<string> = Promise.resolve(
+      mockSuccessResponseAdmin,
+    );
+    const mockFetchPromiseAdmin: Promise<object> = Promise.resolve({
+      json: () => mockTextPromiseAdmin,
+    });
     jest
       .spyOn(window, "fetch")
-      .mockImplementation(() => mockFetchPromise as Promise<Response>);
+      .mockImplementationOnce(() => mockFetchPromise as Promise<Response>);
+    jest
+      .spyOn(window, "fetch")
+      .mockImplementationOnce(() => mockFetchPromiseAdmin as Promise<Response>);
 
     preventDefaultMock = jest.fn();
     eventMock = {

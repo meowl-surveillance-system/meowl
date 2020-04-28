@@ -86,4 +86,12 @@ describe('auth', () => {
       expect(result).toEqual(false);
     });
   });
+  describe('retrievePendingAccounts', () => {
+    it('should retrieve pending accounts', async () => {
+      const mockPendingAccounts: any = {rows: [{username: testUser}]};
+      jest.spyOn(client, 'execute').mockImplementationOnce(() => Promise.resolve(mockPendingAccounts as any));
+      const result = await auth.retrievePendingAccounts();
+      expect(result).toStrictEqual(mockPendingAccounts.rows);
+    });
+  });
 });

@@ -16,6 +16,7 @@ import {
   SELECT_SID_SESSION,
   SELECT_PENDINGACCOUNTS_ALL,
   DELETE_PENDINGACCOUNTS_ALL,
+  SELECT_PENDINGACCOUNTS,
   SELECT_PASSWORDRESETTOKENS_USERID,
   UPDATE_USERSID_PASSWORD,
   UPDATE_USERSNAME_PASSWORD,
@@ -142,23 +143,36 @@ export const retrievePendingAccount = (username: string) => {
  * @param username - The username of the user
  * @param password - The password of the user
  */
-export const approveRegistration = (
+export const approveRegistration = async (
   userId: string,
   email: string,
   username: string,
   password: string
 ) => {
   const params = [userId, email, username, password, false];
-  client.execute(INSERT_USERSID, params, { prepare: true });
-  client.execute(INSERT_USERSNAME, params, { prepare: true });
+  await client.execute(INSERT_USERSID, params, { prepare: true });
+  await client.execute(INSERT_USERSNAME, params, { prepare: true });
 };
 
 /**
  * Remove pending account from the pending_accounts table
  * @param username - The username used to lookup the to-be-deleted account
  */
-export const removePendingAccount = (username: string) => {
-  client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
+export const removePendingAccount = async (username: string) => {
+  await client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Retrieve all pending accounts
+ * @returns Array - A list of all the pending accounts
+ */
+export const retrievePendingAccounts = async () => {
+  const result = await client.execute(SELECT_PENDINGACCOUNTS, [], {
+    prepare: true,
+  });
+  return result.rows;
 };
 
 /**

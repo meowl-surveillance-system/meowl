@@ -148,6 +148,22 @@ export const rejectRegistration = async (req: Request, res: Response) => {
 };
 
 /**
+ * Retrieve all pending accounts
+ */
+export const getPendingAccounts = async (req: Request, res: Response) => {
+  try {
+    const pendingAccounts = await authServices.retrievePendingAccounts();
+    const usernames = pendingAccounts.map(row => {
+      return row.username;
+    });
+    res.status(200).json(usernames);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json('Server error');
+  }
+};
+
+/**
  * Save the reset token along with the userId in table.
  * Then send email to the user along with the token.
  */
