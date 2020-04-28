@@ -2,10 +2,12 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import url from 'url';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 import * as apiServices from '../services/api';
 import * as authServices from '../services/auth';
 import { CASSANDRA_FLASK_SERVER_URL } from '../utils/settings';
+import { sendEmail } from '../utils/mailer';
 
 /**
  * Sends 200 if session of user contains its userId, 400 otherwise
@@ -158,6 +160,65 @@ export const getPendingAccounts = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500).json('Server error');
+  }
+};
+
+/**
+ * Save the reset token along with the userId in table.
+ * Then send email to the user along with the token.
+ */
+export const beginPasswordReset = async (req: Request, res: Response) => {
+  try {
+    const { username } = req.body;
+    const result = await authServices.retrieveUserIdAndEmail(username);
+    const credentials = result.rows[0];
+    if (credentials === undefined) {
+      res.status(400).send('Something went wrong');
+    } else {
+      const token = uuidv4();
+      const { user_id, email } = credentials;
+      authServices.storeResetToken(token, user_id);
+      sendEmail(email, token);
+      res.status(200).send('Successfully sent password reset email');
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Verify that the token exists by looking it up in the table
+ */
+export const verifyToken = async (req: Request, res: Response) => {
+  try {
+    const { resetToken } = req.body;
+    const tokenExists = await authServices.verifyToken(resetToken);
+    if (tokenExists) {
+      res.status(200).json('Good token');
+    } else {
+      res.status(400).json('Bad token');
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Update the password for the user and delete the reset token after use
+ */
+export const submitPasswordReset = async (req: Request, res: Response) => {
+  try {
+    const { username, password, resetToken } = req.body;
+    const userId = await authServices.retrieveUserIdFromToken(resetToken);
+    const hash = await bcrypt.hash(password, 12);
+    authServices.updatePassword(userId, username, hash);
+    authServices.deleteToken(resetToken);
+    res.status(200).send('Successfully updated password');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Server error');
   }
 };
 
