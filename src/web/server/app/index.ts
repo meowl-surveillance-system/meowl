@@ -39,7 +39,7 @@ const cassandraStoreOptions = {
 const corsOptions = {
   origin: `http${
     ENABLE_HTTPS ? 's' : ''
-  }://${NGINX_HLS_SERVER_IP}:${NGINX_HLS_SERVER_PORT}`,
+    }://${NGINX_HLS_SERVER_IP}:${NGINX_HLS_SERVER_PORT}`,
   optionsSuccessStatus: 200,
 };
 
