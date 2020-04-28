@@ -45,7 +45,7 @@ class App extends Component<Props, State> {
       .then((isLoggedIn) => {
         this.setState({ isLoggedIn: isLoggedIn });
         console.log(this.state.isLoggedIn);
-        if (isLoggedIn) {
+        if (isLoggedIn === true) {
           fetch("/auth/isAdmin")
             .then((res) => res.json())
             .then((isAdmin) => {
