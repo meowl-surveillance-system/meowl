@@ -7,6 +7,7 @@ import {
   isUsernameCollide,
   isValidCred,
   isAdmin,
+  isValidToken,
 } from '../middlewares/authChecks';
 import * as authController from '../controllers/auth';
 
@@ -82,6 +83,34 @@ app.post(
   [isLoggedIn, isAdmin],
   (req: express.Request, res: express.Response) => {
     authController.rejectRegistration(req, res);
+  }
+);
+
+/**
+ * Begin the password reset process
+ */
+app.post(
+  '/beginPasswordReset',
+  (req: express.Request, res: express.Response) => {
+    authController.beginPasswordReset(req, res);
+  }
+);
+
+/**
+ * Check if the reset token is valid
+ */
+app.post('/verifyToken', (req: express.Request, res: express.Response) => {
+  authController.verifyToken(req, res);
+});
+
+/**
+ * Update the password to the user submitted password
+ */
+app.post(
+  '/submitPasswordReset',
+  [isValidCred, isValidToken],
+  (req: express.Request, res: express.Response) => {
+    authController.submitPasswordReset(req, res);
   }
 );
 
