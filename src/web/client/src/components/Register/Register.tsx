@@ -72,10 +72,9 @@ export default class Register extends Component<Props, State> {
         }),
       });
       const msg = await res.text();
-      if(msg === 'successfully added to pending accounts') {
+      if (msg === "successfully added to pending accounts") {
         this.setState({ registeredGoodMessage: msg, registeredBadMessage: "" });
-      }
-      else {
+      } else {
         this.setState({ registeredBadMessage: msg, registeredGoodMessage: "" });
       }
     } catch (error) {
@@ -101,8 +100,16 @@ export default class Register extends Component<Props, State> {
           justify="center"
           style={{ minHeight: "100vh" }}
         >
-          {this.state.registeredBadMessage && <Typography style={{color: "red"}}>{this.state.registeredBadMessage}</Typography>}
-          {this.state.registeredGoodMessage && <Typography style={{color: "green"}}>{this.state.registeredGoodMessage}</Typography>}
+          {this.state.registeredBadMessage && (
+            <Typography style={{ color: "red" }}>
+              {this.state.registeredBadMessage}
+            </Typography>
+          )}
+          {this.state.registeredGoodMessage && (
+            <Typography style={{ color: "green" }}>
+              {this.state.registeredGoodMessage}
+            </Typography>
+          )}
           <Typography component="h1" variant="h5">
             Register
           </Typography>

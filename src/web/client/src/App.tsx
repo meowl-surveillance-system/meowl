@@ -101,10 +101,7 @@ class App extends Component<Props, State> {
                 exact
                 path="/register"
                 render={(props) => (
-                  <Register
-                    {...props}
-                    isLoggedIn={this.state.isLoggedIn}
-                  />
+                  <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
               />
               <AdminRoute

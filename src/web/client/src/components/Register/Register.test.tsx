@@ -30,19 +30,13 @@ describe("Register component", () => {
       },
     };
 
-    registerWrapper = shallow(
-      <Register
-        isLoggedIn={false}
-      />,
-    );
+    registerWrapper = shallow(<Register isLoggedIn={false} />);
   });
 
   it("renders Register component", () => {
     const { container } = render(
       <Router>
-        <Register
-          isLoggedIn={false}
-        />
+        <Register isLoggedIn={false} />
       </Router>,
     );
     expect(container.firstChild).toMatchSnapshot();
