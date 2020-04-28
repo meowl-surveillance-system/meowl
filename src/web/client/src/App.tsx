@@ -45,13 +45,15 @@ class App extends Component<Props, State> {
       .then((isLoggedIn) => {
         this.setState({ isLoggedIn: isLoggedIn });
         console.log(this.state.isLoggedIn);
-      })
-      .catch((e) => console.error(e));
-    fetch("/auth/isAdmin")
-      .then((res) => res.json())
-      .then((isAdmin) => {
-        this.setState({ isAdmin: isAdmin });
-        console.log(this.state.isAdmin);
+        if (isLoggedIn) {
+          fetch("/auth/isAdmin")
+            .then((res) => res.json())
+            .then((isAdmin) => {
+              this.setState({ isAdmin: isAdmin });
+              console.log(this.state.isAdmin);
+            })
+            .catch((e) => console.error(e));
+        }
       })
       .catch((e) => console.error(e));
   }
