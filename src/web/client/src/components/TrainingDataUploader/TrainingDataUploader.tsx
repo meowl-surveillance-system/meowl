@@ -21,6 +21,10 @@ export default class TrainingDataUploader extends Component<Props, State> {
         };
     }
 
+    /**
+     * Store files on the instance state
+     * @params event - The event that contains files for uploading
+     */
     onFilesChange(event: ChangeEvent<HTMLInputElement>) {
         event.persist();
         if (event.target && event.target.files) {
@@ -30,6 +34,9 @@ export default class TrainingDataUploader extends Component<Props, State> {
         }
     }
 
+    /**
+     * Uploads files one by one and set selectedFiles to none after uploading
+     */
     onFilesUpload() {
         this.state.selectedFiles.forEach(async (file) => {
             return await this.uploadFile(file);
@@ -37,6 +44,11 @@ export default class TrainingDataUploader extends Component<Props, State> {
         this.setState({ selectedFiles: [] });
     }
 
+    /**
+     * Uploads file to the server
+     * @param file - file containing images/videos of the user to train model
+     * @returns true if successfully uploads the file to server else false
+     */
     async uploadFile(file: File): Promise<boolean> {
         const formData = new FormData();
         formData.append('TrainingData', file, file.name);
@@ -58,6 +70,9 @@ export default class TrainingDataUploader extends Component<Props, State> {
         });
     }
 
+    /**
+     * Click on the file-input element to open up the file selection prompt
+     */
     promptFileInput() {
         if (this.fileInputRef) {
             this.fileInputRef.click();
@@ -66,6 +81,12 @@ export default class TrainingDataUploader extends Component<Props, State> {
         }
     }
 
+    /**
+     * Renders TrainingDataUploader component
+     * 
+     * Renders a table listing out the files on the selectedFiles state
+     * and two buttons for selecting files and uploading files
+     */
     render(): JSX.Element {
         return (
             <Container component="main" maxWidth="xs">

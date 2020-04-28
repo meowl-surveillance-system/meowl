@@ -15,7 +15,6 @@ describe("TrainingDataUploader component", () => {
         onAuthChange={onAuthChangeMock}
       />
     );
-    // console.log(trainingDataUploaderWrapper.debug());
   });
 
   it("should render the TrainingDataUploader component", () => {
@@ -33,8 +32,28 @@ describe("TrainingDataUploader component", () => {
       new File([], 'dummy.txt'),
       new File([], 'dummy2.txt'),
     ];
-    // const uploadFileSpy: jest.SpyInstance = jest.spyOn(TrainingDataUploader, '');
+    const uploadFileSpy: jest.SpyInstance = jest
+      .spyOn(trainingDataUploaderWrapper.instance(), 'uploadFile')
+      .mockReturnValue(new Promise((resolve) => resolve(true)));
     trainingDataUploaderWrapper = trainingDataUploaderWrapper.setState({ selectedFiles: fileStubs });
     trainingDataUploaderWrapper.instance().onFilesUpload();
+    expect(uploadFileSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should click on fileInputRef', () => {
+    const clickMock = jest.fn();
+    Object.defineProperty(
+      trainingDataUploaderWrapper.instance(),
+      'fileInputRef',
+      { value: { click: clickMock } }
+    );
+    trainingDataUploaderWrapper.instance().promptFileInput();
+    expect(clickMock).toHaveBeenCalled();
+  });
+
+  it('should return true after calling fetch', async () => {
+    const fetchSpy = jest.spyOn(window, 'fetch').mockReturnValue(Promise.resolve(new Response('')));
+    await trainingDataUploaderWrapper.instance().uploadFile(new File([], 'dummy.txt'));
+    expect(fetchSpy).toHaveBeenCalled();
   });
 });
