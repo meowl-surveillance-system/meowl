@@ -159,7 +159,7 @@ export const removePendingAccount = async (username: string) => {
 
 /**
  * Retrieve all pending accounts
- * @returns Array - Stores all the pending accounts
+ * @returns Array - A list of all the pending accounts
  */
 export const retrievePendingAccounts = async () => {
   const result = await client.execute(SELECT_PENDINGACCOUNTS, [], {
