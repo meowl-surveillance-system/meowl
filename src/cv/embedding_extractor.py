@@ -73,14 +73,18 @@ def check_detections(args, detections, embedder, known_embeddings, known_names, 
 
 def write_embeddings(known_embeddings, known_names):
     """ Writes embeddings """
-    print("Writing Embeddings")
     data = {"embeddings": known_embeddings, "names": known_names}
-    f = open(settings.EMBEDDINGS, "wb")
-    f.write(pickle.dumps(data))
-    f.close()
+    if len(set(data["names"])) < 2:
+        return "Error: Need 2 or more classes"
+    else:
+        print("Writing Embeddings")
+        f = open(settings.EMBEDDINGS, "wb")
+        f.write(pickle.dumps(data))
+        f.close()
+        return "Succesfully extracted embeddings"
 
 def extract_embeddings(args):
     """ Extracts the 128-d embeddings for the face """
     configs = load_configs()
     detect_res = detect_images(args, configs[0], configs[1], configs[2])
-    write_embeddings(detect_res[0], detect_res[1])
+    return write_embeddings(detect_res[0], detect_res[1])

@@ -26,3 +26,10 @@ export const SESSION_SECRET: string =
 export const ENABLE_HTTPS = false;
 
 export const NODE_ENV: string = process.env.NODE_ENV || 'development';
+
+export const REACT_SERVER_IP: string =
+  process.env.REACT_SERVER_IP || 'http://localhost:3000';
+
+export const EMAIL: string = process.env.EMAIL || 'something@example.com';
+
+export const EMAIL_PASSWORD: string = process.env.EMAIL_PASSWORD || 'yes';

@@ -46,3 +46,18 @@ export const SELECT_CAMERAID = 'SELECT DISTINCT camera_id FROM camera_streams';
 export const SELECT_LIVE_CAMERAID =
   'SELECT live FROM live_cameras WHERE camera_id = ?';
 export const SELECT_NOTIFICATIONS = 'SELECT * from notif';
+export const SELECT_PENDINGACCOUNTS = 'SELECT username FROM pending_accounts';
+export const INSERT_PASSWORDRESETTOKENS =
+  'INSERT INTO password_reset_tokens (reset_token, user_id) VALUES (?, ?) USING TTL 1800';
+export const SELECT_USERSNAME_USERID_EMAIL =
+  'SELECT user_id, email FROM users_name WHERE username = ?';
+export const SELECT_PASSWORDRESETTOKENS =
+  'SELECT * FROM password_reset_tokens WHERE reset_token = ?';
+export const SELECT_PASSWORDRESETTOKENS_USERID =
+  'SELECT user_id FROM password_reset_tokens WHERE reset_token = ?';
+export const UPDATE_USERSID_PASSWORD =
+  'UPDATE users_id SET password = ? WHERE user_id = ?';
+export const UPDATE_USERSNAME_PASSWORD =
+  'UPDATE users_name SET password = ? WHERE username = ?';
+export const DELETE_PASSWORDRESETTOKENS =
+  'DELETE FROM password_reset_tokens WHERE reset_token = ?';

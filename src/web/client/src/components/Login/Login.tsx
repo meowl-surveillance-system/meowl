@@ -15,7 +15,7 @@ import {
 interface Props {
   isLoggedIn: boolean;
   history: any;
-  onAuthChange: (authState: boolean) => void;
+  onAuthChange: (authState: boolean, adminState: boolean) => void;
 }
 interface State {
   username: string;
@@ -71,7 +71,9 @@ export default class Login extends Component<Props, State> {
       const res = await fetch(`/auth/login`, requestOptions);
       const msg = await res.text();
       if (msg === "successfully logged in") {
-        this.props.onAuthChange(true);
+        const adminRes = await fetch(`/auth/isAdmin`);
+        const isAdmin = await adminRes.json();
+        this.props.onAuthChange(true, isAdmin);
         this.props.history.push("/streams");
       } else {
         console.log(msg);

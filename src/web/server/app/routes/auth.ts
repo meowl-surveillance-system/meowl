@@ -7,14 +7,29 @@ import {
   isUsernameCollide,
   isValidCred,
   isAdmin,
+  isValidToken,
 } from '../middlewares/authChecks';
 import * as authController from '../controllers/auth';
 
 const app = express();
 
+/**
+ * Sends true if user is logged in
+ */
 app.get('/isLoggedIn', (req: express.Request, res: express.Response) => {
   authController.isLoggedIn(req, res);
 });
+
+/**
+ * Sends true if logged in user is an admin
+ */
+app.get(
+  '/isAdmin',
+  isLoggedIn,
+  (req: express.Request, res: express.Response) => {
+    authController.isAdmin(req, res);
+  }
+);
 
 /**
  * Register a new pending user to the pending accounts table
@@ -68,6 +83,45 @@ app.post(
   [isLoggedIn, isAdmin],
   (req: express.Request, res: express.Response) => {
     authController.rejectRegistration(req, res);
+  }
+);
+
+/**
+ * Retrieve all pending accounts
+ */
+app.get(
+  '/getPendingAccounts',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.getPendingAccounts(req, res);
+  }
+);
+
+/**
+ * Begin the password reset process
+ */
+app.post(
+  '/beginPasswordReset',
+  (req: express.Request, res: express.Response) => {
+    authController.beginPasswordReset(req, res);
+  }
+);
+
+/**
+ * Check if the reset token is valid
+ */
+app.post('/verifyToken', (req: express.Request, res: express.Response) => {
+  authController.verifyToken(req, res);
+});
+
+/**
+ * Update the password to the user submitted password
+ */
+app.post(
+  '/submitPasswordReset',
+  [isValidCred, isValidToken],
+  (req: express.Request, res: express.Response) => {
+    authController.submitPasswordReset(req, res);
   }
 );
 

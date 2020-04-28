@@ -20,6 +20,11 @@ sudo docker rm meowl-web
 sudo docker build --tag meowl-web:1.0 .
 sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  
 
+sudo docker stop meowl-cv
+sudo docker rm meowl-cv
+sudo docker build --tag meowl-cv:1.0 .
+sudo docker run --detach --publish 9000:5000 --name meowl-cv meowl-cv:1.0
+
 sudo docker stop meowl-kafka
 sudo docker rm meowl-kafka
 sudo docker build --tag meowl-kafka:1.0 .
