@@ -102,7 +102,6 @@ class App extends Component<Props, State> {
                   <BlackList
                     {...props}
                     isLoggedIn={this.state.isLoggedIn}
-                    onAuthChange={this.onAuthChange}
                   />
                 )}
               />

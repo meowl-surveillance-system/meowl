@@ -3,13 +3,14 @@ import { Container, TextField, Button } from "@material-ui/core";
 
 interface Props {
     name: String,
+    isLoggedIn: boolean
 }
 interface State {}
 
 /** 
  * A component for rendering one notification
 */
-export default class Notification extends Component<Props, State> {
+export default class BlackList extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
     }
