@@ -4,9 +4,9 @@ import * as blacklistController from '../controllers/blacklist';
 const app = express();
 
 app.get(
-  '/retrieveBlacklist',
+  '/insertBlacklist',
   async (req: express.Request, res: express.Response) => {
-    blacklistController.retrieveBlacklist(req, res);
+    blacklistController.insertBlacklist(req, res);
   }
 );
 

@@ -1,12 +1,8 @@
 import { Request, Response } from 'express';
 import * as blacklistServices from '../services/blacklist';
 
-export const retrieveBlacklist = async (req: Request, res: Response) => {
-  const result = await blacklistServices.retrieveBlacklist();
-  if (result === undefined) {
-    res.status(400).send('No blacklist found');
-  } else {
-    res.status(200).json(result.rows);
-  }
+export const insertBlacklist = async (req: Request, res: Response) => {
+  await blacklistServices.insertBlacklist(req.params.name);
+  res.status(200).send('Successfully added to blacklist');
 };
 
