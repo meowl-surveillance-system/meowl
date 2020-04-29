@@ -44,7 +44,7 @@ export default class BlackList extends Component<Props, State> {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: this.state.name,
+                    name: this.state.name,
                 }),
             });
         } catch (error) {
@@ -59,10 +59,10 @@ export default class BlackList extends Component<Props, State> {
         const info = this.props;
         return (
             <Container>
-                <form onSubmit = {this.onSubmit}>
+                <form noValidate onSubmit = {this.onSubmit}>
                     <Typography>Insert the name of the individual you would like to blacklist (all lowercase)</Typography>
-                    <TextField label="name" onChange = {this.onChange} />
-                    <Button> Submit </Button>
+                    <TextField label="name" name="name" onChange = {this.onChange} />
+                    <Button type="submit"> Submit </Button>
                 </form>
             </Container>
         );
