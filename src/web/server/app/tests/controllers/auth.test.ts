@@ -213,10 +213,10 @@ describe('auth', () => {
      const mockRes: any = () => {
       const res = {
         status: jest.fn(),
-        send: jest.fn(),
+        json: jest.fn(),
       };
       res.status = jest.fn().mockReturnValue(res);
-      res.send = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
       return res;
     };
     it('should return 200 on successful email and userId retrieval', async () => {
@@ -268,6 +268,32 @@ describe('auth', () => {
       jest.spyOn(authServices, 'verifyToken').mockImplementationOnce((token: string) => Promise.resolve(false));
       await auth.verifyToken(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
+    });
+  });
+  describe("submitPasswordReset", () => {
+    const mockReq: any = (password: string, resetToken: string) => {
+      return {
+        body: {
+          password, 
+          resetToken
+        }
+      }
+    };
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn()
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    }
+    it('should return 400 if password is too short', async () => {
+      const req = mockReq('yes', 'anything');
+      const res = mockRes();
+      await auth.submitPasswordReset(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith('Password is too short');
     });
   });
   describe('getPendingAccounts', () => {
