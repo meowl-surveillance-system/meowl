@@ -8,6 +8,8 @@ exports[`Register component renders Register component 1`] = `
     class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-direction-xs-column MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
     style="min-height: 100vh;"
   >
+    
+    
     <h1
       class="MuiTypography-root MuiTypography-h5"
     >

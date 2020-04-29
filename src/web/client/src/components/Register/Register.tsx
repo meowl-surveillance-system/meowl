@@ -13,13 +13,13 @@ import Container from "@material-ui/core/Container";
 
 interface Props {
   isLoggedIn: boolean;
-  history: any;
-  onAuthChange: (authState: boolean, adminState: boolean) => void;
 }
 interface State {
   email: string;
   username: string;
   password: string;
+  registeredBadMessage: string;
+  registeredGoodMessage: string;
 }
 
 /**
@@ -32,6 +32,8 @@ export default class Register extends Component<Props, State> {
       email: "",
       username: "",
       password: "",
+      registeredBadMessage: "",
+      registeredGoodMessage: "",
     };
   }
 
@@ -70,15 +72,10 @@ export default class Register extends Component<Props, State> {
         }),
       });
       const msg = await res.text();
-      // Did not Successfully register
-      if (msg === "Bad username") {
-        console.log("no good");
-        alert(msg);
-      }
-      // Successfully registered
-      else {
-        this.props.onAuthChange(true, false);
-        this.props.history.push("/streams");
+      if (msg === "successfully added to pending accounts") {
+        this.setState({ registeredGoodMessage: msg, registeredBadMessage: "" });
+      } else {
+        this.setState({ registeredBadMessage: msg, registeredGoodMessage: "" });
       }
     } catch (error) {
       console.error(error);
@@ -103,6 +100,16 @@ export default class Register extends Component<Props, State> {
           justify="center"
           style={{ minHeight: "100vh" }}
         >
+          {this.state.registeredBadMessage && (
+            <Typography style={{ color: "red" }}>
+              {this.state.registeredBadMessage}
+            </Typography>
+          )}
+          {this.state.registeredGoodMessage && (
+            <Typography style={{ color: "green" }}>
+              {this.state.registeredGoodMessage}
+            </Typography>
+          )}
           <Typography component="h1" variant="h5">
             Register
           </Typography>

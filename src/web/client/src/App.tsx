@@ -8,12 +8,13 @@ import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
 import PasswordReset from "./components/PasswordReset/PasswordReset";
 import AccountRecovery from "./components/AccountRecovery/AccountRecovery";
 
-interface Props {}
+interface Props { }
 interface State {
   isLoggedIn: boolean;
   isAdmin: boolean;
@@ -76,6 +77,13 @@ class App extends Component<Props, State> {
             <Switch>
               <ProtectedRoute
                 exact
+                path="/uploadTrainingData"
+                component={TrainingDataUploader}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
+              <ProtectedRoute
+                exact
                 path="/liveStreams"
                 component={LiveStream}
                 isLoggedIn={this.state.isLoggedIn}
@@ -103,11 +111,7 @@ class App extends Component<Props, State> {
                 exact
                 path="/register"
                 render={(props) => (
-                  <Register
-                    {...props}
-                    isLoggedIn={this.state.isLoggedIn}
-                    onAuthChange={this.onAuthChange}
-                  />
+                  <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
               />
               <Route

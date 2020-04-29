@@ -2,7 +2,7 @@
 sudo docker stop meowl-nginx-rtmp
 sudo docker rm meowl-nginx-rtmp
 sudo docker build --tag meowl-nginx-rtmp:1.0 . 
-sudo docker run --detach --publish 8000:19350 -p 8008:80 -p 8088:443 --name meowl-nginx-rtmp meowl-nginx-rtmp:1.0
+sudo docker run --detach --publish 8000:19350 -p 8008:80 -p 8088:443 -p 8080:8080 --name meowl-nginx-rtmp meowl-nginx-rtmp:1.0
 
 sudo docker stop meowl-cass
 sudo docker rm meowl-cass
