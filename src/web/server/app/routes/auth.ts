@@ -119,7 +119,7 @@ app.post('/verifyToken', (req: express.Request, res: express.Response) => {
  */
 app.post(
   '/submitPasswordReset',
-  [isValidCred, isValidToken],
+  [isValidToken],
   (req: express.Request, res: express.Response) => {
     authController.submitPasswordReset(req, res);
   }

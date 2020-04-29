@@ -22,6 +22,11 @@ RECOGNIZER = WORKDIR + os.environ.get('RECOGNIZER_PATH')
 LABEL_ENCODER = WORKDIR + os.environ.get('LABEL_ENCODER_PATH')
 TRACK_TIME = 600
 """
+  Directories
+"""
+UPLOAD_FOLDER_PATH = '/tmp'
+
+"""
   Kafka cv topic
 """
 CV_TOPIC = os.environ.get('CV_PRODUCER_TOPIC')

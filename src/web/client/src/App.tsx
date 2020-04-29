@@ -9,10 +9,13 @@ import NotificationList from "./components/Notification/NotificationList";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
+import PasswordReset from "./components/PasswordReset/PasswordReset";
+import AccountRecovery from "./components/AccountRecovery/AccountRecovery";
 
-interface Props {}
+interface Props { }
 interface State {
   isLoggedIn: boolean;
   isAdmin: boolean;
@@ -75,6 +78,13 @@ class App extends Component<Props, State> {
             <Switch>
               <ProtectedRoute
                 exact
+                path="/uploadTrainingData"
+                component={TrainingDataUploader}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
+              <ProtectedRoute
+                exact
                 path="/liveStreams"
                 component={LiveStream}
                 isLoggedIn={this.state.isLoggedIn}
@@ -109,6 +119,17 @@ class App extends Component<Props, State> {
                 exact
                 path="/notifications"
                 render={(props) => <NotificationList {...props} />}
+              />
+              <Route
+                exact
+                path="/accountRecovery"
+                render={(props) => <AccountRecovery {...props} />}
+              />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                render={(props) => <PasswordReset {...props} />}
+              />
               <AdminRoute
                 exact
                 path="/pendingAccounts"

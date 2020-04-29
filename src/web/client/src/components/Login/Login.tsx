@@ -4,7 +4,7 @@ import React, {
   ChangeEvent,
   FormEvent,
 } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link as RouterLink } from "react-router-dom";
 import {
   Container,
   TextField,
@@ -132,6 +132,13 @@ export default class Login extends Component<Props, State> {
               Login
             </Button>
           </form>
+          <Grid container>
+            <Grid item>
+              <RouterLink to="/accountRecovery">
+                {"Reset my password"}
+              </RouterLink>
+            </Grid>
+          </Grid>
         </Grid>
       </Container>
     );
