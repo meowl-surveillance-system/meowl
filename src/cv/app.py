@@ -44,31 +44,6 @@ def display_vid():
 
     print("Finished Displaying Video")
 
-def extract_resources(file_name, class_name):
-    """ Extracts resources from video """
-    add_data.extract_resources(file_name, -1)
-    insert_frame.store_training_data(class_name)    
-    return "Finishing extracting resources"
-
-def retrieve_dataset_res(start_time):
-    """ Retrieves the dataset resources """
-    insert_frame.retrieve_training_data(start_time)
-    return "Finished retrieving dataset resources"
-
-def extract_embeddings():
-    """ Extracts the embeddings"""
-    args = {
-        'confidence': .5
-    }
-    res = embed_ex.extract_embeddings(args)
-    print(res)
-    return res
-
-def train_face_rec():
-    """ Trains the Face Recognizer """
-    trainer.train_recognizer()
-    return "Finished Training Face Recognizer"
-
 @app.route('/apply_detections/')
 def process_detections():
     """ Applies object detection on an input """
@@ -113,3 +88,30 @@ def upload_training_data():
     train_face_rec()
     print("Done.")
     return 'Successfully processed the training data'
+
+# TODO(mli): Organize these methods below in another file
+# and make a structured project directory.
+def extract_resources(file_name, class_name):
+    """ Extracts resources from video """
+    add_data.extract_resources(file_name, -1)
+    insert_frame.store_training_data(class_name)    
+    return "Finishing extracting resources"
+
+def retrieve_dataset_res(start_time):
+    """ Retrieves the dataset resources """
+    insert_frame.retrieve_training_data(start_time)
+    return "Finished retrieving dataset resources"
+
+def extract_embeddings():
+    """ Extracts the embeddings"""
+    args = {
+        'confidence': .5
+    }
+    res = embed_ex.extract_embeddings(args)
+    print(res)
+    return res
+
+def train_face_rec():
+    """ Trains the Face Recognizer """
+    trainer.train_recognizer()
+    return "Finished Training Face Recognizer"
