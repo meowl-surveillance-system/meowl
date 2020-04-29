@@ -11,6 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
+import PasswordReset from "./components/PasswordReset/PasswordReset";
+import AccountRecovery from "./components/AccountRecovery/AccountRecovery";
 
 interface Props { }
 interface State {
@@ -111,6 +113,16 @@ class App extends Component<Props, State> {
                 render={(props) => (
                   <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
+              />
+              <Route
+                exact
+                path="/accountRecovery"
+                render={(props) => <AccountRecovery {...props} />}
+              />
+              <Route
+                exact
+                path="/resetPassword/:token"
+                render={(props) => <PasswordReset {...props} />}
               />
               <AdminRoute
                 exact
