@@ -173,13 +173,13 @@ export const beginPasswordReset = async (req: Request, res: Response) => {
     const result = await authServices.retrieveUserIdAndEmail(username);
     const credentials = result.rows[0];
     if (credentials === undefined) {
-      res.status(400).send('Something went wrong');
+      res.status(400).json('Something went wrong');
     } else {
       const token = uuidv4();
       const { user_id, email } = credentials;
       authServices.storeResetToken(token, user_id);
       sendEmail(email, token);
-      res.status(200).send('Successfully sent password reset email');
+      res.status(200).json('Successfully sent password reset email');
     }
   } catch (e) {
     console.error(e);
@@ -210,15 +210,20 @@ export const verifyToken = async (req: Request, res: Response) => {
  */
 export const submitPasswordReset = async (req: Request, res: Response) => {
   try {
-    const { username, password, resetToken } = req.body;
-    const userId = await authServices.retrieveUserIdFromToken(resetToken);
-    const hash = await bcrypt.hash(password, 12);
-    authServices.updatePassword(userId, username, hash);
-    authServices.deleteToken(resetToken);
-    res.status(200).send('Successfully updated password');
+    const { password, resetToken } = req.body;
+    if (!password || password.length < 5) {
+      res.status(400).json('Password is too short');
+    } else {
+      const userId = await authServices.retrieveUserIdFromToken(resetToken);
+      const username = await authServices.retrieveUsernameFromUserId(userId);
+      const hash = await bcrypt.hash(password, 12);
+      await authServices.updatePassword(userId, username, hash);
+      await authServices.deleteToken(resetToken);
+      res.status(200).json('Successfully updated password');
+    }
   } catch (e) {
     console.error(e);
-    res.status(500).send('Server error');
+    res.status(500).json('Server error');
   }
 };
 

@@ -21,6 +21,7 @@ import {
   UPDATE_USERSID_PASSWORD,
   UPDATE_USERSNAME_PASSWORD,
   DELETE_PASSWORDRESETTOKENS,
+  SELECT_USERSID_USERNAME,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -229,15 +230,15 @@ export const retrieveUserIdFromToken = async (token: string) => {
  * @params username - The username of the user
  * @params password - The updated password
  */
-export const updatePassword = (
+export const updatePassword = async (
   userId: string,
   username: string,
   password: string
 ) => {
-  client.execute(UPDATE_USERSID_PASSWORD, [password, userId], {
+  await client.execute(UPDATE_USERSID_PASSWORD, [password, userId], {
     prepare: true,
   });
-  client.execute(UPDATE_USERSNAME_PASSWORD, [password, username], {
+  await client.execute(UPDATE_USERSNAME_PASSWORD, [password, username], {
     prepare: true,
   });
 };
@@ -248,4 +249,16 @@ export const updatePassword = (
  */
 export const deleteToken = async (token: string) => {
   await client.execute(DELETE_PASSWORDRESETTOKENS, [token], { prepare: true });
+};
+
+/**
+ * Retrieve the username using the userId as lookup
+ * @params userId - The ID of the user
+ * @returns string - The username of the user
+ */
+export const retrieveUsernameFromUserId = async (userId: string) => {
+  const result = await client.execute(SELECT_USERSID_USERNAME, [userId], {
+    prepare: true,
+  });
+  return result.rows[0].username;
 };
