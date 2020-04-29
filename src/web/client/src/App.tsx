@@ -8,7 +8,7 @@ import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-
+import BlackList from "./components/BlackList/BlackList";
 interface Props {}
 interface State {
   isLoggedIn: boolean;
@@ -89,6 +89,17 @@ class App extends Component<Props, State> {
                 path="/register"
                 render={(props) => (
                   <Register
+                    {...props}
+                    isLoggedIn={this.state.isLoggedIn}
+                    onAuthChange={this.onAuthChange}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/blacklist"
+                render={(props) => (
+                  <BlackList
                     {...props}
                     isLoggedIn={this.state.isLoggedIn}
                     onAuthChange={this.onAuthChange}
