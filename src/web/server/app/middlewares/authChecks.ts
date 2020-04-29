@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { isCollideHelper } from './helpers';
+import * as authServices from '../services/auth';
 
 /**
  * Checks if a user is already logged in
@@ -74,5 +75,46 @@ export async function isUsernameCollide(
     return next();
   } else {
     res.status(400).send('Bad username');
+  }
+}
+
+/**
+ * Checks if the user making the request is an admin
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
+export async function isAdmin(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  if (req.session!.admin) {
+    return next();
+  } else {
+    res.status(403).send('Not an admin');
+  }
+}
+
+/**
+ * Checks if the incoming reset token is valid
+ * @param req - The incoming HTTP request
+ * @param res - The HTTP response to be sent
+ * @param next - The next middleware in the chain
+ */
+export async function isValidToken(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  const { resetToken } = req.body;
+  if (!resetToken) {
+    res.status(400).send('Reset token required');
+  }
+  const tokenExists = await authServices.verifyToken(resetToken);
+  if (tokenExists) {
+    return next();
+  } else {
+    res.status(400).send('Invalid reset token');
   }
 }

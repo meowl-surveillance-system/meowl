@@ -1,5 +1,6 @@
 import * as authChecks from '../../middlewares/authChecks';
 import * as helpers from '../../middlewares/helpers';
+import * as authServices from '../../services/auth';
 
 const mockReq: any = (userId: string) => {
   return {
@@ -125,4 +126,52 @@ describe('middlewares', () => {
       expect(res.status).toHaveBeenCalledWith(400);
     });
   });
+
+  describe('isAdmin', () => {
+    const req: any = (admin: boolean) => {
+      return {
+        session: { admin },
+      };
+    };
+    it('should call next if the request is made by an admin', async () => {
+      const isAdminReq = req(true);
+      const res = mockRes();
+      const next = jest.fn();
+      await authChecks.isAdmin(isAdminReq, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return 403 if the request is not made by an admin', async () => {
+      const isAdminReq = req(false);
+      const res = mockRes();
+      const next = jest.fn();
+      await authChecks.isAdmin(isAdminReq, res, next);
+      expect(res.status).toHaveBeenCalledWith(403);
+    });
+  });
+
+  describe('isValidToken', () => {
+    const req: any = (resetToken: string) => {
+      return {
+        body: {
+          resetToken,
+        }
+      }  
+    };
+    it('should return 400 if token is not valid', async () => {
+      const isValidTokenReq = req('bad_token');
+      const isValidTokenRes = mockRes();
+      const next = jest.fn();
+      jest.spyOn(authServices, 'verifyToken').mockImplementationOnce((token: string) => Promise.resolve(false));
+      await authChecks.isValidToken(isValidTokenReq, isValidTokenRes, next);
+      expect(isValidTokenRes.status).toHaveBeenCalledWith(400);
+    });
+    it('should call next if the token is valid', async () => {
+      const isValidTokenReq = req('good_token');
+      const isValidTokenRes = mockRes();
+      const next = jest.fn();
+      jest.spyOn(authServices, 'verifyToken').mockImplementationOnce((token: string) => Promise.resolve(true));
+      await authChecks.isValidToken(isValidTokenReq, isValidTokenRes, next);
+      expect(next).toHaveBeenCalled();
+    });
+  })
 });

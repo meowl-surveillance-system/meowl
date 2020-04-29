@@ -29,7 +29,7 @@ meowl_install() {
       source ${PARENT_PATH}/lib/kube/install
       ;;
     kafka)
-      source ${PARENT_PATH}/lib/kafka/install
+      source ${PARENT_PATH}/kafka/install
       ;;
     cassandra)
       source ${PARENT_PATH}/lib/cassandra/install
@@ -41,7 +41,7 @@ meowl_install() {
       source ${PARENT_PATH}/camera/mobile/install
       ;;
     notifications)
-      source ${PARENT_PATH}/notifications/install
+      source ${PARENT_PATH}/kafka/notifications/install
       ;;
     opencv)
       source ${PARENT_PATH}/cv/install

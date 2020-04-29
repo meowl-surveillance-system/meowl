@@ -9,6 +9,7 @@ import train_face_recognizer as trainer
 import recognize_faces as recognizer
 import yolo_video_detect as obj_detector
 import settings
+import utils
 app = Flask(__name__)
 
 @app.route('/')
@@ -57,8 +58,9 @@ def extract_embeddings():
     args = {
         'confidence': .5
     }
-    embed_ex.extract_embeddings(args)
-    return "Finished extracting embeddings"
+    res = embed_ex.extract_embeddings(args)
+    print(res)
+    return res
 
 @app.route('/train_face_rec/')
 def train_face_rec():
@@ -69,9 +71,18 @@ def train_face_rec():
 @app.route('/apply_detections/')
 def process_detections():
     """ Applies object detection on an input """
+    rtmp_connection_string = "rtmp://{0}:{1}/view/{2}".format(
+        settings.RTMP_IP, 
+        settings.RTMP_PORT, 
+        request.args.get('stream_id'))
+    rtmp_url = utils.get_auth_RTMP_url(
+        rtmp_connection_string,
+        settings.LOGIN_URL,
+        settings.RTMP_REQUEST_URL,
+        settings.ADMIN_USERNAME,
+        settings.ADMIN_PASSWORD)
     args = {
-        "input": request.args.get('input'),
-        "output": request.args.get('output'),
+        "input": rtmp_url,
         "camera_id": request.args.get('camera_id'),
         "stream_id": request.args.get('stream_id'),
         "confidence": request.args.get('confidence', default = .8, type = float),
