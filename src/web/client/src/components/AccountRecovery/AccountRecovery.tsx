@@ -17,6 +17,9 @@ interface State {
   failMessage: string;
 }
 
+/**
+ * A component for sending out a reset email link
+ */
 export default class AccountRecovery extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -27,6 +30,10 @@ export default class AccountRecovery extends Component<Props, State> {
     };
   }
 
+  /**
+   * Submit the username to the backend to send out the email that is associated with the username
+   * @params event - An event that records submission of a form element
+   */
   onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
@@ -52,6 +59,10 @@ export default class AccountRecovery extends Component<Props, State> {
     }
   };
 
+  /**
+   * Sets the appropriate state when a keyboard event is triggered
+   * @params event - An event that records changes happening to an input field
+   */
   onChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     this.setState({
@@ -59,6 +70,9 @@ export default class AccountRecovery extends Component<Props, State> {
     } as ComponentState);
   };
 
+  /**
+   * Renders the account recovery form
+   */
   render() {
     return (
       <Container component="main" maxWidth="xs">

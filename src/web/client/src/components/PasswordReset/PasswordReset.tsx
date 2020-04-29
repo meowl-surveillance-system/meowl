@@ -20,6 +20,9 @@ interface State {
   failMessage: string;
 }
 
+/**
+ * A component for changing the password of a user
+ */
 export default class PasswordReset extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -30,6 +33,10 @@ export default class PasswordReset extends Component<Props, State> {
     };
   }
 
+  /**
+   * Verifies if the token extracted from the URL param is valid.
+   * Sends the user back to the homepage if param is not valid
+   */
   async componentDidMount() {
     try {
       const requestOptions = {
@@ -51,6 +58,11 @@ export default class PasswordReset extends Component<Props, State> {
     }
   }
 
+  /**
+   * Submits the inputted password to the backend to update the password for the user.
+   * If successful, a success message will be displayed, otherwise a fail message will be displayed.
+   * @params event - An event that records submission of a form element
+   */
   onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
@@ -77,6 +89,10 @@ export default class PasswordReset extends Component<Props, State> {
     }
   };
 
+  /**
+   * Sets the appropriate state when a keyboard event is triggered
+   * @params event - An event that records changes happening to an input field
+   */
   onChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     this.setState({
@@ -84,6 +100,9 @@ export default class PasswordReset extends Component<Props, State> {
     } as ComponentState);
   };
 
+  /**
+   * Renders out a form for the user to input the new password
+   */
   render() {
     return (
       <Container component="main" maxWidth="xs">
