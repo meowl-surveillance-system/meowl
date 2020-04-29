@@ -3,8 +3,8 @@ source main.env
 
 export LC_ALL=C.UTF-8
 
-export CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-127.0.0.1}
-export CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9042}
+export CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
+export CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9043}
 
 export AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.10:8081}
 
@@ -23,4 +23,4 @@ export FLASK_APP=${FLASK_APP:-${APP_NAME}}
 
 # Run Flask
 # Runs on port 5000 by default
-flask run --host=0.0.0.0 --port=5000
+flask run --host=0.0.0.0 --port=9000

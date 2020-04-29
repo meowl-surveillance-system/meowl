@@ -8,10 +8,11 @@ import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
 
-interface Props {}
+interface Props { }
 interface State {
   isLoggedIn: boolean;
   isAdmin: boolean;
@@ -72,6 +73,13 @@ class App extends Component<Props, State> {
               onAuthChange={this.onAuthChange}
             />
             <Switch>
+              <ProtectedRoute
+                exact
+                path="/uploadTrainingData"
+                component={TrainingDataUploader}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
               <ProtectedRoute
                 exact
                 path="/liveStreams"

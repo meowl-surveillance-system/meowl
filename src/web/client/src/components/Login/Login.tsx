@@ -4,7 +4,6 @@ import React, {
   ChangeEvent,
   FormEvent,
 } from "react";
-import { Redirect } from "react-router-dom";
 import {
   Container,
   TextField,
