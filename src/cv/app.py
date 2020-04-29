@@ -95,12 +95,6 @@ def process_detections():
 @app.route('/upload_training_data/', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
-    # TODO(mli): using that file_path, extract_resources and
-    # do whatever you can to train that model in this call
-    # and please make extract embeddings andtrain_face_rec just
-    # a normal method to call. It doesn't seem like we would
-    # need to call this from our front-end.
-    # Have fun! :)
     files = dict(request.files)
     user_id = request.headers.get('User-Id')
     for key in files:
@@ -109,9 +103,13 @@ def upload_training_data():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
         print(file_name, file_path)
         file.save(file_path)
+        print("Extracting resources of", file_name)
         extract_resources(file_path, user_id)
+    print("Retrieve dataset from database...")
     retrieve_dataset_res(0)
+    print("Extracting embeddings...")
     extract_embeddings()
+    print("Training face recognition...")
     train_face_rec()
-       
+    print("Done.")
     return 'Successfully processed the training data'

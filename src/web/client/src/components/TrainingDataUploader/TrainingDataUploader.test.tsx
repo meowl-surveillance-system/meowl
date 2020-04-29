@@ -27,17 +27,15 @@ describe("TrainingDataUploader component", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('should call uploadFile twice', () => {
+  it('should call uploadFile twice', async () => {
     const fileStubs: File[] = [
       new File([], 'dummy.txt'),
       new File([], 'dummy2.txt'),
     ];
-    const uploadFileSpy: jest.SpyInstance = jest
-      .spyOn(trainingDataUploaderWrapper.instance(), 'uploadFile')
-      .mockReturnValue(new Promise((resolve) => resolve(true)));
+    const fetchSpy = jest.spyOn(window, 'fetch').mockReturnValue(Promise.resolve(new Response('')));
     trainingDataUploaderWrapper = trainingDataUploaderWrapper.setState({ selectedFiles: fileStubs });
-    trainingDataUploaderWrapper.instance().onFilesUpload();
-    expect(uploadFileSpy).toHaveBeenCalledTimes(2);
+    expect(await trainingDataUploaderWrapper.instance().onFilesUpload()).toEqual(true);
+    expect(fetchSpy).toHaveBeenCalled();
   });
 
   it('should click on fileInputRef', () => {
@@ -49,11 +47,5 @@ describe("TrainingDataUploader component", () => {
     );
     trainingDataUploaderWrapper.instance().promptFileInput();
     expect(clickMock).toHaveBeenCalled();
-  });
-
-  it('should return true after calling fetch', async () => {
-    const fetchSpy = jest.spyOn(window, 'fetch').mockReturnValue(Promise.resolve(new Response('')));
-    await trainingDataUploaderWrapper.instance().uploadFile(new File([], 'dummy.txt'));
-    expect(fetchSpy).toHaveBeenCalled();
   });
 });

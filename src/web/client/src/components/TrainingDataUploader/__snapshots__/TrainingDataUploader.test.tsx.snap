@@ -43,7 +43,7 @@ exports[`TrainingDataUploader component should render the TrainingDataUploader c
     </table>
   </div>
   <input
-    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+    accept="*.mp4,*.jpeg,*.png,*.jpg,*.gif,*.mov,*.flv"
     id="file-input"
     multiple=""
     style="display: none;"

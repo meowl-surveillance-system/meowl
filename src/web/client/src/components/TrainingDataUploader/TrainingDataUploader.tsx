@@ -35,23 +35,15 @@ export default class TrainingDataUploader extends Component<Props, State> {
     }
 
     /**
-     * Uploads files one by one and set selectedFiles to none after uploading
+     * Uploads files to server and set selectedFiles to none after uploading
+     * @returns true if the server receives and process the files else false
      */
-    onFilesUpload() {
-        this.state.selectedFiles.forEach(async (file) => {
-            return await this.uploadFile(file);
+    async onFilesUpload(): Promise<boolean> {
+        const formData = new FormData();
+        this.state.selectedFiles.map((file) => {
+            formData.append(file.name, file, file.name);
         });
         this.setState({ selectedFiles: [] });
-    }
-
-    /**
-     * Uploads file to the server
-     * @param file - file containing images/videos of the user to train model
-     * @returns true if successfully uploads the file to server else false
-     */
-    async uploadFile(file: File): Promise<boolean> {
-        const formData = new FormData();
-        formData.append('TrainingData', file, file.name);
         return await fetch('/cv/upload/trainingData', {
             method: 'PUT',
             mode: 'same-origin',
@@ -113,7 +105,7 @@ export default class TrainingDataUploader extends Component<Props, State> {
                     </Table>
                 </TableContainer>
                 <input
-                    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                    accept="*.mp4,*.jpeg,*.png,*.jpg,*.gif,*.mov,*.flv"
                     id="file-input"
                     ref={(ref) => { this.fileInputRef = ref }}
                     multiple={true}
