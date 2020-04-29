@@ -2,6 +2,7 @@ import * as auth from '../../controllers/auth';
 import * as authServices from '../../services/auth';
 import * as apiServices from '../../services/api';
 import * as mailer from '../../utils/mailer';
+import * as settings from '../../utils/settings';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -591,7 +592,7 @@ describe('auth', () => {
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        'http://localhost:5000/store/' + rtmpReq.body.name
+        settings.CASSANDRA_FLASK_SERVICE_URL + 'store/' + rtmpReq.body.name
       );
     });
     it('should return 500 on a unsuccessful rtmp saver call', async () => {
@@ -621,7 +622,7 @@ describe('auth', () => {
       await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(500);
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        'http://localhost:5000/store/' + rtmpReq.body.name
+        settings.CASSANDRA_FLASK_SERVICE_URL + 'store/' + rtmpReq.body.name
       );
     });
     it('should return 400 if userId does not own cameraId', async () => {
@@ -695,7 +696,7 @@ describe('auth', () => {
       await auth.rtmpAuthPublishStop(rtmpReq, rtmpRes);
       expect(rtmpRes.status).toBeCalledWith(200);
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        'http://localhost:5000/stop/' + rtmpReq.body.name
+        settings.CASSANDRA_FLASK_SERVICE_URL + 'stop/' + rtmpReq.body.name
       );
     });
   });
