@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Typography } from "@material-ui/core";
 
 interface Props {
-  date: Date;
+  date: any;
   type: string;
   name: string;
   img: any;
