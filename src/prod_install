@@ -110,7 +110,7 @@ deploy_images(){
   sudo docker build --build-arg EMAIL_ADDRESS=${EMAIL_ADDRESS} --build-arg EMAIL_PASSWORD=${EMAIL_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-web:1.0 ${PARENT_PATH}/web
   sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  
   sudo docker build --build-arg ADMIN_USERNAME=${ADMIN_USERNAME} --build-arg ADMIN_PASSWORD=${ADMIN_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-cv:1.0 ${PARENT_PATH}/cv
-  sudo docker run --detach --publish 9000:5000 --name meowl-cv meowl-cv:1.0 
+  sudo docker run --detach --publish 9000:9000 --name meowl-cv meowl-cv:1.0 
 }
 
 # Install Docker and deploy the new images from this repository

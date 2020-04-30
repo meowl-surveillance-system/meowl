@@ -33,7 +33,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # Install required packages
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar
+RUN apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
 
 # Copy files over 
 COPY . .
@@ -58,7 +58,7 @@ RUN ./run_setup.sh
 RUN sudo stunnel /etc/stunnel/stunnel.conf 2>&1 | tee stunnel-service.log &
 
 # 5000: HTTP port
-EXPOSE 5000
+EXPOSE 9000
 
 # Runs this command forever in the container
 CMD ["./run_app.sh"]

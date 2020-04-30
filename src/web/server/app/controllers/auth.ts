@@ -297,7 +297,7 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
           if (start) {
             const cvUrl = url.resolve(
               OPENCV_SERVICE_URL,
-              '/apply_detections/' +
+              '/apply_detections' +
                 `?camera_id=${req.body.cameraId}&stream_id=${req.body.name}`
             );
             const cvResponse = await axios.get(cvUrl);
