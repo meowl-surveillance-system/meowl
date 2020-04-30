@@ -6,7 +6,10 @@ import bcrypt from 'bcrypt';
 
 import * as apiServices from '../services/api';
 import * as authServices from '../services/auth';
-import { CASSANDRA_FLASK_SERVICE_URL } from '../utils/settings';
+import {
+  CASSANDRA_FLASK_SERVICE_URL,
+  OPENCV_SERVICE_URL,
+} from '../utils/settings';
 import { sendEmail } from '../utils/mailer';
 
 /**
@@ -291,7 +294,21 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
         );
         const saverResponse = await axios.get(saverUrl);
         if (saverResponse.status === 200) {
-          res.status(200).send('OK');
+          if (start) {
+            const cvUrl = url.resolve(
+              OPENCV_SERVICE_URL,
+              '/apply_detections/' +
+                `?camera_id=${req.body.cameraId}&stream_id=${req.body.name}`
+            );
+            const cvResponse = await axios.get(cvUrl);
+            if (cvResponse.status === 200) {
+              res.status(200).send('OK');
+            } else {
+              res.status(500).send('Server error');
+            }
+          } else {
+            res.status(200).send('OK');
+          }
         } else {
           res.status(500).send('Server error');
         }
