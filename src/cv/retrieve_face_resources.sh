@@ -1,3 +1,4 @@
+#! /bin/bash
 mkdir face_model_resources
 cd face_model_resources
 
