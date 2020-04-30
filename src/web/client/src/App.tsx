@@ -115,10 +115,12 @@ class App extends Component<Props, State> {
                   <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
               />
-              <Route
+              <ProtectedRoute
                 exact
                 path="/notifications"
-                render={(props) => <NotificationList {...props} />}
+                component = {NotificationList}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
               />
               <Route
                 exact

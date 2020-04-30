@@ -14,6 +14,10 @@ interface Notif {
   frame_id: string;
 }
 
+/* 
+ * A component for rendering multiple notifications. Each individual notification is rendered
+ * using the Notification component
+ */
 export default class NotificationList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -46,9 +50,14 @@ export default class NotificationList extends Component<Props, State> {
       });
   }
 
+  /*
+   * Maps each element in list state to a Notification component based on that element's
+   * date, type, name, and frame buffer
+   */
   render() {
     return (
       <Container>
+        <Typography>Notifications</Typography>
         {this.state.list.map((notif: any, index: number) => (
           <Notification
             key={index}
