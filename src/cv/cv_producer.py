@@ -11,11 +11,12 @@ producer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BROKER],
                          value_serializer=lambda x:
                          dumps(x).encode('utf-8'))
 
-def send_metadata(camera_id, stream_id, frame_id):
+def send_metadata(camera_id, stream_id, frame_id, detections):
     """ Sends metadata to CV_TOPIC """
     data = {'camera_id': camera_id,
             'stream_id': stream_id,
-            'frame_id': frame_id
+            'frame_id': frame_id,
+            'detections': detections
            }
     if settings.CV_TOPIC is None:
         raise Exception("CV_TOPIC: not found")

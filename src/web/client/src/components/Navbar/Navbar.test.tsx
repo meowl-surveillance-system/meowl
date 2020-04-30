@@ -9,7 +9,11 @@ describe("Navbar component", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
     const { container } = render(
       <Router>
-        <Navbar isLoggedIn={false} onAuthChange={onAuthChangeMock} />
+        <Navbar
+          isLoggedIn={false}
+          isAdmin={false}
+          onAuthChange={onAuthChangeMock}
+        />
       </Router>,
     );
     expect(container.firstChild).toMatchSnapshot();
@@ -20,7 +24,11 @@ describe("Navbar component", () => {
   it("should call renderIsNotLoggedIn when isLoggedIn is false", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
     const wrapper: ShallowWrapper<{}, {}, Navbar> = shallow(
-      <Navbar isLoggedIn={false} onAuthChange={onAuthChangeMock} />,
+      <Navbar
+        isLoggedIn={false}
+        isAdmin={false}
+        onAuthChange={onAuthChangeMock}
+      />,
     );
     const spy: jest.SpyInstance = jest.spyOn(
       wrapper.instance(),
@@ -30,11 +38,36 @@ describe("Navbar component", () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  // this also gets network request failed error when put right above
+  // or below should call renderIsLoggedIn when isLoggedIn is true" test
+  it("should call renderIsLoggedIn and renderIsAdminwhen isLoggedIn and isAdmin is true", () => {
+    const onAuthChangeMock: jest.Mock = jest.fn();
+    const wrapper: ShallowWrapper<{}, {}, Navbar> = shallow(
+      <Navbar
+        isLoggedIn={true}
+        isAdmin={true}
+        onAuthChange={onAuthChangeMock}
+      />,
+    );
+    const spy: jest.SpyInstance = jest.spyOn(
+      wrapper.instance(),
+      "renderIsLoggedIn",
+    );
+    const spyAdmin: jest.SpyInstance = jest.spyOn(
+      wrapper.instance(),
+      "renderIsAdmin",
+    );
+    wrapper.instance().forceUpdate();
+    expect(spy).toHaveBeenCalled();
+    expect(spyAdmin).toHaveBeenCalled();
+  });
+
   it("should call onAuthChange on logoutSubmit", async () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
     const navbarMock = new Navbar({
       onAuthChange: onAuthChangeMock,
       isLoggedIn: false,
+      isAdmin: false,
     });
     await navbarMock.logoutSubmit();
     expect(onAuthChangeMock).toHaveBeenCalled();
@@ -43,13 +76,22 @@ describe("Navbar component", () => {
   it("should call renderIsLoggedIn when isLoggedIn is true", () => {
     const onAuthChangeMock: jest.Mock = jest.fn();
     const wrapper: ShallowWrapper<{}, {}, Navbar> = shallow(
-      <Navbar isLoggedIn={true} onAuthChange={onAuthChangeMock} />,
+      <Navbar
+        isLoggedIn={true}
+        isAdmin={false}
+        onAuthChange={onAuthChangeMock}
+      />,
     );
     const spy: jest.SpyInstance = jest.spyOn(
       wrapper.instance(),
       "renderIsLoggedIn",
     );
+    const spyAdmin: jest.SpyInstance = jest.spyOn(
+      wrapper.instance(),
+      "renderIsAdmin",
+    );
     wrapper.instance().forceUpdate();
     expect(spy).toHaveBeenCalled();
+    expect(spyAdmin).not.toHaveBeenCalled();
   });
 });

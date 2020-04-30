@@ -47,3 +47,21 @@ export const SELECT_LIVE_CAMERAID =
   'SELECT live FROM live_cameras WHERE camera_id = ?';
 export const SELECT_NOTIFICATIONS = 'SELECT * from notif';
 export const INSERT_BLACKLIST = 'INSERT INTO blacklist (name) VALUES (?,)';
+export const SELECT_FRAME = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
+export const SELECT_PENDINGACCOUNTS = 'SELECT username FROM pending_accounts';
+export const INSERT_PASSWORDRESETTOKENS =
+  'INSERT INTO password_reset_tokens (reset_token, user_id) VALUES (?, ?) USING TTL 1800';
+export const SELECT_USERSNAME_USERID_EMAIL =
+  'SELECT user_id, email FROM users_name WHERE username = ?';
+export const SELECT_PASSWORDRESETTOKENS =
+  'SELECT * FROM password_reset_tokens WHERE reset_token = ?';
+export const SELECT_PASSWORDRESETTOKENS_USERID =
+  'SELECT user_id FROM password_reset_tokens WHERE reset_token = ?';
+export const UPDATE_USERSID_PASSWORD =
+  'UPDATE users_id SET password = ? WHERE user_id = ?';
+export const UPDATE_USERSNAME_PASSWORD =
+  'UPDATE users_name SET password = ? WHERE username = ?';
+export const DELETE_PASSWORDRESETTOKENS =
+  'DELETE FROM password_reset_tokens WHERE reset_token = ?';
+export const SELECT_USERSID_USERNAME =
+  'SELECT username FROM users_id WHERE user_id = ?';
