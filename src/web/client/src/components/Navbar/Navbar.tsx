@@ -7,9 +7,10 @@ import Typography from "@material-ui/core/Typography";
 
 interface Props {
   isLoggedIn: boolean;
-  onAuthChange: (authState: boolean) => void;
+  isAdmin: boolean;
+  onAuthChange: (authState: boolean, adminState: boolean) => void;
 }
-interface State {}
+interface State { }
 
 /**
  * A navigation bar component for easy access to other pages
@@ -23,7 +24,25 @@ export default class Navbar extends Component<Props, State> {
       method: "POST",
     };
     fetch(`/auth/logout`, requestOptions);
-    this.props.onAuthChange(false);
+    this.props.onAuthChange(false, false);
+  };
+
+  /**
+   * Renders the button on navbar when user is admin
+   */
+  renderIsAdmin = () => {
+    return (
+      <RouterLink
+        to="/pendingAccounts"
+        style={{
+          paddingLeft: "10px",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        PendingAccounts
+      </RouterLink>
+    );
   };
 
   /**
@@ -33,8 +52,14 @@ export default class Navbar extends Component<Props, State> {
     return (
       <div>
         <RouterLink
-          to="/liveStreams"
+          to="/uploadTrainingData"
           style={{ color: "inherit", textDecoration: "none" }}
+        >
+          UploadTrainingData
+        </RouterLink>
+        <RouterLink
+          to="/liveStreams"
+          style={{ paddingLeft: "10px", color: "inherit", textDecoration: "none" }}
         >
           LiveStreams
         </RouterLink>
@@ -48,6 +73,7 @@ export default class Navbar extends Component<Props, State> {
         >
           Streams
         </RouterLink>
+        {this.props.isAdmin && this.renderIsAdmin()}
         <RouterLink
           to="/"
           style={{
