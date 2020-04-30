@@ -95,15 +95,12 @@ class App extends Component<Props, State> {
                   />
                 )}
               />
-              <Route
+              <ProtectedRoute
                 exact
                 path="/blacklist"
-                render={(props) => (
-                  <BlackList
-                    {...props}
-                    isLoggedIn={this.state.isLoggedIn}
-                  />
-                )}
+                component={BlackList}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
               />
             </Switch>
           </div>
