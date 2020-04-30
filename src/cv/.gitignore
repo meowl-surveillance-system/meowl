@@ -1,1 +1,7 @@
-venv
+venv/
+yolo-coco/
+face_model_resources/
+__pycache__/
+frame_extractions/
+output/
+dataset/

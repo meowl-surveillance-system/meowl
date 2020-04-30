@@ -10,4 +10,11 @@ app.get(
   }
 );
 
+app.get(
+  '/retrieveFrame/:frame_id',
+  async (req: express.Request, res: express.Response) => {
+    notifController.retrieveFrame(req, res);
+  }
+);
+
 module.exports = app;

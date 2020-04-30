@@ -40,6 +40,9 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (use
 # Pending accounts table to be approved or rejected by an admin
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS pending_accounts (user_id text, email text, username text, password text, PRIMARY KEY(username))')
 
+# Password reset token table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS password_reset_tokens (reset_token text, user_id text, PRIMARY KEY(reset_token))')
+
 # Tables for storing OpenCV frames
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS cv_frames (camera_id text, stream_id text, frame_id text, frame blob, objects_detected blob, PRIMARY KEY(frame_id))')
 

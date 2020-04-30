@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PendingAccounts component renders the PendingAccounts component 1`] = `
+<div
+  class="MuiContainer-root MuiContainer-maxWidthLg"
+>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      Reject
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      Approve
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+  <ul
+    class="MuiList-root MuiList-padding MuiList-subheader"
+  >
+    <li
+      class="MuiListSubheader-root MuiListSubheader-colorInherit MuiListSubheader-sticky MuiListSubheader-gutters"
+    >
+      <span
+        class="MuiTypography-root"
+      >
+        Pending Accounts
+      </span>
+    </li>
+  </ul>
+</div>
+`;

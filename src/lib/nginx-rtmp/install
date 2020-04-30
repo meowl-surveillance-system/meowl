@@ -22,6 +22,9 @@ STREAMING_SERVER_KEY="${KEY_PATH}/meowl_nginx.key"
 STREAMING_SERVER_CERT="${CERT_PATH}/meowl_nginx.crt"
 STREAMING_SERVER_IP=127.0.0.1
 STREAMING_SERVER_DNS="localhost"
+HLS_PORT="8080"
+ENABLE_HTTPS="${ENABLE_HTTPS:-false}"
+$ENABLE_HTTPS && HLS_PORT="443 ssl"
 AUTH_SERVER_URL="${MEOWL_AUTH_SERVER_URL:-https://127.0.0.1:8081}"
 NGINX_CONF_FILE="
 #user  nobody;
@@ -80,7 +83,7 @@ http {
     ssl_certificate_key ${STREAMING_SERVER_KEY};
 
     server {
-        listen 443 ssl;
+        listen ${HLS_PORT};
 
         location / {
             # Disable cache

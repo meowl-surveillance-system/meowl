@@ -4,7 +4,7 @@ import React, {
   ChangeEvent,
   FormEvent,
 } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link as RouterLink } from "react-router-dom";
 import {
   Container,
   TextField,
@@ -16,7 +16,7 @@ import {
 interface Props {
   isLoggedIn: boolean;
   history: any;
-  onAuthChange: (authState: boolean) => void;
+  onAuthChange: (authState: boolean, adminState: boolean) => void;
 }
 interface State {
   username: string;
@@ -72,7 +72,9 @@ export default class Login extends Component<Props, State> {
       const res = await fetch(`/auth/login`, requestOptions);
       const msg = await res.text();
       if (msg === "successfully logged in") {
-        this.props.onAuthChange(true);
+        const adminRes = await fetch(`/auth/isAdmin`);
+        const isAdmin = await adminRes.json();
+        this.props.onAuthChange(true, isAdmin);
         this.props.history.push("/streams");
       } else {
         console.log(msg);
@@ -130,6 +132,13 @@ export default class Login extends Component<Props, State> {
               Login
             </Button>
           </form>
+          <Grid container>
+            <Grid item>
+              <RouterLink to="/accountRecovery">
+                {"Reset my password"}
+              </RouterLink>
+            </Grid>
+          </Grid>
         </Grid>
       </Container>
     );

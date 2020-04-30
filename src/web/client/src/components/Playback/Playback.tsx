@@ -6,7 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 
 import ResponsivePlayer from "../ResponsivePlayer/ResponsivePlayer";
 
-interface Props {}
+interface Props { }
 interface State {
   url: string;
   cameraIds: Array<string>;
@@ -35,7 +35,7 @@ export default class Playback extends Component<Props, State> {
       .then((cameraIds) => this.setState({ cameraIds: cameraIds }))
       .then(() =>
         this.state.cameraIds.map((cameraId, index) => {
-          fetch(`/api/getStreamIds/${cameraId}`)
+          return fetch(`/api/getStreamIds/${cameraId}`)
             .then((res) => res.json())
             .then((streamIds) =>
               this.setState({
