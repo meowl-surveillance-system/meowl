@@ -27,6 +27,7 @@ get_admin_info(){
       echo "Sorry, try again."
     fi
   done
+  ADMIN_PASSWORD=${ADMIN_PASSWORD_1}
   echo "Hello ${ADMIN_USERNAME}! We will enter in these details into our Cassandra database."
 }
 
@@ -49,6 +50,8 @@ get_email_info(){
       echo "Sorry, try again."
     fi
   done
+  EMAIL_PASSWORD=${MEOWL_PASSWORD_1}
+  EMAIL_ADDRESS=${MEOWL_EMAIL}
   echo "You have used ${MEOWL_EMAIL}. We will enter in these details into our notification services."
 }
 
@@ -104,7 +107,7 @@ deploy_images(){
   sudo docker run --detach --publish 5001:5000 --name meowl-cass-app meowl-cass-app:1.0
   sudo docker build --tag meowl-kafka:1.0 ${PARENT_PATH}/kafka
   sudo docker run --detach --publish 9093:9092 --name meowl-kafka meowl-kafka:1.0
-  sudo docker build --tag meowl-web:1.0 .
+  sudo docker build --tag meowl-web:1.0 ${PARENT_PATH}/web
   sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  
   sudo docker build --tag meowl-cv:1.0 ${PARENT_PATH}/cv
   sudo docker run --detach --publish 9000:5000 --name meowl-cv meowl-cv:1.0 
@@ -114,6 +117,7 @@ deploy_images(){
 deploy(){
   install_docker
   remove_existing_containers
+  source main.env
   deploy_images
 }
 
