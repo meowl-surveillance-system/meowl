@@ -1,4 +1,4 @@
-source main.env
+source cv/main.env
 diff_env(){
     diff <(bash -cl 'set -o posix && set') \
         <(set -o posix && set && set +o posix) | \
@@ -6,4 +6,4 @@ diff_env(){
         grep -Ev "^(>|\+|\+\+) ?(BASH|COLUMNS|LINES|HIST|PPID|SHLVL|PS(1|2)|SHELL|FUNC)" | \
         sed -r 's/^> ?|^\+ ?//'
 }
-diff_env > build.args
+diff_env > cv-build.args

@@ -16,7 +16,7 @@ app.put(
       proxyReq.setHeader('User-Id', req.session!.userId);
     },
     pathRewrite: {
-      '^/cv/upload/trainingData': 'upload_training_data/',
+      '^/cv/upload/trainingData': 'upload_training_data',
     },
     target:
       OPENCV_SERVICE_URL,
