@@ -5,7 +5,7 @@ WORKDIR /nginx
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes
 ARG MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
-ENV AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.10:8081}
+ENV AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.21:8081}
 ENV ENABLE_HTTPS=${ENABLE_HTTPS:-false}
 
 # Install required packages
