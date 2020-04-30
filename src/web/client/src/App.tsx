@@ -5,6 +5,7 @@ import "./App.css";
 import Playback from "./components/Playback/Playback";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
+import NotificationList from "./components/Notification/NotificationList";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -113,6 +114,13 @@ class App extends Component<Props, State> {
                 render={(props) => (
                   <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
+              />
+              <ProtectedRoute
+                exact
+                path="/notifications"
+                component = {NotificationList}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
               />
               <Route
                 exact
