@@ -300,12 +300,8 @@ const rtmpAuthPublish = async (req: Request, res: Response, start: boolean) => {
               '/apply_detections' +
               `?camera_id=${req.body.cameraId}&stream_id=${req.body.name}`
             );
-            const cvResponse = await axios.get(cvUrl);
-            if (cvResponse.status === 200) {
-              res.status(200).send('OK');
-            } else {
-              res.status(500).send('Server error');
-            }
+            const cvResponse = axios.get(cvUrl);
+            res.status(200).send('OK');
           } else {
             res.status(200).send('OK');
           }
