@@ -1,4 +1,4 @@
-source cv/main.env
+source main.env
 diff_env(){
     diff <(bash -cl 'set -o posix && set') \
         <(set -o posix && set && set +o posix) | \
