@@ -53,7 +53,7 @@ install_python_driver(){
 install_opencv() {
   echo "Installing Meowl OpenCV App..."
   sudo apt -y update
-  # install_python_driver
+  install_python_driver
   create_stunnel_config_file
   get_cert
 }
