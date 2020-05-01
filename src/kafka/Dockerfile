@@ -3,6 +3,21 @@ FROM ubuntu:18.04
 
 WORKDIR /kafka
 
+# Install required packages
+RUN apt update -y && apt install -y sudo curl gnupg
+
+# Installing node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
+RUN apt-get update -y && apt install -y nodejs
+
+# Install Kafka via install script
+COPY install install
+RUN sudo ./install 
+
+# Install notifications and runs the script in the background
+COPY notifications notifications
+RUN npm install --prefix ./notifications
+
 # Setting environment variables 
 ARG EMAIL_ADDRESS
 ENV EMAIL_ADDRESS=${EMAIL_ADDRESS:-meowlgithub@gmail.com}
@@ -12,27 +27,6 @@ ARG CASSANDRA_CLUSTER_IPS
 ENV CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.21}
 ARG CASSANDRA_CLUSTER_PORT
 ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9043}
-
-# Install required packages
-RUN apt update -y
-RUN apt install -y sudo
-RUN apt install -y curl
-
-# Install Kafka via install script
-COPY install install
-RUN sudo ./install 
-
-# Installing node
-RUN apt-get install -y curl gnupg
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
-RUN apt-get update -y
-RUN apt install -y nodejs
-RUN node --version
-RUN npm --version
-
-# Install notifications and runs the script in the background
-COPY notifications notifications
-RUN cd notifications && npm install --production
 
 # Copy the start script over
 COPY start start

@@ -2,6 +2,12 @@ FROM ubuntu:18.04
 
 WORKDIR /nginx
 
+# Disable interactive console when building Docker images
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
+
+# Install required packages
+RUN apt-get update && apt-get install --no-install-recommends apt-utils sudo wget git
+
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes
 ARG MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
@@ -10,19 +16,8 @@ ENV AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.21:8081}
 ARG ENABLE_HTTPS
 ENV ENABLE_HTTPS=${ENABLE_HTTPS:-false}
 
-# Install required packages
-RUN apt-get update 
-RUN apt-get install -y sudo
-RUN sudo apt-get install -y --no-install-recommends apt-utils
-RUN sudo apt-get install -y wget
-RUN sudo apt-get install -y git
-
-# Disable interactive console when building Docker images
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
-
 # Installing nginx-rtmp via installation script
-COPY install .
-COPY start .
+COPY . .
 RUN ./install
 
 # 80: HTTP port

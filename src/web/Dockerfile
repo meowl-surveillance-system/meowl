@@ -2,7 +2,26 @@ FROM ubuntu:18.04
 
 WORKDIR /meowl/web
 
-# Setting environment variables to production
+# Install required packages
+RUN apt update -y && apt-get install -y curl gnupg ffmpeg
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
+RUN apt-get update -y && apt install -y nodejs
+
+# Required environment variables for client & server
+ARG NGINX_HLS_SERVER_IP
+ENV REACT_APP_NGINX_HLS_SERVER_IP=${NGINX_HLS_SERVER_IP:-192.168.1.21}
+ARG NGINX_HLS_SERVER_PORT
+ENV REACT_APP_NGINX_HLS_SERVER_PORT=${NGINX_HLS_SERVER_PORT:-8080}
+
+# Install packages inside client directory and build via react
+COPY client client
+RUN cd client && npm install && npm run build
+
+# Remove unnecessary files from client
+RUN mv client/build tmp-client-build && rm -rf client/*
+RUN mv tmp-client-build client/build
+
+# Required environment variables for server
 ENV NODE_ENV=production
 ENV SESSION_SECRET=${SESSION_SECRET:-whateversession}
 ARG CASSANDRA_CLUSTER_IPS
@@ -23,31 +42,9 @@ ENV EMAIL_ADDRESS=${EMAIL_ADDRESS:-meowlgithub@gmail.com}
 ARG EMAIL_PASSWORD
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD:-meowlgithub2020}
 
-# Updating ubuntu
-RUN apt update -y
-
-# Installing node
-RUN apt-get install -y curl gnupg
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
-RUN apt-get update -y
-RUN apt install -y nodejs
-
-
-# Installing ffmpeg
-RUN apt install -y ffmpeg
-
-# Install packages inside client directory and build via react
-COPY client client
-RUN cd client && npm install && npm run build
-
 # Install packages inside server directory and build via typescript compiler
 COPY server server
 RUN cd server && npm install --production && npm run build
-
-# Remove unnecessary files from client
-RUN mv client/build tmp-client-build
-RUN rm -rf client/*
-RUN mv tmp-client-build client/build
 
 # Remove unnecessary files from server
 RUN rm -rf server/app
