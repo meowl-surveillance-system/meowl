@@ -2,6 +2,19 @@ FROM ubuntu:18.04
 
 WORKDIR /opencv
 
+# Disable interactive console when building Docker images
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
+
+# Install required packages
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
+
+# Copy files over 
+COPY . .
+
+# Download models online
+RUN ./retrieve_face_resources.sh 
+RUN ./retrieve_model.sh
+
 # Sets environment variables on the server
 ARG CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-192.168.1.21:8008/meowl_nginx.crt}
 RUN echo ${CERT_FILE_ADDRESS}
@@ -27,20 +40,6 @@ ENV ADMIN_PASSWORD=${ADMIN_PASSWORD:-password}
 ARG KAFKA_BROKER_URL
 ENV KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-192.168.1.21:9093}
 ENV FLASK_APP=/opencv/app.py
-
-# Disable interactive console when building Docker images
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
-
-# Install required packages
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
-
-# Copy files over 
-COPY . .
-
-# Download models online
-RUN ./retrieve_face_resources.sh 
-RUN ./retrieve_model.sh
 
 # Install cassandra flask server via installation script
 RUN ./install 
