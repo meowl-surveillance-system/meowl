@@ -58,4 +58,3 @@ RTMP_IP = os.environ.get('STUNNEL_IP')
 RTMP_PORT = os.environ.get('STUNNEL_PORT')
 RTMP_REQUEST_URL = os.environ.get('AUTH_SERVER_URL') + '/auth/rtmpRequest'
 
-print(YOLO_NAMES)

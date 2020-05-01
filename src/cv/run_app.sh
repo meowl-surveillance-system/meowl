@@ -20,7 +20,7 @@ export FLASK_APP=${FLASK_APP:-${APP_NAME}}
 
 # Run stunnel
 
-sudo stunnel /etc/stunnel/stunnel.conf 2>&1 | tee stunnel-service.log &
+sudo stunnel /etc/stunnel/stunnel.conf
 
 # Open the Python virtual environment if it exists
 [[ -d "./venv" ]] && source venv/bin/activate

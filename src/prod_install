@@ -69,19 +69,19 @@ install_docker(){
 }
 
 remove_existing_containers(){
-  # echo 'yes'
+  echo 'Remove any existing containers...'
   sudo docker stop meowl-cv
   sudo docker rm meowl-cv
-  # sudo docker stop meowl-web
-  # sudo docker rm meowl-web
-  # sudo docker stop meowl-cass-app
-  # sudo docker rm meowl-cass-app
-  # sudo docker stop meowl-kafka
-  # sudo docker rm meowl-kafka
-  # sudo docker stop meowl-nginx-rtmp
-  # sudo docker rm meowl-nginx-rtmp
-  # sudo docker stop meowl-cass
-  # sudo docker rm meowl-cass
+  sudo docker stop meowl-web
+  sudo docker rm meowl-web
+  sudo docker stop meowl-cass-app
+  sudo docker rm meowl-cass-app
+  sudo docker stop meowl-kafka
+  sudo docker rm meowl-kafka
+  sudo docker stop meowl-nginx-rtmp
+  sudo docker rm meowl-nginx-rtmp
+  sudo docker stop meowl-cass
+  sudo docker rm meowl-cass
 }
 
 #######################################
@@ -100,17 +100,18 @@ remove_existing_containers(){
 #   None
 #######################################
 deploy_images(){
-  # sudo docker build  --tag meowl-cass:1.0 ${PARENT_PATH}/lib/cassandra
-  # sudo docker run --detach --publish 9043:9042 --name meowl-cass meowl-cass:1.0
-  # sudo docker build $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-nginx-rtmp:1.0 ${PARENT_PATH}/lib/nginx-rtmp
-  # sudo docker run --detach --publish 8000:19350 -p 8008:80 -p 8088:443 -p 8080:8080 --name meowl-nginx-rtmp meowl-nginx-rtmp:1.0
-  # sudo docker build  --no-cache --build-arg ADMIN_USERNAME=${ADMIN_USERNAME} --build-arg ADMIN_PASSWORD=${ADMIN_PASSWORD} --build-arg ADMIN_EMAIL=${ADMIN_EMAIL} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-cass-app:1.0 ${PARENT_PATH}/db/cass
-  # sleep 5
-  # sudo docker run --detach --publish 5001:5000 --name meowl-cass-app meowl-cass-app:1.0
-  # sudo docker build --build-arg EMAIL_ADDRESS=${EMAIL_ADDRESS} --build-arg EMAIL_PASSWORD=${EMAIL_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-kafka:1.0 ${PARENT_PATH}/kafka
-  # sudo docker run --detach --publish 9093:9092 --name meowl-kafka meowl-kafka:1.0
-  # sudo docker build --build-arg EMAIL_ADDRESS=${EMAIL_ADDRESS} --build-arg EMAIL_PASSWORD=${EMAIL_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-web:1.0 ${PARENT_PATH}/web
-  # sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  
+  echo "Now building and running docker images... This will take a while (10 mins ~ on a good Internet)"
+  sudo docker build  --tag meowl-cass:1.0 ${PARENT_PATH}/lib/cassandra
+  sudo docker run --detach --publish 9043:9042 --name meowl-cass meowl-cass:1.0
+  sudo docker build $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-nginx-rtmp:1.0 ${PARENT_PATH}/lib/nginx-rtmp
+  sudo docker run --detach --publish 8000:19350 -p 8008:80 -p 8088:443 -p 8080:8080 --name meowl-nginx-rtmp meowl-nginx-rtmp:1.0
+  sudo docker build  --no-cache --build-arg ADMIN_USERNAME=${ADMIN_USERNAME} --build-arg ADMIN_PASSWORD=${ADMIN_PASSWORD} --build-arg ADMIN_EMAIL=${ADMIN_EMAIL} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-cass-app:1.0 ${PARENT_PATH}/db/cass
+  sleep 5
+  sudo docker run --detach --publish 5001:5000 --name meowl-cass-app meowl-cass-app:1.0
+  sudo docker build --build-arg EMAIL_ADDRESS=${EMAIL_ADDRESS} --build-arg EMAIL_PASSWORD=${EMAIL_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-kafka:1.0 ${PARENT_PATH}/kafka
+  sudo docker run --detach --publish 9093:9092 --name meowl-kafka meowl-kafka:1.0
+  sudo docker build --build-arg EMAIL_ADDRESS=${EMAIL_ADDRESS} --build-arg EMAIL_PASSWORD=${EMAIL_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-web:1.0 ${PARENT_PATH}/web
+  sudo docker run --detach --publish 8081:8081 --name meowl-web meowl-web:1.0  
   sudo docker build --build-arg ADMIN_USERNAME=${ADMIN_USERNAME} --build-arg ADMIN_PASSWORD=${ADMIN_PASSWORD} $(for i in `cat build.args`; do out+="--build-arg $i " ; done; echo $out;out="") --tag meowl-cv:1.0 ${PARENT_PATH}/cv
   sudo docker run --detach --publish 9000:9000 -e ADMIN_USERNAME=${ADMIN_USERNAME} -e ADMIN_PASSWORD=${ADMIN_PASSWORD} --name meowl-cv meowl-cv:1.0 
 }

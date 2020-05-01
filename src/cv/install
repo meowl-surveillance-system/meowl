@@ -17,7 +17,7 @@ NGINX_RTMP_PORT=${NGINX_RTMP_PORT:-8000}
 CERT_PATH="/etc/ssl/certs"
 CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-127.0.0.1:8008/meowl_nginx.crt}
 STUNNEL_PORT=${STUNNEL_PORT:-1234}
-STUNNEL_CONF_FILE="foreground = yes
+STUNNEL_CONF_FILE="foreground = no
 debug = 5
 
 [my-encryption-service]
@@ -29,6 +29,7 @@ verify = 3"
 
 # Pastes stunnel configs to stunnel.conf
 create_stunnel_config_file() {
+  sudo mkdir -p /etc/stunnel
   echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
   cat /etc/stunnel/stunnel.conf
 }
@@ -36,6 +37,7 @@ create_stunnel_config_file() {
 # Downloads cert from file address
 get_cert() {
   wget -O ${CERT_PATH}/meowl_nginx.crt ${CERT_FILE_ADDRESS} 
+  cat ${CERT_PATH}/meowl_nginx.crt
 }
 
 install_python_driver(){
@@ -51,7 +53,7 @@ install_python_driver(){
 install_opencv() {
   echo "Installing Meowl OpenCV App..."
   sudo apt -y update
-  install_python_driver
+  # install_python_driver
   create_stunnel_config_file
   get_cert
 }
