@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Notification component renders Notification component 1`] = `
+<div
+  class="MuiContainer-root MuiContainer-maxWidthLg"
+>
+  <p
+    class="MuiTypography-root MuiTypography-body1"
+  >
+    Date: 
+    
+  </p>
+  <p
+    class="MuiTypography-root MuiTypography-body1"
+  >
+    Type: 
+    
+  </p>
+  <p
+    class="MuiTypography-root MuiTypography-body1"
+  >
+    Name: 
+    
+  </p>
+  <img
+    src="data:image/jpeg;base64,"
+  />
+</div>
+`;

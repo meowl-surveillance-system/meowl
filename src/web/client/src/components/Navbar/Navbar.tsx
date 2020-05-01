@@ -73,6 +73,16 @@ export default class Navbar extends Component<Props, State> {
         >
           Streams
         </RouterLink>
+        <RouterLink
+          to="/notifications"
+          style={{
+            paddingLeft: "10px",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          Notifications
+        </RouterLink>
         {this.props.isAdmin && this.renderIsAdmin()}
         <RouterLink
           to="/"

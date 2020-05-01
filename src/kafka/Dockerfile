@@ -33,7 +33,6 @@ RUN npm --version
 # Install notifications and runs the script in the background
 COPY notifications notifications
 RUN cd notifications && npm install --production
-RUN cd notifications && npm start &
 
 # Copy the start script over
 COPY start start
