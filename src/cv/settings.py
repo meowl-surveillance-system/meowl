@@ -1,8 +1,6 @@
 import os
-from dotenv import load_dotenv
 
 WORKDIR = os.path.dirname(os.path.realpath(__file__))
-load_dotenv(dotenv_path=WORKDIR + '/main.env')
 
 """
   Object Detection Model Configs
