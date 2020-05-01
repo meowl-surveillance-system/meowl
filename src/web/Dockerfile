@@ -18,8 +18,7 @@ COPY client client
 RUN cd client && npm install && npm run build
 
 # Remove unnecessary files from client
-RUN mv client/build tmp-client-build && rm -rf client/*
-RUN mv tmp-client-build client/build
+RUN mv client/build tmp-client-build && rm -rf client/* && mv tmp-client-build client/build
 
 # Required environment variables for server
 ENV NODE_ENV=production

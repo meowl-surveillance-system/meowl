@@ -10,10 +10,7 @@
 #   None
 #######################################
 
-PARENT_PATH=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")"
-  pwd -P
-)
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P )
 NGINX_RTMP_IP=${NGINX_RTMP_IP:-192.168.1.10}
 NGINX_RTMP_PORT=${NGINX_RTMP_PORT:-8000}
 
@@ -33,6 +30,7 @@ verify = 3"
 # Pastes stunnel configs to stunnel.conf
 create_stunnel_config_file() {
   echo "${STUNNEL_CONF_FILE}" | sudo tee /etc/stunnel/stunnel.conf
+  cat /etc/stunnel/stunnel.conf
 }
 
 # Downloads cert from file address
@@ -45,6 +43,7 @@ install_python_driver(){
   cd ${PARENT_PATH}
   python3 -m venv venv
   source venv/bin/activate
+  pip install --upgrade pip
   pip3 install -r requirements.txt
 }
 

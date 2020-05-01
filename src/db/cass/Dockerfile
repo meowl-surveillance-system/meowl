@@ -35,11 +35,14 @@ ENV ADMIN_EMAIL=${ADMIN_EMAIL:-cchen006@citymail.cuny.edu}
 ENV FLASK_APP=/cass-app/app.py
 
 # Install cassandra flask server via installation script
-COPY . .
+COPY ./install ./install
 RUN ./install
 
+# Copy everything over
+COPY . .
+
 # Remove Python virtual environment as it is containerized in Docker
-RUN rm -rf ./venv && pip3 install -r requirements.txt
+RUN rm -rf ./venv; pip3 install -r requirements.txt
 
 # Creates tables remotely via this script
 RUN python3 create_db.py

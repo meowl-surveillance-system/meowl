@@ -6,7 +6,7 @@ WORKDIR /nginx
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
 # Install required packages
-RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils sudo wget git
+RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils sudo wget git ca-certificates
 
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes

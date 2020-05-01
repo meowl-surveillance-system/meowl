@@ -8,16 +8,14 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # Install required packages
 RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
 
-# Copy files over 
-COPY . .
+# Copy scripts to download large training set files over
+COPY ./retrieve_face_resources.sh ./retrieve_model.sh ./
 
-# Download models online
-RUN ./retrieve_face_resources.sh 
-RUN ./retrieve_model.sh
+# Downloads extremely large models online
+RUN ./retrieve_face_resources.sh; ./retrieve_model.sh
 
 # Sets environment variables on the server
 ARG CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-192.168.1.21:8008/meowl_nginx.crt}
-RUN echo ${CERT_FILE_ADDRESS}
 ARG NGINX_RTMP_IP
 ENV NGINX_RTMP_IP=${NGINX_RTMP_IP:-192.168.1.21}
 ARG NGINX_RTMP_PORT
@@ -41,14 +39,14 @@ ARG KAFKA_BROKER_URL
 ENV KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-192.168.1.21:9093}
 ENV FLASK_APP=/opencv/app.py
 
+# Copy everything else over to the container
+COPY . .
+
 # Install cassandra flask server via installation script
 RUN ./install 
 
-# Remove Python virtual environment as it is containerized in Docker
-RUN rm -rf ./venv 
-
-# Installs python packages globally
-RUN pip3 install -r requirements.txt
+# Remove Python virtual environment and install packages globally
+RUN rm -rf ./venv; pip3 install -r requirements.txt
 
 # Setup
 RUN ./run_setup.sh
