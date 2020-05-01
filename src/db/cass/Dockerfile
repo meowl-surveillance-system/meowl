@@ -6,7 +6,7 @@ WORKDIR /cass-app
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
 # Install required packages
-RUN apt-get update && apt-get install --no-install-recommends -y sudo wget apt-utils
+RUN apt-get update -y && apt-get install --no-install-recommends -y sudo wget apt-utils
 
 # Sets environment variables on the server
 ARG CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-192.168.1.21:8008/meowl_nginx.crt}

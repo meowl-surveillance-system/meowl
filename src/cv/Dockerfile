@@ -6,7 +6,7 @@ WORKDIR /opencv
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
 # Install required packages
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
+RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
 
 # Copy files over 
 COPY . .
