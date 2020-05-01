@@ -1,4 +1,7 @@
 #! /bin/bash
+#
+# Download yolo-coco models and create directories
+
 mkdir yolo-coco dataset output
 
 # Install yolo-coco model
@@ -8,5 +11,5 @@ curl -O https://raw.githubusercontent.com/pjreddie/darknet/master/data/coco.name
 curl -O https://pjreddie.com/media/files/yolov3.weights
 cd ../
 
-# Install unknown dataset into frame_extractions and run initalize_state
+# Install unknown dataset into frame_extractions
 wget --no-check-certificate --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1ufydwhMYtOhxgQuHs9SjERnkX0fXxorO' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1ufydwhMYtOhxgQuHs9SjERnkX0fXxorO" -O unknown.rar && rm -rf /tmp/cookies.txt
