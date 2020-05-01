@@ -41,9 +41,7 @@ get_cert() {
 }
 
 install_python_driver(){
-  sudo apt install -y python3-pip
-  sudo apt install -y python3-venv
-  sudo apt-get install -y stunnel4
+  sudo apt install -y python3-pip python3-venv stunnel4
   cd ${PARENT_PATH}
   python3 -m venv venv
   source venv/bin/activate
