@@ -72,3 +72,4 @@ export const DELETE_PASSWORDRESETTOKENS =
   'DELETE FROM password_reset_tokens WHERE reset_token = ?';
 export const SELECT_USERSID_USERNAME =
   'SELECT username FROM users_id WHERE user_id = ?';
+export const SELECT_USERSNAME_USERNAME = 'SELECT username FROM users_name';
