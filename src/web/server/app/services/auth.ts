@@ -4,7 +4,10 @@ import {
   INSERT_USERSID,
   INSERT_USERSNAME,
   INSERT_PENDINGACCOUNTS,
+  INSERT_PASSWORDRESETTOKENS,
+  SELECT_PASSWORDRESETTOKENS,
   SELECT_USERSID_USERID_PASSWORD_ADMIN,
+  SELECT_USERSNAME_USERID_EMAIL,
   UPDATE_USERSID_SID,
   UPDATE_USERSNAME_SID,
   SELECT_USERSNAME_SID,
@@ -13,6 +16,12 @@ import {
   SELECT_SID_SESSION,
   SELECT_PENDINGACCOUNTS_ALL,
   DELETE_PENDINGACCOUNTS_ALL,
+  SELECT_PENDINGACCOUNTS,
+  SELECT_PASSWORDRESETTOKENS_USERID,
+  UPDATE_USERSID_PASSWORD,
+  UPDATE_USERSNAME_PASSWORD,
+  DELETE_PASSWORDRESETTOKENS,
+  SELECT_USERSID_USERNAME,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -135,21 +144,121 @@ export const retrievePendingAccount = (username: string) => {
  * @param username - The username of the user
  * @param password - The password of the user
  */
-export const approveRegistration = (
+export const approveRegistration = async (
   userId: string,
   email: string,
   username: string,
   password: string
 ) => {
   const params = [userId, email, username, password, false];
-  client.execute(INSERT_USERSID, params, { prepare: true });
-  client.execute(INSERT_USERSNAME, params, { prepare: true });
+  await client.execute(INSERT_USERSID, params, { prepare: true });
+  await client.execute(INSERT_USERSNAME, params, { prepare: true });
 };
 
 /**
  * Remove pending account from the pending_accounts table
  * @param username - The username used to lookup the to-be-deleted account
  */
-export const removePendingAccount = (username: string) => {
-  client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], { prepare: true });
+export const removePendingAccount = async (username: string) => {
+  await client.execute(DELETE_PENDINGACCOUNTS_ALL, [username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Retrieve all pending accounts
+ * @returns Array - A list of all the pending accounts
+ */
+export const retrievePendingAccounts = async () => {
+  const result = await client.execute(SELECT_PENDINGACCOUNTS, [], {
+    prepare: true,
+  });
+  return result.rows;
+};
+
+/**
+ * Store the token and userId into password_reset_tokens table
+ * @params token - The password reset token
+ * @params userId - The user ID associated with the token
+ */
+export const storeResetToken = async (token: string, userId: string) => {
+  await client.execute(INSERT_PASSWORDRESETTOKENS, [token, userId], {
+    prepare: true,
+  });
+};
+
+/**
+ * Retrieve the userId and email using username as lookup
+ * @params username - The username of the user
+ * @returns ResultSet - Contains the user_id and email field of the user
+ */
+export const retrieveUserIdAndEmail = async (username: string) => {
+  return client.execute(SELECT_USERSNAME_USERID_EMAIL, [username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Verify the reset token exists in the table
+ * @params token - The token to be verified
+ * @returns boolean - True if token is valid, false otherwise
+ */
+export const verifyToken = async (token: string) => {
+  const result = await client.execute(SELECT_PASSWORDRESETTOKENS, [token], {
+    prepare: true,
+  });
+  return result.rows.length === 1;
+};
+
+/**
+ * Retrieve the associated user ID using the reset token
+ * @params token - The password reset token
+ * @returns string - The id of the retrieved user
+ */
+export const retrieveUserIdFromToken = async (token: string) => {
+  const result = await client.execute(
+    SELECT_PASSWORDRESETTOKENS_USERID,
+    [token],
+    { prepare: true }
+  );
+  return result.rows[0].user_id;
+};
+
+/**
+ * Update the password field in users_id and users_name table to the provided password
+ * @params userId - The ID of the user
+ * @params username - The username of the user
+ * @params password - The updated password
+ */
+export const updatePassword = async (
+  userId: string,
+  username: string,
+  password: string
+) => {
+  await client.execute(UPDATE_USERSID_PASSWORD, [password, userId], {
+    prepare: true,
+  });
+  await client.execute(UPDATE_USERSNAME_PASSWORD, [password, username], {
+    prepare: true,
+  });
+};
+
+/**
+ * Delete the password reset token from the password_reset_tokens table
+ * @params token - The token to be deleted
+ */
+export const deleteToken = async (token: string) => {
+  await client.execute(DELETE_PASSWORDRESETTOKENS, [token], { prepare: true });
+};
+
+/**
+ * Retrieve the username using the userId as lookup
+ * @params userId - The ID of the user
+ * @returns string - The username of the user
+ */
+export const retrieveUsernameFromUserId = async (userId: string) => {
+  const result = await client.execute(SELECT_USERSID_USERNAME, [userId], {
+    prepare: true,
+  });
+  return result.rows[0].username;
 };

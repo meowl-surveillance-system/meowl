@@ -4,7 +4,6 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom/extend-expect";
 import { configure } from "enzyme";
-import * as ReactSixteenAdapter from "enzyme-adapter-react-16";
+import Adapter from "enzyme-adapter-react-16";
 
-const adapter = ReactSixteenAdapter as any;
-configure({ adapter: new adapter.default() });
+configure({ adapter: new Adapter() });

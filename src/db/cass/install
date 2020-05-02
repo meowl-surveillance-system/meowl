@@ -57,7 +57,7 @@ get_cert() {
 # Complete Installation for Cassandra Streaming Server app
 install_cassandra() {
   echo "Installing Cassandra storing stream app..."
-  sudo apt-get update
+  sudo apt-get -y update
   install_python_driver
   create_stunnel_config_file
   get_cert

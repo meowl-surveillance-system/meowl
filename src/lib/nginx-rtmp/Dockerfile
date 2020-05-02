@@ -6,6 +6,7 @@ WORKDIR /nginx
 # TODO(chc5): Abstract secrets away into Kubernetes
 ARG MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
 ENV MEOWL_AUTH_SERVER_URL=${MEOWL_AUTH_SERVER_URL:-http://192.168.1.10:8081}
+ENV ENABLE_HTTPS=${ENABLE_HTTPS:-false}
 
 # Install required packages
 RUN apt-get update 
@@ -23,9 +24,10 @@ COPY start .
 RUN ./install
 
 # 80: HTTP port
-# 443: HTTPS port
+# 8080: HTTP port for hls
+# 443: HTTPS port for hls if ENABLE_HTTPS is true
 # 19350: RTMP port
-EXPOSE 80 443 19350
+EXPOSE 80 8080 443 19350
 
 # Runs this command forever in the container
 CMD ["./start"]
