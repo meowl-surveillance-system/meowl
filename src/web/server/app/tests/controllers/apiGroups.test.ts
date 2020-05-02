@@ -1,5 +1,6 @@
 import * as apiGroups from '../../controllers/apiGroups';
 import * as apiGroupsServices from '../../services/apiGroups';
+import * as authServices from '../../services/auth';
 
 describe('apiGroups', () => {
   const testSessionID = 'yes';
@@ -9,9 +10,9 @@ describe('apiGroups', () => {
   const testUserId = 'controllersTestUserId';
   const testGroupId = 'controllersTestGroupId';
   describe('addUserGroup', () => {
-    const mockReq: any = (groupId: string, userId: string) => {
+    const mockReq: any = (groupId: string, username: string) => {
       return {
-        body: { userId, groupId },
+        body: { username, groupId },
       };
     };
     const mockRes: any = () => {
@@ -25,9 +26,12 @@ describe('apiGroups', () => {
     };
     it('should return status 200 on successful add', async () => {
       jest
+        .spyOn(authServices, 'retrieveUser')
+        .mockImplementationOnce((username: string) => Promise.resolve({rows:[{user_id:testUserId}]} as any));
+      jest
         .spyOn(apiGroupsServices, 'addUserGroup')
         .mockImplementationOnce((userId: string, groupId: string) => Promise.resolve());
-      const req = mockReq(testGroupId, testUserId);
+      const req = mockReq(testGroupId, testUser);
       const res = mockRes();
       await apiGroups.addUserGroup(req, res);
       expect(res.status).toBeCalledWith(200);
@@ -35,15 +39,28 @@ describe('apiGroups', () => {
     });
     it('should return 500 status if add exception', async () => {
       jest
+        .spyOn(authServices, 'retrieveUser')
+        .mockImplementationOnce((username: string) => Promise.resolve({rows:[{user_id:testUserId}]} as any));
+      jest
         .spyOn(apiGroupsServices, 'addUserGroup')
         .mockImplementationOnce((userId: string, groupId: string) =>
           Promise.reject('Test exception')
         );
-      const req = mockReq(testGroupId, testUserId);
+      const req = mockReq(testGroupId, testUser);
       const res = mockRes();
       await apiGroups.addUserGroup(req, res);
       expect(res.status).toBeCalledWith(500);
       expect(res.send).toBeCalledWith('Server error');
+    });
+    it('should return 400 status if unable to find user', async () => {
+      jest
+        .spyOn(authServices, 'retrieveUser')
+        .mockImplementationOnce((username: string) => Promise.resolve({rows:[]} as any));
+      const req = mockReq(testGroupId, testUser);
+      const res = mockRes();
+      await apiGroups.addUserGroup(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Unable to find user');
     });
   });
   describe('retrieveUserGroups', () => {
@@ -106,8 +123,21 @@ describe('apiGroups', () => {
       res.send = jest.fn().mockReturnValue(res);
       return res;
     };
-    const testUserIds = [testUserId, testUserId + '2'];
-    it('should return status 200 and userIds', async () => {
+    const testUserIds = [testUserId, testUserId];
+    const testUsers = [testUser, testUser];
+    beforeAll(() => {
+      jest
+        .spyOn(authServices, 'retrieveUsernameFromUserId')
+        .mockImplementation((userId: string) =>
+          Promise.resolve(testUser)
+        );
+    });
+    afterAll(() => {
+      jest
+        .spyOn(authServices, 'retrieveUsernameFromUserId')
+        .mockRestore();
+    });
+    it('should return status 200 and usernames', async () => {
       const mockResults = { rows: [] as object[] };
       testUserIds.forEach((key: string, i: number) =>
         mockResults.rows.push({ userId: key })
@@ -117,11 +147,11 @@ describe('apiGroups', () => {
         .mockImplementationOnce((groupId: string) =>
           Promise.resolve(mockResults as any)
         );
-      const req = mockReq(testUserId);
+      const req = mockReq(testGroupId);
       const res = mockRes();
       await apiGroups.retrieveGroupUsers(req, res);
       expect(res.status).toBeCalledWith(200);
-      expect(res.send).toBeCalledWith(testUserIds);
+      expect(res.send).toBeCalledWith(testUsers);
     });
     it('should return 400 if undefined result', async () => {
       jest
@@ -129,7 +159,7 @@ describe('apiGroups', () => {
         .mockImplementationOnce((groupId: string) =>
           Promise.resolve(undefined as any)
         );
-      const req = mockReq(testUserId);
+      const req = mockReq(testGroupId);
       const res = mockRes();
       await apiGroups.retrieveGroupUsers(req, res);
       expect(res.status).toBeCalledWith(400);

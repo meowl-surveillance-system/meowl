@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import * as authServices from '../services/auth';
 import * as apiGroupsServices from '../services/apiGroups';
 
 /**
@@ -7,8 +8,16 @@ import * as apiGroupsServices from '../services/apiGroups';
  */
 export const addUserGroup = async (req: Request, res: Response) => {
   try {
-    await apiGroupsServices.addUserGroup(req.body.userId, req.body.groupId);
-    res.status(200).send('OK');
+    const userResult = await authServices.retrieveUser(req.body.username);
+    if (userResult === undefined || userResult.rows.length < 1) {
+      res.status(400).send('Unable to find user');
+    } else {
+      await apiGroupsServices.addUserGroup(
+        userResult.rows[0].user_id,
+        req.body.groupId
+      );
+      res.status(200).send('OK');
+    }
   } catch (e) {
     console.error(e);
     res.status(500).send('Server error');
@@ -34,18 +43,20 @@ export const retrieveUserGroups = async (req: Request, res: Response) => {
 };
 
 /**
- * Retrieves userIds in a group
+ * Retrieves usernames in a group
  */
 export const retrieveGroupUsers = async (req: Request, res: Response) => {
   const result = await apiGroupsServices.retrieveGroupUsers(req.params.groupId);
   if (result === undefined) {
     res.status(400).send('Can not retrieve group users');
   } else {
-    const userIds = result.rows.map(row => {
-      const key = Object.keys(row)[0];
-      return row[key];
-    });
-    res.status(200).send(userIds);
+    const usernames = await Promise.all(
+      result.rows.map(async row => {
+        const key = Object.keys(row)[0];
+        return authServices.retrieveUsernameFromUserId(row[key]);
+      })
+    );
+    res.status(200).send(usernames);
   }
 };
 
