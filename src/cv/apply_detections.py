@@ -82,8 +82,9 @@ def iterate_frames(args, detector, embedder, recognizer, le, net, ln, colors, la
             print('FACE DETECTED: ', args['camera_id'], args['stream_id'], str(frame_id), res)
             cv_producer.send_metadata(args['camera_id'], args['stream_id'], str(frame_id), res)
             frame_id += 1
-        cv2.imshow('Frame', frame)
-        key = cv2.waitKey(1) & 0xFF
+        # TODO(mli): Set the bottom two lines on only for dev mode
+        # cv2.imshow('Frame', frame)
+        # key = cv2.waitKey(1) & 0xFF
     return stream
 
 def release(stream):
