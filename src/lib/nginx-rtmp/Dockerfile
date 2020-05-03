@@ -11,10 +11,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils su
 # Set secrets
 # TODO(chc5): Abstract secrets away into Kubernetes
 ARG MEOWL_SECRET=${MEOWL_SECRET:-igotavalorantkey}
-ARG AUTH_SERVER_URL
-ENV AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.21:8081}
-ARG ENABLE_HTTPS
-ENV ENABLE_HTTPS=${ENABLE_HTTPS:-false}
+ARG AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.21:8081}
+ARG ENABLE_HTTPS=${ENABLE_HTTPS:-false}
+ENV AUTH_SERVER_URL=${AUTH_SERVER_URL} \
+  ENABLE_HTTPS=${ENABLE_HTTPS}
 
 # Installing nginx-rtmp via installation script
 COPY . .
