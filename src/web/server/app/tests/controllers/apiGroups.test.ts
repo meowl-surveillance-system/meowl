@@ -63,6 +63,26 @@ describe('apiGroups', () => {
       expect(res.send).toBeCalledWith('Unable to find user');
     });
   });
+  describe('getGroups', () => {
+    const mockReq: any = () => {}
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    it('should return 200 on successful retrieval', async () => {
+      const req = mockReq();
+      const res = mockRes();
+      const mockResults = { rows: [{group_id: 'HIT'}, {group_id: 'ME'}, {group_id: 'ON'}, {group_id: 'GROUND'}]};
+      jest.spyOn(apiGroupsServices, 'retrieveGroups').mockImplementationOnce(() => Promise.resolve(mockResults as any));
+      await apiGroups.getGroups(req, res);
+      expect(res.status).toBeCalledWith(200);
+    });
+  });
   describe('retrieveUserGroups', () => {
     const mockReq: any = (userId: string) => {
       return {

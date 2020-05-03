@@ -1,5 +1,6 @@
 import * as api from '../../services/api';
 import * as apiGroups from '../../services/apiGroups';
+import { client } from '../../utils/client';
 
 describe('apiGroups', () => {
   const testSessionID = 'yes';
@@ -158,6 +159,14 @@ describe('apiGroups', () => {
       expect(liveGroupCameraStreamIdResults2).toStrictEqual(expected);
       await api.updateCameraLive(testCameraId, false);
       await api.updateCameraLive(testCameraId2, false);
+    });
+  });
+  describe('retrieveGroups', () => {
+    it('should retrieve group ids', async () => {
+      const mockGroups: any = {rows: [{group_id: testGroupId}]};
+      jest.spyOn(client, 'execute').mockImplementationOnce(() => Promise.resolve(mockGroups as any));
+      const result = await apiGroups.retrieveGroups();
+      expect(result).toStrictEqual(mockGroups);
     });
   });
 });

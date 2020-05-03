@@ -73,3 +73,5 @@ export const DELETE_PASSWORDRESETTOKENS =
 export const SELECT_USERSID_USERNAME =
   'SELECT username FROM users_id WHERE user_id = ?';
 export const SELECT_USERSNAME_USERNAME = 'SELECT username FROM users_name';
+export const SELECT_GROUPUSERS_GROUPID =
+  'SELECT DISTINCT group_id FROM group_users';

@@ -25,6 +25,22 @@ export const addUserGroup = async (req: Request, res: Response) => {
 };
 
 /**
+ * Retrieve all groups
+ */
+export const getGroups = async (req: Request, res: Response) => {
+  try {
+    const groupsResult = await apiGroupsServices.retrieveGroups();
+    const groupIds = groupsResult.rows.map(row => {
+      return row.group_id;
+    });
+    res.status(200).json(groupIds);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json('Server error');
+  }
+};
+
+/**
  * Retrieves groups a user is in
  */
 export const retrieveUserGroups = async (req: Request, res: Response) => {

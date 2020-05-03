@@ -3,6 +3,7 @@ import {
   SELECT_USERID_GROUPID,
   INSERT_USERID_GROUPID,
   INSERT_GROUPID_USERID,
+  SELECT_GROUPUSERS_GROUPID,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -17,6 +18,16 @@ export const addUserGroup = async (userId: string, groupId: string) => {
   const params = [userId, groupId];
   await client.execute(INSERT_USERID_GROUPID, params, { prepare: true });
   await client.execute(INSERT_GROUPID_USERID, params, { prepare: true });
+};
+
+/**
+ * Retrieve all group ids
+ * @returns ResultSet - Contains rows of groupIds
+ */
+export const retrieveGroups = async () => {
+  return client.execute(SELECT_GROUPUSERS_GROUPID, [], {
+    prepare: true,
+  });
 };
 
 /**

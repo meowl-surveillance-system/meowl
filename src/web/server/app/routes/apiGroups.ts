@@ -19,6 +19,17 @@ app.post(
 );
 
 /**
+ * Retrieve all approved usernames
+ */
+app.get(
+  '/getGroups',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    apiGroupsController.getGroups(req, res);
+  }
+);
+
+/**
  * Sends a list of groupIds the logged in user is in
  */
 app.get(

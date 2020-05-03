@@ -31,7 +31,7 @@ export default class Navbar extends Component<Props, State> {
    * Renders the button on navbar when user is admin
    */
   renderIsAdmin = () => {
-    return (
+    return ([
       <RouterLink
         to="/pendingAccounts"
         style={{
@@ -41,8 +41,18 @@ export default class Navbar extends Component<Props, State> {
         }}
       >
         PendingAccounts
+      </RouterLink>,
+      <RouterLink
+        to="/userGroups"
+        style={{
+          paddingLeft: "10px",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        UserGroups
       </RouterLink>
-    );
+    ]);
   };
 
   /**
