@@ -1,4 +1,5 @@
 import * as apiGroups from '../../controllers/apiGroups';
+import * as apiServices from '../../services/api';
 import * as apiGroupsServices from '../../services/apiGroups';
 import * as authServices from '../../services/auth';
 
@@ -61,6 +62,113 @@ describe('apiGroups', () => {
       await apiGroups.addUserGroup(req, res);
       expect(res.status).toBeCalledWith(400);
       expect(res.send).toBeCalledWith('Unable to find user');
+    });
+  });
+  describe('retrieveStreamIdsGroup', () => {
+    const mockReq: any = (cameraId: string, userId: string) => {
+      return {
+        params: {
+          cameraId,
+        },
+        session: { userId },
+      };
+    };
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        send: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.send = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    const testCameraId = 'randomCameraId';
+    const testStreamIds = ['randomStreamId1', 'randomStreamId2'];
+    it('should return testStreamIds list if owns', async () => {
+      jest
+        .spyOn(apiServices, 'verifyUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+      jest
+        .spyOn(apiGroupsServices, 'verifyUserCameraGroup')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+      const mockResults = {
+        rows: [{ streamId: testStreamIds[0] }, { streamId: testStreamIds[1] }],
+      };
+      jest
+        .spyOn(apiServices, 'retrieveStreamIds')
+        .mockImplementationOnce((cameraId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testCameraId, testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(testStreamIds);
+    });
+    it('should return testStreamIds list if in same group', async () => {
+      jest
+        .spyOn(apiServices, 'verifyUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(false)
+        );
+      jest
+        .spyOn(apiGroupsServices, 'verifyUserCameraGroup')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+      const mockResults = {
+        rows: [{ streamId: testStreamIds[0] }, { streamId: testStreamIds[1] }],
+      };
+      jest
+        .spyOn(apiServices, 'retrieveStreamIds')
+        .mockImplementationOnce((cameraId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testCameraId, testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(testStreamIds);
+    });
+    it('should return 400 status if user can not view', async () => {
+      jest
+        .spyOn(apiServices, 'verifyUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(false)
+        );
+      const req = mockReq(testCameraId, testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Cant view this camera');
+    });
+    it('should return 400 status if retrieveStreamIds service call returns undefined', async () => {
+      jest
+        .spyOn(apiServices, 'verifyUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+      jest
+        .spyOn(apiGroupsServices, 'verifyUserCameraGroup')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(true)
+        );
+      jest
+        .spyOn(apiServices, 'retrieveStreamIds')
+        .mockImplementationOnce((cameraId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      const req = mockReq(testCameraId, testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Invalid cameraId');
     });
   });
   describe('getGroups', () => {

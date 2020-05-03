@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import * as authServices from '../services/auth';
 import * as apiGroupsServices from '../services/apiGroups';
+import * as apiServices from '../services/api';
 
 /**
  * Adds a user to a group
@@ -21,6 +22,36 @@ export const addUserGroup = async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     res.status(500).send('Server error');
+  }
+};
+
+/**
+ * Sends a list of streamIds for a cameraId if the user owns the camera or is in its group
+ */
+export const retrieveStreamIdsGroups = async (req: Request, res: Response) => {
+  const isOwner = await apiServices.verifyUserCamera(
+    req.session!.userId,
+    req.params.cameraId
+  );
+  const isInGroup = await apiGroupsServices.verifyUserCameraGroup(
+    req.session!.userId,
+    req.params.cameraId
+  );
+  if (isOwner || isInGroup) {
+    const cameraId = req.params.cameraId;
+    const result = await apiServices.retrieveStreamIds(cameraId);
+    if (result === undefined) {
+      res.status(400).send('Invalid cameraId');
+    } else {
+      const streamIds = result.rows.map(row => {
+        const key = Object.keys(row)[0];
+        return row[key];
+      });
+      console.log(streamIds);
+      res.status(200).json(streamIds);
+    }
+  } else {
+    res.status(400).send('Cant view this camera');
   }
 };
 

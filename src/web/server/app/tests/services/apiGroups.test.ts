@@ -98,6 +98,17 @@ describe('apiGroups', () => {
       expect(allGroupsCamerasResult).toEqual(
         expect.arrayContaining([testCameraId, testCameraId2])
       );
+      // users should be able to view each other's cameras in same group
+      const canViewGroupCamera = await apiGroups.verifyUserCameraGroup(
+        testUserId,
+        testCameraId2,
+      );
+      expect(canViewGroupCamera).toBe(true);
+      const canViewGroupCamera2 = await apiGroups.verifyUserCameraGroup(
+        testUserId2,
+        testCameraId,
+      );
+      expect(canViewGroupCamera2).toBe(true);
     });
     it('should be able to store and retrieve users group live camera stream ids', async () => {
       await apiGroups.addUserGroup(testUserId, testGroupId);

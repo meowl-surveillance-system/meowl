@@ -19,6 +19,17 @@ app.post(
 );
 
 /**
+ * Sends the streamIds specified by cameraId if logged in user owns cameraId
+ */
+app.get(
+  '/getStreamIdsGroups/:cameraId',
+  isLoggedIn,
+  async (req: express.Request, res: express.Response) => {
+    apiGroupsController.retrieveStreamIdsGroups(req, res);
+  }
+);
+
+/**
  * Retrieve all approved usernames
  */
 app.get(

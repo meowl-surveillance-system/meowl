@@ -21,6 +21,25 @@ export const addUserGroup = async (userId: string, groupId: string) => {
 };
 
 /**
+ * Verifies if userId can view cameraId based on group
+ * @param cameraId - The cameraId
+ * @param userId - The userId that wishes to view camera
+ * @returns boolean - True is user can view camera
+ */
+export const verifyUserCameraGroup = async (
+  userId: string,
+  cameraId: string
+) => {
+  const camerasResult = await retrieveUserGroupCameras(userId);
+  if (camerasResult === undefined || camerasResult.length === 0) {
+    return undefined;
+  }
+  return camerasResult.some(cameraIdElement => {
+    return cameraIdElement === cameraId;
+  });
+};
+
+/**
  * Retrieve all group ids
  * @returns ResultSet - Contains rows of groupIds
  */
