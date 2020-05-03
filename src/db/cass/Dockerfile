@@ -8,7 +8,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # Install required packages
 RUN apt-get update -y && apt-get install --no-install-recommends -y sudo wget apt-utils
 
-# Sets environment variables on the server
+# Retrieve stunnel configs from build-time arguments
 ARG AUTH_SERVER_URL
 ARG CERT_FILE_ADDRESS
 ARG NGINX_RTMP_IP
@@ -27,7 +27,7 @@ COPY . .
 RUN rm -rf ./venv; pip3 install -r requirements.txt
 RUN echo ${CASSANDRA_CLUSTER_IPS}
 
-# Retrieve admin credentials from build-time variables
+# Retrieve admin credentials from build-time arguments
 ARG CASSANDRA_CLUSTER_IPS
 ARG CASSANDRA_CLUSTER_PORT
 ARG ADMIN_USERNAME
