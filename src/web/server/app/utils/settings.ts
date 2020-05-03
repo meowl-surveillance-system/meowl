@@ -23,10 +23,10 @@ export const SESSION_SECRET: string =
   process.env.SESSION_SECRET || 'likeasomebooody';
 
 export const NGINX_HLS_SERVER_IP: string =
-  process.env.REACT_APP_NGINX_HLS_SERVER_IP || '127.0.0.1';
+  process.env.NGINX_HLS_SERVER_IP || '127.0.0.1';
 
 export const NGINX_HLS_SERVER_PORT: string =
-  process.env.REACT_APP_NGINX_HLS_SERVER_PORT || '8080';
+  process.env.NGINX_HLS_SERVER_PORT || '8080';
 
 // TODO: Create HTTPS for web server
 export const ENABLE_HTTPS = false;
