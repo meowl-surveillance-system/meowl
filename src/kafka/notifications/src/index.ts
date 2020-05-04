@@ -43,7 +43,7 @@ export default async function handleNotif(
     message.detections.faces.forEach((person: string) => {
       cassClient.execute(
         getBlacklisted, [person], { prepare: true },
-        async (err: any, result: any) => {
+        async (err: Error, result: cassandra.types.ResultSet) => {
           if (result.rows && result.rows.length !== 0) {
             const owner =
               await cassClient
