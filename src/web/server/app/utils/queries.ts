@@ -45,6 +45,14 @@ export const INSERT_CAMERAID_LIVE =
 export const SELECT_CAMERAID = 'SELECT DISTINCT camera_id FROM camera_streams';
 export const SELECT_LIVE_CAMERAID =
   'SELECT live FROM live_cameras WHERE camera_id = ?';
+export const SELECT_GROUPID_USERID =
+  'SELECT group_id FROM user_groups WHERE user_id = ?';
+export const SELECT_USERID_GROUPID =
+  'SELECT user_id FROM group_users WHERE group_id = ?';
+export const INSERT_USERID_GROUPID =
+  'INSERT INTO group_users (user_id, group_id) VALUES (?, ?)';
+export const INSERT_GROUPID_USERID =
+  'INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)';
 export const SELECT_NOTIFICATIONS = 'SELECT * from notif';
 export const SELECT_FRAME = 'SELECT frame FROM cv_frames WHERE frame_id = ? AND stream_id = ?';
 export const SELECT_PENDINGACCOUNTS = 'SELECT username FROM pending_accounts';
@@ -64,3 +72,6 @@ export const DELETE_PASSWORDRESETTOKENS =
   'DELETE FROM password_reset_tokens WHERE reset_token = ?';
 export const SELECT_USERSID_USERNAME =
   'SELECT username FROM users_id WHERE user_id = ?';
+export const SELECT_USERSNAME_USERNAME = 'SELECT username FROM users_name';
+export const SELECT_GROUPUSERS_GROUPID =
+  'SELECT DISTINCT group_id FROM group_users';

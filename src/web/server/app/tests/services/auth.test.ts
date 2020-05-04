@@ -94,4 +94,12 @@ describe('auth', () => {
       expect(result).toStrictEqual(mockPendingAccounts.rows);
     });
   });
+  describe('retrieveUsernames', () => {
+    it('should retrieve account usernames', async () => {
+      const mockAccounts: any = {rows: [{username: testUser}]};
+      jest.spyOn(client, 'execute').mockImplementationOnce(() => Promise.resolve(mockAccounts as any));
+      const result = await auth.retrieveUsernames();
+      expect(result).toStrictEqual(mockAccounts.rows);
+    });
+  });
 });
