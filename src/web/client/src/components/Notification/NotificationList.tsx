@@ -12,6 +12,7 @@ interface Notif {
   type: string;
   name: string;
   frame_id: string;
+  stream_id: string;
 }
 
 /* 
@@ -37,7 +38,7 @@ export default class NotificationList extends Component<Props, State> {
             name: "",
             img: "",
           };
-          fetch(`/notif/retrieveFrame/${element.frame_id}`)
+          fetch(`/notif/retrieveFrame/${element.frame_id}/${element.stream_id}`)
             .then((res) => res.json())
             .then((result) => {
               tmp.date = element.date;

@@ -11,7 +11,7 @@ app.get(
 );
 
 app.get(
-  '/retrieveFrame/:frame_id',
+  '/retrieveFrame/:frame_id/:stream_id',
   async (req: express.Request, res: express.Response) => {
     notifController.retrieveFrame(req, res);
   }

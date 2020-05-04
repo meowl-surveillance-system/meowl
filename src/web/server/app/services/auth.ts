@@ -22,6 +22,7 @@ import {
   UPDATE_USERSNAME_PASSWORD,
   DELETE_PASSWORDRESETTOKENS,
   SELECT_USERSID_USERNAME,
+  SELECT_USERSNAME_USERNAME,
 } from '../utils/queries';
 
 import { client } from '../utils/client';
@@ -171,6 +172,17 @@ export const removePendingAccount = async (username: string) => {
  */
 export const retrievePendingAccounts = async () => {
   const result = await client.execute(SELECT_PENDINGACCOUNTS, [], {
+    prepare: true,
+  });
+  return result.rows;
+};
+
+/**
+ * Retrieve all approved usernames
+ * @returns Array - A list of all the approved usernames
+ */
+export const retrieveUsernames = async () => {
+  const result = await client.execute(SELECT_USERSNAME_USERNAME, [], {
     prepare: true,
   });
   return result.rows;

@@ -98,6 +98,17 @@ app.get(
 );
 
 /**
+ * Retrieve all approved usernames
+ */
+app.get(
+  '/getUsernames',
+  [isLoggedIn, isAdmin],
+  (req: express.Request, res: express.Response) => {
+    authController.getUsernames(req, res);
+  }
+);
+
+/**
  * Begin the password reset process
  */
 app.post(
