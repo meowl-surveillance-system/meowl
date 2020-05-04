@@ -63,6 +63,13 @@ describe('apiGroups', () => {
       expect(res.status).toBeCalledWith(400);
       expect(res.send).toBeCalledWith('Unable to find user');
     });
+    it('should return 400 status if invalid user', async () => {
+      const req = mockReq(testGroupId, '');
+      const res = mockRes();
+      await apiGroups.addUserGroup(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Not valid username');
+    });
   });
   describe('retrieveStreamIdsGroup', () => {
     const mockReq: any = (cameraId: string, userId: string) => {
@@ -136,6 +143,13 @@ describe('apiGroups', () => {
       expect(res.status).toBeCalledWith(200);
       expect(res.json).toBeCalledWith(testStreamIds);
     });
+    it('should return 400 status if invalid cameraId', async () => {
+      const req = mockReq('', testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Not valid cameraId');
+    });
     it('should return 400 status if user can not view', async () => {
       jest
         .spyOn(apiServices, 'verifyUserCamera')
@@ -168,7 +182,7 @@ describe('apiGroups', () => {
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(400);
-      expect(res.send).toBeCalledWith('Invalid cameraId');
+      expect(res.json).toBeCalledWith([]);
     });
   });
   describe('getGroups', () => {

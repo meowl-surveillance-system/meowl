@@ -43,7 +43,7 @@ export const verifyUserCameraGroup = async (
  * Retrieve all group ids
  * @returns ResultSet - Contains rows of groupIds
  */
-export const retrieveGroups = async () => {
+export const retrieveGroups = () => {
   return client.execute(SELECT_GROUPUSERS_GROUPID, [], {
     prepare: true,
   });
@@ -54,7 +54,7 @@ export const retrieveGroups = async () => {
  * @param userId - The user id of the user
  * @returns ResultSet - Contains rows of groupIds belonging to userId
  */
-export const retrieveUserGroups = async (userId: string) => {
+export const retrieveUserGroups = (userId: string) => {
   return client.execute(SELECT_GROUPID_USERID, [userId], {
     prepare: true,
   });
@@ -65,7 +65,7 @@ export const retrieveUserGroups = async (userId: string) => {
  * @param groupId - The group id of the group
  * @returns ResultSet - Contains rows of userIds belonging to groupId
  */
-export const retrieveGroupUsers = async (groupId: string) => {
+export const retrieveGroupUsers = (groupId: string) => {
   return client.execute(SELECT_USERID_GROUPID, [groupId], {
     prepare: true,
   });

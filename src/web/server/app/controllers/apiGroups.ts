@@ -9,15 +9,20 @@ import * as apiServices from '../services/api';
  */
 export const addUserGroup = async (req: Request, res: Response) => {
   try {
-    const userResult = await authServices.retrieveUser(req.body.username);
-    if (userResult === undefined || userResult.rows.length < 1) {
-      res.status(400).send('Unable to find user');
+    // checks if null/empty
+    if (!req.body.username) {
+      res.status(400).send('Not valid username');
     } else {
-      await apiGroupsServices.addUserGroup(
-        userResult.rows[0].user_id,
-        req.body.groupId
-      );
-      res.status(200).send('OK');
+      const userResult = await authServices.retrieveUser(req.body.username);
+      if (userResult === undefined || userResult.rows.length < 1) {
+        res.status(400).send('Unable to find user');
+      } else {
+        await apiGroupsServices.addUserGroup(
+          userResult.rows[0].user_id,
+          req.body.groupId
+        );
+        res.status(200).send('OK');
+      }
     }
   } catch (e) {
     console.error(e);
@@ -29,29 +34,34 @@ export const addUserGroup = async (req: Request, res: Response) => {
  * Sends a list of streamIds for a cameraId if the user owns the camera or is in its group
  */
 export const retrieveStreamIdsGroups = async (req: Request, res: Response) => {
-  const isOwner = await apiServices.verifyUserCamera(
-    req.session!.userId,
-    req.params.cameraId
-  );
-  const isInGroup = await apiGroupsServices.verifyUserCameraGroup(
-    req.session!.userId,
-    req.params.cameraId
-  );
-  if (isOwner || isInGroup) {
-    const cameraId = req.params.cameraId;
-    const result = await apiServices.retrieveStreamIds(cameraId);
-    if (result === undefined) {
-      res.status(400).send('Invalid cameraId');
-    } else {
-      const streamIds = result.rows.map(row => {
-        const key = Object.keys(row)[0];
-        return row[key];
-      });
-      console.log(streamIds);
-      res.status(200).json(streamIds);
-    }
+  // checks if null/empty
+  if (!req.params.cameraId) {
+    res.status(400).send('Not valid cameraId');
   } else {
-    res.status(400).send('Cant view this camera');
+    const isOwner = await apiServices.verifyUserCamera(
+      req.session!.userId,
+      req.params.cameraId
+    );
+    const isInGroup = await apiGroupsServices.verifyUserCameraGroup(
+      req.session!.userId,
+      req.params.cameraId
+    );
+    if (isOwner || isInGroup) {
+      const cameraId = req.params.cameraId;
+      const result = await apiServices.retrieveStreamIds(cameraId);
+      if (result === undefined) {
+        res.status(400).json([]);
+      } else {
+        const streamIds = result.rows.map(row => {
+          const key = Object.keys(row)[0];
+          return row[key];
+        });
+        console.log(streamIds);
+        res.status(200).json(streamIds);
+      }
+    } else {
+      res.status(400).send('Cant view this camera');
+    }
   }
 };
 
