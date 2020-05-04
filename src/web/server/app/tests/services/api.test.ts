@@ -71,6 +71,8 @@ describe('api', () => {
       );
       expected[testCameraId2] = testStreamId2;
       expect(liveCameraStreamIdResults2).toStrictEqual(expected);
+      await api.updateCameraLive(testCameraId, false);
+      await api.updateCameraLive(testCameraId2, false);
     });
   });
 });

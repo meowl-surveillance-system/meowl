@@ -3,5 +3,11 @@
 exports[`NotificationList component renders NotificationList component 1`] = `
 <div
   class="MuiContainer-root MuiContainer-maxWidthLg"
-/>
+>
+  <p
+    class="MuiTypography-root MuiTypography-body1"
+  >
+    Notifications
+  </p>
+</div>
 `;

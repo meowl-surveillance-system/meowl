@@ -317,6 +317,26 @@ describe('auth', () => {
       expect(res.status).toBeCalledWith(200);
     });
   });
+  describe('getUsernames', () => {
+    const mockReq: any = () => {}
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    it('should return 200 on successful retrieval', async () => {
+      const req = mockReq();
+      const res = mockRes();
+      const rows = [{username: 'KORE'}, {username: 'GA'}, {username: 'REQUIEM'}, {username: 'DA'}];
+      jest.spyOn(authServices, 'retrieveUsernames').mockImplementationOnce(() => Promise.resolve(rows as any));
+      await auth.getUsernames(req, res);
+      expect(res.status).toBeCalledWith(200);
+    });
+  });
   describe('login', () => {
     const mockReq: any = (
       sid: string,

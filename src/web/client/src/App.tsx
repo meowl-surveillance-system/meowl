@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
+import UserGroups from "./components/UserGroups/UserGroups";
 import PasswordReset from "./components/PasswordReset/PasswordReset";
 import AccountRecovery from "./components/AccountRecovery/AccountRecovery";
 
@@ -136,6 +137,14 @@ class App extends Component<Props, State> {
                 exact
                 path="/pendingAccounts"
                 component={PendingAccounts}
+                isLoggedIn={this.state.isLoggedIn}
+                isAdmin={this.state.isAdmin}
+                redirectPath="/"
+              />
+              <AdminRoute
+                exact
+                path="/userGroups"
+                component={UserGroups}
                 isLoggedIn={this.state.isLoggedIn}
                 isAdmin={this.state.isAdmin}
                 redirectPath="/"

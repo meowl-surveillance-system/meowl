@@ -167,6 +167,22 @@ export const getPendingAccounts = async (req: Request, res: Response) => {
 };
 
 /**
+ * Retrieve all approved account usernames
+ */
+export const getUsernames = async (req: Request, res: Response) => {
+  try {
+    const approvedAccounts = await authServices.retrieveUsernames();
+    const usernames = approvedAccounts.map(row => {
+      return row.username;
+    });
+    res.status(200).json(usernames);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json('Server error');
+  }
+};
+
+/**
  * Save the reset token along with the userId in table.
  * Then send email to the user along with the token.
  */
