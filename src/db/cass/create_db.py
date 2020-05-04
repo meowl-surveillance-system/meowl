@@ -40,6 +40,12 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS users_name (use
 # Pending accounts table to be approved or rejected by an admin
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS pending_accounts (user_id text, email text, username text, password text, PRIMARY KEY(username))')
 
+# User Groups table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS user_groups (user_id text, group_id text, PRIMARY KEY (user_id, group_id))')
+
+# Group Users table
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS group_users (group_id text, user_id text, PRIMARY KEY (group_id, user_id))')
+
 # Password reset token table
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS password_reset_tokens (reset_token text, user_id text, PRIMARY KEY(reset_token))')
 
