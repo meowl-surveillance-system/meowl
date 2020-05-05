@@ -12,8 +12,7 @@ app.put(
   '/upload/trainingData',
   isLoggedIn,
   async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const username = await retrieveUsernameFromUserId(req.session!.userId);
-    res.locals.username = username;
+    res.locals.username = await retrieveUsernameFromUserId(req.session!.userId);
     return next();
   },
   createProxyMiddleware({
