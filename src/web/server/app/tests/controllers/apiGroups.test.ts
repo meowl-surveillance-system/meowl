@@ -395,6 +395,54 @@ describe('apiGroups', () => {
       expect(res.send).toBeCalledWith('Unable to retrieve users group cameras');
     });
   });
+  describe('retrieveUserGroupCamerasDict', () => {
+    const mockReq: any = (userId: string) => {
+      return {
+        session: { userId },
+      };
+    };
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        send: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.send = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    const testCameraIds = ['randomCameraId1', 'randomCameraId2'];
+    const testGroupIds = ['randomGroupId1', 'randomGroupId2'];
+    it('should return status 200 and cameraIds', async () => {
+      const mockResults = {} as Record<string, string[]>;
+      testGroupIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testCameraIds)
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveUserGroupCamerasDict')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveUserGroupCamerasDict(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+    it('should return 400 if undefined result', async () => {
+      jest
+        .spyOn(apiGroupsServices, 'retrieveUserGroupCamerasDict')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      const req = mockReq(testUserId);
+      const res = mockRes();
+      await apiGroups.retrieveUserGroupCamerasDict(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Unable to retrieve users group cameras');
+    });
+  });
   describe('retrieveLiveGroupCameraStreamIds', () => {
     const mockReq: any = (userId: string) => {
       return {

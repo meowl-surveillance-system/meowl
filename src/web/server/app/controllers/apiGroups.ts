@@ -134,6 +134,22 @@ export const retrieveGroupCameras = async (req: Request, res: Response) => {
 };
 
 /**
+ * Sends a dictionary of groupId : cameraId[] for all cameraIds belonging to users in a group
+ */
+export const retrieveUserGroupCamerasDict = async (
+  req: Request,
+  res: Response
+) => {
+  const result = await apiGroupsServices.retrieveUserGroupCamerasDict(
+    req.session!.userId
+  );
+  if (result === undefined) {
+    res.status(400).send('Unable to retrieve users group cameras');
+  } else {
+    res.status(200).json(result);
+  }
+};
+/**
  * Retrieves all cameraIds in groups a user is in
  */
 export const retrieveUserGroupCameras = async (req: Request, res: Response) => {
