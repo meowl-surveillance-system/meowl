@@ -12,7 +12,11 @@ export const addUserGroup = async (req: Request, res: Response) => {
     // checks if null/empty
     if (!req.body.username) {
       res.status(400).send('Not valid username');
-    } else {
+    } 
+    if(!req.body.groupId) {
+      res.status(400).send('Not valid groupId');
+    }
+    else {
       const userResult = await authServices.retrieveUser(req.body.username);
       if (userResult === undefined || userResult.rows.length < 1) {
         res.status(400).send('Unable to find user');
@@ -21,7 +25,7 @@ export const addUserGroup = async (req: Request, res: Response) => {
           userResult.rows[0].user_id,
           req.body.groupId
         );
-        res.status(200).send('OK');
+        res.status(200).send('Successfully added user to group');
       }
     }
   } catch (e) {
