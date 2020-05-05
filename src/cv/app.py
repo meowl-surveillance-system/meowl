@@ -71,7 +71,7 @@ def process_detections():
 def upload_training_data():
     """ Uploads data to train the models """
     files = dict(request.files)
-    user_id = request.headers.get('User-Id')
+    user_name = request.headers.get('User-Name')
     for key in files:
         file = files[key]
         file_name = secure_filename(file.filename)
@@ -79,7 +79,7 @@ def upload_training_data():
         print(file_name, file_path)
         file.save(file_path)
         print("Extracting resources of", file_name)
-        extract_resources(file_path, user_id)
+        extract_resources(file_path, user_name)
     print("Retrieve dataset from database...")
     retrieve_dataset_res(0)
     print("Extracting embeddings...")
