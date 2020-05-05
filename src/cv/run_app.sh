@@ -1,6 +1,7 @@
 #!/bin/bash
 source main.env
 
+# Setting language to UTF-8
 export LC_ALL=C.UTF-8
 
 export CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
@@ -18,9 +19,12 @@ export KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-192.168.1.10:9093}
 
 export FLASK_APP=${FLASK_APP:-${APP_NAME}}
 
+# Run stunnel
+sudo stunnel /etc/stunnel/stunnel.conf
+
 # Open the Python virtual environment if it exists
 [[ -d "./venv" ]] && source venv/bin/activate
 
 # Run Flask
-# Runs on port 5000 by default
+# Runs on port 9000 by default
 flask run --host=0.0.0.0 --port=9000

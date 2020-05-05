@@ -3,32 +3,32 @@ FROM ubuntu:18.04
 
 WORKDIR /kafka
 
-# Setting environment variables 
-ENV EMAIL_ADDRESS=${EMAIL_ADDRESS:-meowl@mail.com}
-ENV EMAIL_PASSWORD=${EMAIL_PASSWORD:-password}
-ENV CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
-ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-4043}
-
 # Install required packages
-RUN apt update -y
-RUN apt install -y sudo
-RUN apt install -y curl
+RUN apt update -y && apt install -y sudo curl gnupg
+
+# Installing node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
+RUN apt-get update -y && apt install -y nodejs
 
 # Install Kafka via install script
 COPY install install
 RUN sudo ./install 
 
-# Installing node
-RUN apt-get install -y curl gnupg
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
-RUN apt-get update -y
-RUN apt install -y nodejs
-RUN node --version
-RUN npm --version
-
 # Install notifications and runs the script in the background
 COPY notifications notifications
-RUN cd notifications && npm install --production
+RUN npm install --prefix ./notifications
+
+# Setting environment variables 
+ARG EMAIL_ADDRESS
+ARG EMAIL_PASSWORD
+ARG CASSANDRA_CLUSTER_IPS
+ARG CASSANDRA_CLUSTER_PORT
+ARG NOTIF_IMG_PATH
+ENV EMAIL_ADDRESS=${EMAIL_ADDRESS} \
+  EMAIL_PASSWORD=${EMAIL_PASSWORD} \ 
+  CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS} \
+  CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT} \
+  NOTIF_IMG_PATH=${NOTIF_IMG_PATH}
 
 # Copy the start script over
 COPY start start

@@ -22,7 +22,7 @@ def hello_world():
     """ Returns Hello World as a String """
     return 'Hello World'
 
-@app.route('/test_ssl/')
+@app.route('/test_ssl')
 def display_vid():
     """ Displays frames from VideoCapture """
     cap = cv2.VideoCapture(request.args.get('input'))
@@ -44,7 +44,7 @@ def display_vid():
 
     print("Finished Displaying Video")
 
-@app.route('/apply_detections/')
+@app.route('/apply_detections')
 def process_detections():
     """ Applies object detection on an input """
     rtmp_connection_string = "rtmp://{0}:{1}/view/{2}".format(
@@ -67,7 +67,7 @@ def process_detections():
     apply_detections.process(args)
     return "Finished Processing detections"
 
-@app.route('/upload_training_data/', methods=['PUT'])
+@app.route('/upload_training_data', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
     files = dict(request.files)
@@ -76,7 +76,6 @@ def upload_training_data():
         file = files[key]
         file_name = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-        print(file_name, file_path)
         file.save(file_path)
         print("Extracting resources of", file_name)
         extract_resources(file_path, user_id)
