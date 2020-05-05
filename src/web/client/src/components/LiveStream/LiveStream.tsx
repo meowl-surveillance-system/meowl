@@ -39,7 +39,7 @@ export default class LiveStream extends Component<Props, State> {
    */
   async componentDidMount() {
     try {
-      const res = await fetch(`/api/getLiveCameraStreamIds`);
+      const res = await fetch(`/api/getLiveGroupCameraStreamIds`);
       const collection = await res.json();
       this.setState({ liveCameraStreamIds: collection });
     } catch (error) {

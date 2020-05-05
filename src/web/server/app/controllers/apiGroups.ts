@@ -12,11 +12,9 @@ export const addUserGroup = async (req: Request, res: Response) => {
     // checks if null/empty
     if (!req.body.username) {
       res.status(400).send('Not valid username');
-    } 
-    if(!req.body.groupId) {
+    } else if (!req.body.groupId) {
       res.status(400).send('Not valid groupId');
-    }
-    else {
+    } else {
       const userResult = await authServices.retrieveUser(req.body.username);
       if (userResult === undefined || userResult.rows.length < 1) {
         res.status(400).send('Unable to find user');
@@ -156,12 +154,20 @@ export const retrieveLiveGroupCameraStreamIds = async (
   req: Request,
   res: Response
 ) => {
-  const result = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
+  const groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
     req.session!.userId
   );
-  if (result === undefined) {
-    res.status(400).send('Unable to retrieve camera streams');
+  const ownResult = await apiServices.retrieveLiveCameraStreamIds(
+    req.session!.userId
+  );
+  if (groupResult === undefined) {
+    if (ownResult === undefined) {
+      res.status(400).send('Unable to retrieve camera streams');
+    } else {
+      res.status(200).json(ownResult);
+    }
   } else {
-    res.status(200).json(result);
+    Object.assign(groupResult, ownResult);
+    res.status(200).json(groupResult);
   }
 };
