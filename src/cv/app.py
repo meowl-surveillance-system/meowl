@@ -18,6 +18,7 @@ import utils
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER_PATH
 training_mutex = Lock()
+training_vid_count = 0
 
 @app.route('/')
 def hello_world():
@@ -72,6 +73,7 @@ def process_detections():
 @app.route('/upload_training_data', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
+    training_vid_count += 1
     training_mutex.acquire()
     try:
         files = dict(request.files)
@@ -84,16 +86,18 @@ def upload_training_data():
             file.save(file_path)
             print("Extracting resources of", file_name)
             extract_resources(file_path, user_id)
-        print("Retrieve dataset from database...")
-        retrieve_dataset_res(0)
-        print("Extracting embeddings...")
-        extract_embeddings()
-        print("Training face recognition...")
-        train_face_rec()
-        print("Done.")
-        return 'Successfully processed the training data'
+        if training_vid_count <= 1:
+            print("Retrieve dataset from database...")
+            retrieve_dataset_res(0)
+            print("Extracting embeddings...")
+            extract_embeddings()
+            print("Training face recognition...")
+            train_face_rec()
+            print("Done.")
     finally:
+        training_vid_count -= 1
         training_mutex.release()
+        return 'Successfully processed the training data'
 
 # TODO(mli): Organize these methods below in another file
 # and make a structured project directory.
