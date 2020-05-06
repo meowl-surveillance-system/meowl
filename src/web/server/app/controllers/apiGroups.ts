@@ -175,9 +175,14 @@ export const retrieveLiveGroupCameraStreamIds = async (
   req: Request,
   res: Response
 ) => {
-  const groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
-    req.session!.userId
-  );
+  let groupResult;
+  if (req.session!.admin) {
+    groupResult = await apiGroupsServices.retrieveAllLiveGroupCameraStreamIds();
+  } else {
+    groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
+      req.session!.userId
+    );
+  }
   const ownResult = await apiServices.retrieveLiveCameraStreamIds(
     req.session!.userId
   );
