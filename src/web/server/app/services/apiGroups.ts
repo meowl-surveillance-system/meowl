@@ -148,6 +148,29 @@ export const retrieveUserGroupCamerasDict = async (userId: string) => {
 };
 
 /**
+ * Retrieve cameraIds from database from all groups
+ * @returns Record<string, Array<string>> - Contains groupId : cameraIds[] in all groups
+ */
+export const retrieveAllGroupCamerasDict = async () => {
+  const groups = await retrieveGroups();
+  if (groups === undefined || groups.rows.length === 0) {
+    return undefined;
+  }
+  const cameras = groups.rows.reduce(
+    async (oldCollection: Promise<Record<string, string[]>>, row: any) => {
+      const collection = await oldCollection;
+      const groupCameras = await retrieveGroupCameras(row['group_id']);
+      if (groupCameras !== undefined) {
+        collection[row['group_id']] = groupCameras;
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve({}))
+  );
+  return cameras;
+};
+
+/**
  * Retrieve all streamId from camera if live belonging to users groups
  * @param userId - userId of user
  * @returns Record<string, string> - Contains mapping of streamId belonging to cameraId, undefined if user has no cameras or no cameras in group

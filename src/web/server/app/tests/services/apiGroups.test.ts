@@ -107,6 +107,10 @@ describe('apiGroups', () => {
       expect(allGroupsCamerasDictResult).toEqual(
         expect.objectContaining(dictExpected)
       );
+      const allGroupsCamerasDictResult2 = await apiGroups.retrieveAllGroupCamerasDict();
+      expect(allGroupsCamerasDictResult2).toEqual(
+        expect.objectContaining(dictExpected)
+      );
       // users should be able to view each other's cameras in same group
       const canViewGroupCamera = await apiGroups.verifyUserCameraGroup(
         testUserId,
