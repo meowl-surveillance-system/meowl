@@ -1,5 +1,4 @@
 #!/bin/bash
-source main.env
 
 # Setting language to UTF-8
 export LC_ALL=C.UTF-8
@@ -12,8 +11,8 @@ export AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.10:8081}
 export STUNNEL_IP=${STUNNEL_IP:-127.0.0.1}
 export STUNNEL_PORT=${STUNNEL_PORT:-1234}
 
-export ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
-export ADMIN_PASSWORD=${ADMIN_PASSWORD:-password}
+export ADMIN_USERNAME=${ADMIN_USERNAME:-hello}
+export ADMIN_PASSWORD=${ADMIN_PASSWORD:-world}
 
 export KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-192.168.1.10:9093}
 
