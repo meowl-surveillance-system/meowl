@@ -15,6 +15,7 @@ import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
 import UserGroups from "./components/UserGroups/UserGroups";
 import PasswordReset from "./components/PasswordReset/PasswordReset";
 import AccountRecovery from "./components/AccountRecovery/AccountRecovery";
+import GroupPlayback from "./components/GroupPlayback/GroupPlayback";
 
 interface Props { }
 interface State {
@@ -95,6 +96,13 @@ class App extends Component<Props, State> {
                 exact
                 path="/streams"
                 component={Playback}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
+              />
+              <ProtectedRoute
+                exact
+                path="/groupStreams"
+                component={GroupPlayback}
                 isLoggedIn={this.state.isLoggedIn}
                 redirectPath="/"
               />
