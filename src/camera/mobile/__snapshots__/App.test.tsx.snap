@@ -144,7 +144,7 @@ exports[`App Component renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value="rtmp://35.184.248.56:1935"
+          value="rtmp://127.0.0.1:1234"
         />
       </View>
     </View>
@@ -923,7 +923,7 @@ exports[`App Component renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value="http://35.202.200.155:3000"
+          value="http://192.168.1.0:8081"
         />
       </View>
     </View>
@@ -1012,7 +1012,7 @@ exports[`App Component renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value="wack"
+          value=""
         />
       </View>
     </View>
@@ -1102,7 +1102,7 @@ exports[`App Component renders correctly 1`] = `
           }
           testID="RNE__Input__text-input"
           underlineColorAndroid="transparent"
-          value="boi"
+          value=""
         />
       </View>
     </View>

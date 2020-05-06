@@ -4,7 +4,7 @@ import { Text, Input } from 'react-native-elements';
 import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-community/async-storage';
 import CookieManager from '@react-native-community/cookies';
-import { login } from './../../utils/utils';
+import { login, getItemFromStore } from './../../utils/utils';
 
 /**
  * A form for logging in and getting rtmp link
@@ -23,8 +23,8 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   constructor(props: LoginFormProps) {
     super(props);
     this.state = {
-      username: 'wack',
-      password: 'boi',
+      username: '',
+      password: '',
       cameraId: '',
     };
   }
@@ -33,14 +33,10 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
    * Creates a new camera ID for this app if it doesn't exists
    */
   async componentDidMount() {
-    const cameraId: string | null = await AsyncStorage.getItem('meowlCameraId');
-    if (cameraId) {
-      this.setState({ cameraId });
-    } else {
-      const newCameraId: string = uuidv4();
-      this.setState({ cameraId: newCameraId });
-      await AsyncStorage.setItem('meowlCameraId', newCameraId);
-    }
+    const cameraId: string = await getItemFromStore('meowlCameraId', uuidv4());
+    const username: string = await getItemFromStore('meowlUsername');
+    AsyncStorage.setItem('meowlCameraId', cameraId);
+    this.setState({ cameraId, username });
     await CookieManager.clearAll();
   }
 
@@ -103,6 +99,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
   async onSubmit() {
     const loginResponse: Response | null = await this.handleLogin();
     if (loginResponse) {
+      AsyncStorage.setItem('meowlUsername', this.state.username);
       const rtmpCredentials = await this.retrieveRtmpCredentials();
       if (rtmpCredentials) {
         this.updateProps({

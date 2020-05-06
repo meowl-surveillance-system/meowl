@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 /**
  * Makes a request to log out from the server
  * @param serverUrl - Server URL that is hosting the requests
@@ -5,8 +6,8 @@
  * @returns the response to log out from the server
  */
 export async function logout(
-    serverUrl: string,
-    logoutEndpoint = '/auth/logout',
+  serverUrl: string,
+  logoutEndpoint = '/auth/logout',
 ) {
   const logoutUrl: string = serverUrl + logoutEndpoint;
   console.log(logoutUrl);
@@ -33,9 +34,9 @@ export async function logout(
  * @returns the response to log into the server
  */
 export async function login(
-    credentials: object,
-    serverUrl: string,
-    loginEndpoint = '/auth/login',
+  credentials: object,
+  serverUrl: string,
+  loginEndpoint = '/auth/login',
 ) {
   const loginUrl = serverUrl + loginEndpoint;
   try {
@@ -52,4 +53,22 @@ export async function login(
   } catch (err) {
     return null;
   }
+}
+
+/**
+ * Get item from AsyncStorage if found else return value from args
+ * 
+ * @param key - Key to retrieve value from AsyncStorage
+ * @param value - value to be used if value not found in AsyncStorage
+ * @returns value
+ */
+export async function getItemFromStore(
+  key: string,
+  value: string = ''
+): Promise<string> {
+  const valueFromStore: string | null = await AsyncStorage.getItem(key);
+  if (valueFromStore) {
+    return valueFromStore;
+  }
+  return value;
 }
