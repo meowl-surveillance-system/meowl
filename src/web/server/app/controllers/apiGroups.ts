@@ -48,7 +48,7 @@ export const retrieveStreamIdsGroups = async (req: Request, res: Response) => {
       req.session!.userId,
       req.params.cameraId
     );
-    if (isOwner || isInGroup) {
+    if (isOwner || isInGroup || req.session!.admin) {
       const cameraId = req.params.cameraId;
       const result = await apiServices.retrieveStreamIds(cameraId);
       if (result === undefined) {
