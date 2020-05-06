@@ -1,5 +1,6 @@
 from flask import Flask, request
 from werkzeug.utils import secure_filename
+from threading import Thread, Lock
 import os
 import requests
 import cv2
@@ -16,6 +17,7 @@ import utils
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER_PATH
+training_mutex = Lock()
 
 @app.route('/')
 def hello_world():
@@ -70,24 +72,28 @@ def process_detections():
 @app.route('/upload_training_data/', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
-    files = dict(request.files)
-    user_id = request.headers.get('User-Id')
-    for key in files:
-        file = files[key]
-        file_name = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-        print(file_name, file_path)
-        file.save(file_path)
-        print("Extracting resources of", file_name)
-        extract_resources(file_path, user_id)
-    print("Retrieve dataset from database...")
-    retrieve_dataset_res(0)
-    print("Extracting embeddings...")
-    extract_embeddings()
-    print("Training face recognition...")
-    train_face_rec()
-    print("Done.")
-    return 'Successfully processed the training data'
+    training_mutex.acquire()
+    try:
+        files = dict(request.files)
+        user_id = request.headers.get('User-Id')
+        for key in files:
+            file = files[key]
+            file_name = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+            print(file_name, file_path)
+            file.save(file_path)
+            print("Extracting resources of", file_name)
+            extract_resources(file_path, user_id)
+        print("Retrieve dataset from database...")
+        retrieve_dataset_res(0)
+        print("Extracting embeddings...")
+        extract_embeddings()
+        print("Training face recognition...")
+        train_face_rec()
+        print("Done.")
+        return 'Successfully processed the training data'
+    finally:
+        training_mutex.release()
 
 # TODO(mli): Organize these methods below in another file
 # and make a structured project directory.
