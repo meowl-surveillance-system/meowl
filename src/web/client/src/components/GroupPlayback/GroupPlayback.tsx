@@ -36,7 +36,7 @@ export default class GroupPlayback extends Component<Props, State> {
       .then(() => {
         Object.keys(this.state.groupIdsToCameraIdsDict).map((groupId) => {
           this.state.groupIdsToCameraIdsDict[groupId].map((cameraId) => {
-            return fetch(`/api/getStreamIds/${cameraId}`)
+            return fetch(`/api/getStreamIdsGroups/${cameraId}`)
               .then((res) => res.json())
               .then((streamIds) => this.setState({ cameraIdsDict: { ...this.state.cameraIdsDict, [cameraId]: streamIds }}))
               .catch((e) => console.error(e))
