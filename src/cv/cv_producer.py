@@ -13,6 +13,7 @@ producer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BROKER],
 
 def send_metadata(camera_id, stream_id, frame_id, detections):
     """ Sends metadata to CV_TOPIC """
+    print("SENDING METADATA THROUGH KAFKA NOW!!!!")
     data = {'camera_id': camera_id,
             'stream_id': stream_id,
             'frame_id': frame_id,
