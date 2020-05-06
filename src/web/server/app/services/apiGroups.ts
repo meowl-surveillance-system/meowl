@@ -124,6 +124,29 @@ export const retrieveUserGroupCameras = async (userId: string) => {
 };
 
 /**
+ * Retrieve cameraIds from database from all groups
+ * @returns Array<string> - Contains cameraIds in all groups
+ */
+export const retrieveAllGroupCameras = async () => {
+  const groups = await retrieveGroups();
+  if (groups === undefined || groups.rows.length === 0) {
+    return undefined;
+  }
+  const cameras = groups.rows.reduce(
+    async (oldCollection: Promise<string[]>, row: any) => {
+      const collection = await oldCollection;
+      const groupCameras = await retrieveGroupCameras(row['group_id']);
+      if (groupCameras !== undefined) {
+        collection.push(...groupCameras);
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve([]))
+  );
+  return cameras;
+};
+
+/**
  * Retrieve cameraIds from database that userId can view in all groups as a dict
  * @param userId - The user id of the user
  * @returns Record<string, Array<string>> - Contains groupId : cameraIds[] of users belonging to groups userId belongs to
@@ -148,12 +171,66 @@ export const retrieveUserGroupCamerasDict = async (userId: string) => {
 };
 
 /**
+ * Retrieve cameraIds from database from all groups
+ * @returns Record<string, Array<string>> - Contains groupId : cameraIds[] in all groups
+ */
+export const retrieveAllGroupCamerasDict = async () => {
+  const groups = await retrieveGroups();
+  if (groups === undefined || groups.rows.length === 0) {
+    return undefined;
+  }
+  const cameras = groups.rows.reduce(
+    async (oldCollection: Promise<Record<string, string[]>>, row: any) => {
+      const collection = await oldCollection;
+      const groupCameras = await retrieveGroupCameras(row['group_id']);
+      if (groupCameras !== undefined) {
+        collection[row['group_id']] = groupCameras;
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve({}))
+  );
+  return cameras;
+};
+
+/**
  * Retrieve all streamId from camera if live belonging to users groups
  * @param userId - userId of user
  * @returns Record<string, string> - Contains mapping of streamId belonging to cameraId, undefined if user has no cameras or no cameras in group
  */
 export const retrieveLiveGroupCameraStreamIds = async (userId: string) => {
   const camerasResult = await retrieveUserGroupCameras(userId);
+  if (camerasResult === undefined || camerasResult.length === 0) {
+    return undefined;
+  }
+  const liveCameras = camerasResult.reduce(
+    async (
+      oldCollection: Promise<Record<string, string>>,
+      cameraId: string
+    ) => {
+      const collection = await oldCollection;
+      const liveStreamIdResult = await apiServices.retrieveLiveStreamId(
+        cameraId
+      );
+      if (
+        liveStreamIdResult !== undefined &&
+        liveStreamIdResult.rows.length > 0
+      ) {
+        collection[cameraId] = liveStreamIdResult.rows[0]['stream_id'];
+      }
+      return collection;
+    },
+    new Promise((resolve, reject) => resolve({}))
+  );
+  return liveCameras;
+};
+
+/**
+ * Retrieve all streamId from camera if live in all groups
+ * @returns Record<string, string> - Contains mapping of streamId belonging to cameraId, undefined if no groups
+ */
+export const retrieveAllLiveGroupCameraStreamIds = async () => {
+  const camerasResult = await retrieveAllGroupCameras();
   if (camerasResult === undefined || camerasResult.length === 0) {
     return undefined;
   }

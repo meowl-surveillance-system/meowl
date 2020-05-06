@@ -140,9 +140,14 @@ export const retrieveUserGroupCamerasDict = async (
   req: Request,
   res: Response
 ) => {
-  const result = await apiGroupsServices.retrieveUserGroupCamerasDict(
-    req.session!.userId
-  );
+  let result;
+  if (req.session!.admin) {
+    result = await apiGroupsServices.retrieveAllGroupCamerasDict();
+  } else {
+    result = await apiGroupsServices.retrieveUserGroupCamerasDict(
+      req.session!.userId
+    );
+  }
   if (result === undefined) {
     res.status(400).send('Unable to retrieve users group cameras');
   } else {
@@ -170,9 +175,14 @@ export const retrieveLiveGroupCameraStreamIds = async (
   req: Request,
   res: Response
 ) => {
-  const groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
-    req.session!.userId
-  );
+  let groupResult;
+  if (req.session!.admin) {
+    groupResult = await apiGroupsServices.retrieveAllLiveGroupCameraStreamIds();
+  } else {
+    groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
+      req.session!.userId
+    );
+  }
   const ownResult = await apiServices.retrieveLiveCameraStreamIds(
     req.session!.userId
   );
