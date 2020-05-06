@@ -19,6 +19,7 @@ describe('LoginForm Component', () => {
       updateProps: updatePropsMock,
     });
   });
+
   it('renders correctly', () => {
     const container = renderer
       .create(
