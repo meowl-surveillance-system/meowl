@@ -18,7 +18,9 @@ import utils
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER_PATH
 training_mutex = Lock()
+folder_num_mutex = Lock()
 training_vid_count = 0
+folder_num = 0
 
 @app.route('/')
 def hello_world():
@@ -73,19 +75,25 @@ def process_detections():
 @app.route('/upload_training_data', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
+    global training_vid_count
+    global folder_num
     training_vid_count += 1
+    folder_num_mutex.acquire()
+    folder_num += 1
+    dir_num = folder_num
+    folder_num_mutex.release()
+    files = dict(request.files)
+    user_id = request.headers.get('User-Id')
+    for key in files:
+        file = files[key]
+        file_name = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'] + str(dir_num), file_name)
+        print(file_name, file_path)
+        file.save(file_path)
+        print("Extracting resources of", file_name)
+        extract_resources(file_path, user_id)
     training_mutex.acquire()
     try:
-        files = dict(request.files)
-        user_id = request.headers.get('User-Id')
-        for key in files:
-            file = files[key]
-            file_name = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-            print(file_name, file_path)
-            file.save(file_path)
-            print("Extracting resources of", file_name)
-            extract_resources(file_path, user_id)
         if training_vid_count <= 1:
             print("Retrieve dataset from database...")
             retrieve_dataset_res(0)
