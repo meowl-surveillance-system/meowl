@@ -53,7 +53,7 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS notif (date timestamp, type text, email text, name text, frame_id text, PRIMARY KEY(date))')
 
 # Table for Blacklist
-cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS blacklist (name text), PRIMARY KEY(name))')
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS blacklist (name text, PRIMARY KEY(name))')
 
 # Add admin credentials
 userId = str(uuid4())
