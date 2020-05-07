@@ -34,19 +34,15 @@ export default class GroupPlayback extends Component<Props, State> {
     try {
       const res: Response = await fetch(`/api/getUserGroupCamerasDict`);
       const groupIdsToCameraIdsDict: Record<string, Array<string>> = await res.json();
-      Object.keys(groupIdsToCameraIdsDict).map((groupId: string) => {
-        groupIdsToCameraIdsDict[groupId].map(async (cameraId: string) => {
+      const cameraIdsDict: Record<string, Array<string>> = {};
+      await Promise.all(Object.keys(groupIdsToCameraIdsDict).map((groupId: string) => {
+        return Promise.all(groupIdsToCameraIdsDict[groupId].map(async (cameraId: string) => {
           const res: Response = await fetch(`/api/getStreamIdsGroups/${cameraId}`);
           const streamIds: string[] = await res.json();
-          this.setState({
-            groupIdsToCameraIdsDict,
-            cameraIdsDict: {
-              ...this.state.cameraIdsDict,
-              [cameraId]: streamIds
-            }
-          });
-        });
-      });
+          cameraIdsDict[cameraId] = streamIds;
+        }));
+      }));
+      this.setState({ groupIdsToCameraIdsDict, cameraIdsDict });
     }
     catch (e) {
       console.error(e);
