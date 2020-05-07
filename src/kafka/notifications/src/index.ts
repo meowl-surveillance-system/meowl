@@ -18,9 +18,9 @@ const consumer = new kafka.Consumer(
 const getBlacklisted = 'SELECT * FROM blacklist WHERE name = ?';
 const getUserID = 'SELECT user_id FROM camera_users WHERE camera_id = ?';
 const getEmail = 'SELECT email FROM users_id WHERE user_id = ?';
-const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ?';
+const getImg = 'SELECT frame FROM cv_frames WHERE frame_id = ? AND stream_id = ?';
 const storeNotif =
-    'INSERT INTO notif (date, type, email, name, frame_id) VALUES (%s, %s, %s, %s, %s)';
+    'INSERT INTO notif (date, type, email, name, frame_id, stream_id) VALUES (?, ?, ?, ?, ?, ?)';
 
 consumer.on('message', async function(message: kafka.Message) {
   const cassClient = new cassandra.Client({
@@ -42,7 +42,7 @@ export default async function handleNotif(
     message.detections.faces.forEach((person: string) => {
       cassClient.execute(
           getBlacklisted, [person], {prepare: true},
-          async function(err, result) {
+          async function(err: any, result: any) {
             if (result.rows.length !== 0) {
               const owner =
                   await cassClient
@@ -57,7 +57,7 @@ export default async function handleNotif(
                       });
               const img =
                   await cassClient
-                      .execute(getImg, [message.frame_id], {prepare: true})
+                      .execute(getImg, [message.frame_id, message.stream_id], {prepare: true})
                       .then((result: any) => {
                         return result.rows[0].frame;
                       });
@@ -74,8 +74,8 @@ export default async function handleNotif(
               sendEmail(req);
               await cassClient.execute(
                   storeNotif,
-                  (Date.now(), req.template, userEmail, person,
-                   message.frame_id),
+                  [Date.now(), req.template, userEmail, person,
+                   message.frame_id, message.stream_id],
                   {prepare: true});
             }
           });
