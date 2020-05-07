@@ -589,9 +589,6 @@ describe('auth', () => {
       mockedAxios.get.mockImplementationOnce(() =>
         Promise.resolve({ status: 200 })
       );
-      mockedAxios.get.mockImplementationOnce(() =>
-        Promise.resolve({ status: 200 })
-      );
       const mockResults = {
         rows: [{ session: JSON.stringify({ userId: 'wrry' }) }],
       };
@@ -619,7 +616,7 @@ describe('auth', () => {
         numGetCalls-1, settings.CASSANDRA_FLASK_SERVICE_URL + 'store/' + rtmpReq.body.name
       );
       expect(mockedAxios.get).toHaveBeenNthCalledWith(
-        numGetCalls, settings.OPENCV_SERVICE_URL + 'apply_detections/' + `?camera_id=${rtmpReq.body.cameraId}&stream_id=${rtmpReq.body.name}`
+        numGetCalls, settings.OPENCV_SERVICE_URL + 'apply_detections' + `?camera_id=${rtmpReq.body.cameraId}&stream_id=${rtmpReq.body.name}`
       );
     });
     it('should return 500 on a unsuccessful rtmp saver call', async () => {
@@ -651,43 +648,6 @@ describe('auth', () => {
       const numGetCalls = mockedAxios.get.mock.calls.length;
       expect(mockedAxios.get).toHaveBeenNthCalledWith(
         numGetCalls, settings.CASSANDRA_FLASK_SERVICE_URL + 'store/' + rtmpReq.body.name
-      );
-    });
-    it('should return 500 on a unsuccessful opencv detection call', async () => {
-      mockedAxios.get.mockImplementationOnce(() =>
-        Promise.resolve({ status: 200 })
-      );
-      mockedAxios.get.mockImplementationOnce(() =>
-        Promise.resolve({ status: 400 })
-      );
-      const mockResults = {
-        rows: [{ session: JSON.stringify({ userId: 'wrry' }) }],
-      };
-      jest
-        .spyOn(authServices, 'retrieveSession')
-        .mockImplementationOnce((sessionID: string) =>
-          Promise.resolve(mockResults as any)
-        );
-      jest
-        .spyOn(apiServices, 'verifyUserCamera')
-        .mockImplementation((userId: string, cameraId: string) =>
-          Promise.resolve(true)
-        );
-      const rtmpReq = rtmpMockReq(
-        testSessionID,
-        'wrry',
-        testCameraId,
-        testStreamId
-      );
-      const rtmpRes = rtmpMockRes();
-      await auth.rtmpAuthPublishStart(rtmpReq, rtmpRes);
-      expect(rtmpRes.status).toBeCalledWith(500);
-      const numGetCalls = mockedAxios.get.mock.calls.length;
-      expect(mockedAxios.get).toHaveBeenNthCalledWith(
-        numGetCalls-1, settings.CASSANDRA_FLASK_SERVICE_URL + 'store/' + rtmpReq.body.name
-      );
-      expect(mockedAxios.get).toHaveBeenNthCalledWith(
-        numGetCalls, settings.OPENCV_SERVICE_URL + 'apply_detections/' + `?camera_id=${rtmpReq.body.cameraId}&stream_id=${rtmpReq.body.name}`
       );
     });
     it('should return 400 if userId does not own cameraId', async () => {

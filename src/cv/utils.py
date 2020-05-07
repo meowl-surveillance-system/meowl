@@ -9,7 +9,6 @@ def get_auth_RTMP_url(
   username,
   password):
   """Authenticate to loginUrl, append authorization parameters to rtmpUrl"""
-
   body = {"username": username, "password": password}
   loginResponse = requests.post(loginUrl, data=body)
   if not loginResponse.ok:

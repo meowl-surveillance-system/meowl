@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { EMAIL, EMAIL_PASSWORD, REACT_SERVER_IP } from './settings';
+import { EMAIL, EMAIL_PASSWORD, REACT_SERVER_URL } from './settings';
 
 export const sendEmail = async (recipient: string, token: string) => {
   try {
@@ -18,7 +18,7 @@ export const sendEmail = async (recipient: string, token: string) => {
       text:
         'You (or someone else) requested a password reset of a Meowl account using this email address.\n\n' +
         'If you have requested for a password reset please click on the following link to begin the password reset process:\n\n' +
-        `${REACT_SERVER_IP}/reset-password/${token}\n\n` +
+        `${REACT_SERVER_URL}/reset-password/${token}\n\n` +
         'If you did not request for a password reset, please ignore this email.',
     };
 

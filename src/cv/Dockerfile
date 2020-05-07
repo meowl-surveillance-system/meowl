@@ -2,48 +2,57 @@ FROM ubuntu:18.04
 
 WORKDIR /opencv
 
-# Sets environment variables on the server
-ARG CERT_FILE_ADDRESS=${CERT_FILE_ADDRESS:-192.168.1.10:8008/meowl_nginx.crt}
-ENV NGINX_RTMP_IP=${NGINX_RTMP_IP:-192.168.1.10}
-ENV NGINX_RTMP_PORT=${NGINX_RTMP_PORT:-8000}
-ENV CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS:-192.168.1.10}
-ENV CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT:-9043}
-ENV AUTH_SERVER_URL=${AUTH_SERVER_URL:-http://192.168.1.10:8081}
-ENV STUNNEL_IP=${STUNNEL_IP:-127.0.0.1}
-ENV STUNNEL_PORT=${STUNNEL_PORT:-1234}
-ENV FLASK_DEBUG=1
-ENV ADMIN_USERNAME=${MEOWL_USERNAME:-admin}
-ENV ADMIN_PASSWORD=${MEOWL_PASSWORD:-password}
-ENV KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-192.168.1.10:9093}
-ENV FLASK_APP=/opencv/app.py
-
 # Disable interactive console when building Docker images
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections 
 
 # Install required packages
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev
+RUN apt-get update -y && apt-get install -y --no-install-recommends apt-utils sudo wget curl libsm6 libxext6 libxrender-dev unrar ca-certificates
 
-# Copy files over 
+# Copy scripts to download large training set files over
+COPY ./retrieve_face_resources.sh ./retrieve_model.sh ./
+
+# Downloads extremely large models online
+RUN ./retrieve_face_resources.sh; ./retrieve_model.sh
+
+# Retrieve stunnel configs from build-time arguments
+ARG CERT_FILE_ADDRESS
+ARG NGINX_RTMP_IP
+ARG NGINX_RTMP_PORT
+ARG STUNNEL_IP
+ARG STUNNEL_PORT
+
+# Copy everything else over to the container
 COPY . .
 
 # Install cassandra flask server via installation script
 RUN ./install 
 
-# Download models online
-RUN ./retrieve_face_resources.sh && ./retrieve_model.sh
+# Remove Python virtual environment and install packages globally
+RUN rm -rf ./venv; pip3 install -r requirements.txt
 
-# Remove Python virtual environment as it is containerized in Docker
-RUN rm -rf ./venv 
+# Setting run-time variables from build-time variable
+ARG CASSANDRA_CLUSTER_IPS
+ARG CASSANDRA_CLUSTER_PORT
+ARG AUTH_SERVER_URL
+ARG ADMIN_USERNAME
+ARG ADMIN_PASSWORD
+ARG KAFKA_BROKER_URL
+ENV FLASK_APP=/opencv/app.py \
+  FLASK_DEBUG=1 \
+  ADMIN_USERNAME=${ADMIN_USERNAME} \ 
+  ADMIN_PASSWORD=${ADMIN_PASSWORD} \
+  AUTH_SERVER_URL=${AUTH_SERVER_URL} \
+  CASSANDRA_CLUSTER_IPS=${CASSANDRA_CLUSTER_IPS} \
+  CASSANDRA_CLUSTER_PORT=${CASSANDRA_CLUSTER_PORT} \
+  KAFKA_BROKER_URL=${KAFKA_BROKER_URL} \
+  STUNNEL_IP=${STUNNEL_IP} \
+  STUNNEL_PORT=${STUNNEL_PORT}  
 
-# Installs python packages globally
-RUN pip3 install -r requirements.txt
-
-# Run stunnel
-RUN sudo stunnel /etc/stunnel/stunnel.conf 2>&1 | tee stunnel-service.log &
+# Setup
+RUN ./run_setup.sh
 
 # 5000: HTTP port
-EXPOSE 5000
+EXPOSE 9000
 
 # Runs this command forever in the container
 CMD ["./run_app.sh"]
