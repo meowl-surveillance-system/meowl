@@ -8,6 +8,7 @@ import os
 import time
 import settings
 import uuid
+from rotate_face_images import prepare_images
 from cassandra.cluster import Cluster
 from cassandra.query import tuple_factory
 
@@ -28,7 +29,8 @@ def insert_frame(camera_id, stream_id, frame_id, frame, objs):
 def store_training_data(class_name):
     """ Inserts images into database """
     training_data_paths = list(paths.list_images(settings.TRAINING_DATA))
-    for img_path in training_data_paths:
+    prepared_training_paths = prepare_images(training_data_paths)
+    for img_path in prepared_training_paths:
         with open(img_path, 'rb') as file_data:
             stmt = session.prepare("""
                 INSERT INTO streams.training_data (data_id, class_name, insert_date, data)

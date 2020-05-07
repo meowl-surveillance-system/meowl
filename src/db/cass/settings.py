@@ -15,13 +15,13 @@ try:
 except KeyError:
   raise KeyError('AUTH_SERVER_URL is not defined in the environment')
 
-USERNAME = os.environ.get("MEOWL_USERNAME")
+USERNAME = os.environ.get("ADMIN_USERNAME")
 if USERNAME is None :
     USERNAME = input("Username: ")
-PASSWORD = os.environ.get("MEOWL_PASSWORD")
+PASSWORD = os.environ.get("ADMIN_PASSWORD")
 if PASSWORD is None :
     PASSWORD = getpass()
-EMAIL = os.environ.get("MEOWL_EMAIL")
+EMAIL = os.environ.get("ADMIN_EMAIL")
 if EMAIL is None:
   EMAIL = input("Enter admin email: ")
 

@@ -181,7 +181,7 @@ exports[`LoginForm Component renders correctly 1`] = `
         }
         testID="RNE__Input__text-input"
         underlineColorAndroid="transparent"
-        value="wack"
+        value=""
       />
     </View>
   </View>
@@ -271,7 +271,7 @@ exports[`LoginForm Component renders correctly 1`] = `
         }
         testID="RNE__Input__text-input"
         underlineColorAndroid="transparent"
-        value="boi"
+        value=""
       />
     </View>
   </View>

@@ -4,6 +4,8 @@ import CameraPublisher from './components/camera-publisher/CameraPublisher';
 import SettingsForm from './components/settings-form/SettingsForm';
 import AppBar from './components/app-bar/AppBar';
 import LoginForm from './components/login-form/LoginForm';
+import AsyncStorage from '@react-native-community/async-storage';
+import { getItemFromStore } from './utils/utils';
 
 interface Props { }
 
@@ -26,12 +28,23 @@ class App extends React.Component<Props, AppState> {
       isPublishing: false,
       isViewingFrontCamera: true,
       settingsFormVisible: false,
-      requestServerUrl: 'http://35.202.200.155:3000',
-      rtmpServerUrl: 'rtmp://35.184.248.56:1935',
+      requestServerUrl: 'http://192.168.1.0:8081',
+      rtmpServerUrl: 'rtmp://127.0.0.1:1234',
       sessionId: '',
       userId: '',
       videoBitRate: 8000000,
     };
+  }
+
+  /**
+   * Retrieve items from AsyncStorage to set App State
+   */
+  async componentDidMount() {
+    const requestServerUrl: string =
+      await getItemFromStore('meowlRequestServerUrl', this.state.requestServerUrl);
+    const rtmpServerUrl: string =
+      await getItemFromStore('meowlRtmpServerUrl', this.state.rtmpServerUrl);
+    this.setState({ requestServerUrl, rtmpServerUrl });
   }
 
   /**
@@ -43,6 +56,20 @@ class App extends React.Component<Props, AppState> {
    */
   updateState(state: object) {
     return this.setState(state);
+  }
+
+  /**
+   * Store states into AsyncStorage for future reference
+   * @param prevProps - Previous property state of app
+   * @param prevState - Previous state of app
+   */
+  componentDidUpdate(prevProps: Props, prevState: AppState) {
+    if (this.state.requestServerUrl !== prevState.requestServerUrl) {
+      AsyncStorage.setItem('meowlRequestServerUrl', this.state.requestServerUrl);
+    }
+    if (this.state.rtmpServerUrl !== prevState.rtmpServerUrl) {
+      AsyncStorage.setItem('meowlRtmpServerUrl', this.state.rtmpServerUrl);
+    }
   }
 
   /**
