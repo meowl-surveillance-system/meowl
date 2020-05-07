@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
 import { render } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import Login from "./Login";
 
 describe("Login component", () => {
@@ -57,11 +58,13 @@ describe("Login component", () => {
   });
   it("renders Login component", () => {
     const { container } = render(
-      <Login
-        isLoggedIn={false}
-        history={historyMock}
-        onAuthChange={onAuthChangeMock}
-      />,
+      <Router>
+        <Login
+          isLoggedIn={false}
+          history={historyMock}
+          onAuthChange={onAuthChangeMock}
+        />,
+      </Router>
     );
     expect(container.firstChild).toMatchSnapshot();
   });

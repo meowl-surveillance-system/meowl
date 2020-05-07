@@ -98,6 +98,19 @@ describe('apiGroups', () => {
       expect(allGroupsCamerasResult).toEqual(
         expect.arrayContaining([testCameraId, testCameraId2])
       );
+      const allGroupsCamerasDictResult = await apiGroups.retrieveUserGroupCamerasDict(
+        testUserId
+      );
+      const dictExpected = {} as Record<string, string[]>;
+      dictExpected[testGroupId] = expect.arrayContaining([testCameraId]);
+      dictExpected[testGroupId2] = expect.arrayContaining([testCameraId2]);
+      expect(allGroupsCamerasDictResult).toEqual(
+        expect.objectContaining(dictExpected)
+      );
+      const allGroupsCamerasDictResult2 = await apiGroups.retrieveAllGroupCamerasDict();
+      expect(allGroupsCamerasDictResult2).toEqual(
+        expect.objectContaining(dictExpected)
+      );
       // users should be able to view each other's cameras in same group
       const canViewGroupCamera = await apiGroups.verifyUserCameraGroup(
         testUserId,
@@ -151,6 +164,10 @@ describe('apiGroups', () => {
       expect(allGroupsCamerasResult).toEqual(
         expect.arrayContaining([testCameraId, testCameraId2])
       );
+      const allGroupsCamerasResult2 = await apiGroups.retrieveAllGroupCameras();
+      expect(allGroupsCamerasResult2).toEqual(
+        expect.arrayContaining([testCameraId, testCameraId2])
+      );
       const testStreamId2 = testStreamId + 'GroupLiveCamerasTest';
       await api.updateCameraLive(testCameraId, true);
       await api.updateCameraLive(testCameraId2, false);
@@ -167,7 +184,8 @@ describe('apiGroups', () => {
         testUserId
       );
       expected[testCameraId2] = testStreamId2;
-      expect(liveGroupCameraStreamIdResults2).toStrictEqual(expected);
+      const allLiveGroupCameraStreamIdResults = await apiGroups.retrieveAllLiveGroupCameraStreamIds();
+      expect(allLiveGroupCameraStreamIdResults).toEqual(expect.objectContaining(expected));
       await api.updateCameraLive(testCameraId, false);
       await api.updateCameraLive(testCameraId2, false);
     });

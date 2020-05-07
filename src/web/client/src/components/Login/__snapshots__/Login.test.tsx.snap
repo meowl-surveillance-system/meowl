@@ -97,6 +97,19 @@ exports[`Login component renders Login component 1`] = `
         />
       </button>
     </form>
+    <div
+      class="MuiGrid-root MuiGrid-container"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <a
+          href="/accountRecovery"
+        >
+          Reset my password
+        </a>
+      </div>
+    </div>
   </div>
 </main>
 `;
