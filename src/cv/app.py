@@ -87,11 +87,11 @@ def upload_training_data():
     for key in files:
         file = files[key]
         file_name = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'] + str(dir_num), file_name)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
         print(file_name, file_path)
         file.save(file_path)
         print("Extracting resources of", file_name)
-        extract_resources(file_path, user_name)
+        extract_resources(settings.TRAINING_DATA + str(dir_num), file_path, user_name)
     training_mutex.acquire()
     try:
         if training_vid_count <= 1:
