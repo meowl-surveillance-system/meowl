@@ -15,6 +15,7 @@ interface State {
 
 /**
  * A component for adding users to groups
+ * TODO: Write tests for this component
  */
 export default class UserGroups extends Component<Props, State> {
   constructor(props: Props) {
