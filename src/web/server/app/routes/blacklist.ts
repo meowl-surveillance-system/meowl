@@ -3,10 +3,11 @@ import * as blacklistController from '../controllers/blacklist';
 
 const app = express();
 
-app.get(
+app.post(
   '/insertBlacklist',
   async (req: express.Request, res: express.Response) => {
     blacklistController.insertBlacklist(req, res);
   }
 );
 
+module.exports = app;
