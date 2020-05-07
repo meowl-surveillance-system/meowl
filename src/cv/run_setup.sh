@@ -5,5 +5,5 @@
 echo 'Putting unknown dataset to database'
 unrar e unknown.rar frame_extractions/
 rm unknown.rar
-python3 -c "import insert_frame; insert_frame.store_training_data('unknown')"
+python3 -c "import insert_frame; insert_frame.store_training_data('frame_extractions', 'unknown')"
 
