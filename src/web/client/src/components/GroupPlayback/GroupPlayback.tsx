@@ -29,21 +29,27 @@ export default class GroupPlayback extends Component<Props, State> {
   /**
    * Fetch the cameraIds from the backend server and set the cameraId to streamIds dictionary
    */
-  componentDidMount() {
-    fetch(`/api/getUserGroupCamerasDict`)
-      .then((res) => res.json())
-      .then((groupIdsToCameraIdsDict) => this.setState({ groupIdsToCameraIdsDict }))
-      .then(() => {
-        Object.keys(this.state.groupIdsToCameraIdsDict).map((groupId) => {
-          this.state.groupIdsToCameraIdsDict[groupId].map((cameraId) => {
-            return fetch(`/api/getStreamIdsGroups/${cameraId}`)
-              .then((res) => res.json())
-              .then((streamIds) => this.setState({ cameraIdsDict: { ...this.state.cameraIdsDict, [cameraId]: streamIds }}))
-              .catch((e) => console.error(e))
-          })
-        })
-      })
-      .catch((e) => console.error(e))
+  async componentDidMount() {
+    try {
+      const res: Response = await fetch(`/api/getUserGroupCamerasDict`);
+      const groupIdsToCameraIdsDict: Record<string, Array<string>> = await res.json();
+      Object.keys(groupIdsToCameraIdsDict).map((groupId: string) => {
+        groupIdsToCameraIdsDict[groupId].map(async (cameraId: string) => {
+          const res: Response = await fetch(`/api/getStreamIdsGroups/${cameraId}`);
+          const streamIds: string[] = await res.json();
+          this.setState({
+            groupIdsToCameraIdsDict,
+            cameraIdsDict: {
+              ...this.state.cameraIdsDict,
+              [cameraId]: streamIds
+            }
+          });
+        });
+      });
+    }
+    catch (e) {
+      console.error(e);
+    }
   }
 
   /**
