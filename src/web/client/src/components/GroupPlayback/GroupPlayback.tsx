@@ -15,6 +15,7 @@ interface State {
 
 /**
  * A component for playing back streams that have previously been recorded
+ * TODO: Write tests for this
  */
 export default class GroupPlayback extends Component<Props, State> {
   constructor(props: Props) {

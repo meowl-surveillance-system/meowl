@@ -20,6 +20,7 @@ interface State {
 
 /**
  * A component for adding a user to a group
+ * TODO: Write tests for this
  */
 export default class GroupForm extends Component<Props, State> {
   constructor(props: Props) {
