@@ -15,8 +15,8 @@ export const retrieveNotif = async () => {
  * Retrieve frame associated with notification from database
  * @returns ResultSet - Contains row of frame blob belonging to notification
  */
-export const retrieveFrame = async (frame_id: string, stream_id: string) => {
-  return client.execute(SELECT_FRAME, [frame_id, stream_id], {
+export const retrieveFrame = async (frameId: string, streamId: string) => {
+  return client.execute(SELECT_FRAME, [frameId, streamId], {
     prepare: true,
   });
 };

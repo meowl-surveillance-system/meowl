@@ -54,7 +54,8 @@ export const INSERT_USERID_GROUPID =
 export const INSERT_GROUPID_USERID =
   'INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)';
 export const SELECT_NOTIFICATIONS = 'SELECT * from notif';
-export const SELECT_FRAME = 'SELECT frame FROM cv_frames WHERE frame_id = ? AND stream_id = ?';
+export const SELECT_FRAME =
+  'SELECT frame FROM cv_frames WHERE frame_id = ? AND stream_id = ?';
 export const SELECT_PENDINGACCOUNTS = 'SELECT username FROM pending_accounts';
 export const INSERT_PASSWORDRESETTOKENS =
   'INSERT INTO password_reset_tokens (reset_token, user_id) VALUES (?, ?) USING TTL 1800';

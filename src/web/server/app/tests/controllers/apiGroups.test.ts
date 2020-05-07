@@ -36,7 +36,7 @@ describe('apiGroups', () => {
       const res = mockRes();
       await apiGroups.addUserGroup(req, res);
       expect(res.status).toBeCalledWith(200);
-      expect(res.send).toBeCalledWith('OK');
+      expect(res.send).toBeCalledWith('Successfully added user to group');
     });
     it('should return 500 status if add exception', async () => {
       jest
@@ -72,12 +72,12 @@ describe('apiGroups', () => {
     });
   });
   describe('retrieveStreamIdsGroup', () => {
-    const mockReq: any = (cameraId: string, userId: string) => {
+    const mockReq: any = (cameraId: string, userId: string, admin: boolean) => {
       return {
         params: {
           cameraId,
         },
-        session: { userId },
+        session: { userId, admin },
       };
     };
     const mockRes: any = () => {
@@ -112,7 +112,7 @@ describe('apiGroups', () => {
         .mockImplementationOnce((cameraId: string) =>
           Promise.resolve(mockResults as any)
         );
-      const req = mockReq(testCameraId, testUserId);
+      const req = mockReq(testCameraId, testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(200);
@@ -137,14 +137,39 @@ describe('apiGroups', () => {
         .mockImplementationOnce((cameraId: string) =>
           Promise.resolve(mockResults as any)
         );
-      const req = mockReq(testCameraId, testUserId);
+      const req = mockReq(testCameraId, testUserId, false);
+      const res = mockRes();
+      await apiGroups.retrieveStreamIdsGroups(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(testStreamIds);
+    });
+    it('should return testStreamIds list if admin', async () => {
+      jest
+        .spyOn(apiServices, 'verifyUserCamera')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(false)
+        );
+      jest
+        .spyOn(apiGroupsServices, 'verifyUserCameraGroup')
+        .mockImplementationOnce((userId: string, cameraId: string) =>
+          Promise.resolve(false)
+        );
+      const mockResults = {
+        rows: [{ streamId: testStreamIds[0] }, { streamId: testStreamIds[1] }],
+      };
+      jest
+        .spyOn(apiServices, 'retrieveStreamIds')
+        .mockImplementationOnce((cameraId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testCameraId, testUserId, true);
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(200);
       expect(res.json).toBeCalledWith(testStreamIds);
     });
     it('should return 400 status if invalid cameraId', async () => {
-      const req = mockReq('', testUserId);
+      const req = mockReq('', testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(400);
@@ -156,7 +181,7 @@ describe('apiGroups', () => {
         .mockImplementationOnce((userId: string, cameraId: string) =>
           Promise.resolve(false)
         );
-      const req = mockReq(testCameraId, testUserId);
+      const req = mockReq(testCameraId, testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(400);
@@ -178,7 +203,7 @@ describe('apiGroups', () => {
         .mockImplementationOnce((cameraId: string) =>
           Promise.resolve(undefined as any)
         );
-      const req = mockReq(testCameraId, testUserId);
+      const req = mockReq(testCameraId, testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveStreamIdsGroups(req, res);
       expect(res.status).toBeCalledWith(400);
@@ -395,10 +420,74 @@ describe('apiGroups', () => {
       expect(res.send).toBeCalledWith('Unable to retrieve users group cameras');
     });
   });
-  describe('retrieveLiveGroupCameraStreamIds', () => {
-    const mockReq: any = (userId: string) => {
+  describe('retrieveUserGroupCamerasDict', () => {
+    const mockReq: any = (userId: string, admin: boolean) => {
       return {
-        session: { userId },
+        session: { userId, admin },
+      };
+    };
+    const mockRes: any = () => {
+      const res = {
+        status: jest.fn(),
+        send: jest.fn(),
+        json: jest.fn(),
+      };
+      res.status = jest.fn().mockReturnValue(res);
+      res.send = jest.fn().mockReturnValue(res);
+      res.json = jest.fn().mockReturnValue(res);
+      return res;
+    };
+    const testCameraIds = ['randomCameraId1', 'randomCameraId2'];
+    const testGroupIds = ['randomGroupId1', 'randomGroupId2'];
+    it('should return status 200 and cameraIds', async () => {
+      const mockResults = {} as Record<string, string[]>;
+      testGroupIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testCameraIds)
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveUserGroupCamerasDict')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId, false);
+      const res = mockRes();
+      await apiGroups.retrieveUserGroupCamerasDict(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+    it('should return 400 if undefined result', async () => {
+      jest
+        .spyOn(apiGroupsServices, 'retrieveUserGroupCamerasDict')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      const req = mockReq(testUserId, false);
+      const res = mockRes();
+      await apiGroups.retrieveUserGroupCamerasDict(req, res);
+      expect(res.status).toBeCalledWith(400);
+      expect(res.send).toBeCalledWith('Unable to retrieve users group cameras');
+    });
+    it('should return 200 and call retrieveAllGroupCamerasDict if admin', async () => {
+      const mockResults = {} as Record<string, string[]>;
+      testGroupIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testCameraIds)
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveAllGroupCamerasDict')
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId, true);
+      const res = mockRes();
+      await apiGroups.retrieveUserGroupCamerasDict(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+  });
+  describe('retrieveLiveGroupCameraStreamIds', () => {
+    const mockReq: any = (userId: string, admin: boolean) => {
+      return {
+        session: { userId, admin },
       };
     };
     const mockRes: any = () => {
@@ -424,7 +513,75 @@ describe('apiGroups', () => {
         .mockImplementationOnce((userId: string) =>
           Promise.resolve(mockResults as any)
         );
-      const req = mockReq(testUserId);
+      jest
+        .spyOn(apiServices, 'retrieveLiveCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId, false);
+      const res = mockRes();
+      await apiGroups.retrieveLiveGroupCameraStreamIds(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+    it('should return a dictionary of all cameraIds to streamIds if admin', async () => {
+      const mockResults = {} as Record<string, string>;
+      testCameraIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testStreamIds[i])
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveAllLiveGroupCameraStreamIds')
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockResults as any)
+        );
+      jest
+        .spyOn(apiServices, 'retrieveLiveCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId, true);
+      const res = mockRes();
+      await apiGroups.retrieveLiveGroupCameraStreamIds(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+    it('should return a dictionary of cameraIds to streamIds when groupResult is undefined', async () => {
+      const mockResults = {} as Record<string, string>;
+      testCameraIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testStreamIds[i])
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveLiveGroupCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      jest
+        .spyOn(apiServices, 'retrieveLiveCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      const req = mockReq(testUserId, false);
+      const res = mockRes();
+      await apiGroups.retrieveLiveGroupCameraStreamIds(req, res);
+      expect(res.status).toBeCalledWith(200);
+      expect(res.json).toBeCalledWith(mockResults);
+    });
+    it('should return a dictionary of cameraIds to streamIds when ownResult is undefined', async () => {
+      const mockResults = {} as Record<string, string>;
+      testCameraIds.forEach(
+        (key: string, i: number) => (mockResults[key] = testStreamIds[i])
+      );
+      jest
+        .spyOn(apiGroupsServices, 'retrieveLiveGroupCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(mockResults as any)
+        );
+      jest
+        .spyOn(apiServices, 'retrieveLiveCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      const req = mockReq(testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveLiveGroupCameraStreamIds(req, res);
       expect(res.status).toBeCalledWith(200);
@@ -436,7 +593,12 @@ describe('apiGroups', () => {
         .mockImplementationOnce((userId: string) =>
           Promise.resolve(undefined as any)
         );
-      const req = mockReq(testUserId);
+      jest
+        .spyOn(apiServices, 'retrieveLiveCameraStreamIds')
+        .mockImplementationOnce((userId: string) =>
+          Promise.resolve(undefined as any)
+        );
+      const req = mockReq(testUserId, false);
       const res = mockRes();
       await apiGroups.retrieveLiveGroupCameraStreamIds(req, res);
       expect(res.status).toBeCalledWith(400);

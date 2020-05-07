@@ -84,6 +84,16 @@ export default class Navbar extends Component<Props, State> {
           Streams
         </RouterLink>
         <RouterLink
+          to="/groupStreams"
+          style={{
+            paddingLeft: "10px",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          GroupStreams
+        </RouterLink>
+        <RouterLink
           to="/notifications"
           style={{
             paddingLeft: "10px",

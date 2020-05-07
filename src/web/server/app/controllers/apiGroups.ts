@@ -12,6 +12,8 @@ export const addUserGroup = async (req: Request, res: Response) => {
     // checks if null/empty
     if (!req.body.username) {
       res.status(400).send('Not valid username');
+    } else if (!req.body.groupId) {
+      res.status(400).send('Not valid groupId');
     } else {
       const userResult = await authServices.retrieveUser(req.body.username);
       if (userResult === undefined || userResult.rows.length < 1) {
@@ -21,7 +23,7 @@ export const addUserGroup = async (req: Request, res: Response) => {
           userResult.rows[0].user_id,
           req.body.groupId
         );
-        res.status(200).send('OK');
+        res.status(200).send('Successfully added user to group');
       }
     }
   } catch (e) {
@@ -46,7 +48,7 @@ export const retrieveStreamIdsGroups = async (req: Request, res: Response) => {
       req.session!.userId,
       req.params.cameraId
     );
-    if (isOwner || isInGroup) {
+    if (isOwner || isInGroup || req.session!.admin) {
       const cameraId = req.params.cameraId;
       const result = await apiServices.retrieveStreamIds(cameraId);
       if (result === undefined) {
@@ -132,6 +134,27 @@ export const retrieveGroupCameras = async (req: Request, res: Response) => {
 };
 
 /**
+ * Sends a dictionary of groupId : cameraId[] for all cameraIds belonging to users in a group
+ */
+export const retrieveUserGroupCamerasDict = async (
+  req: Request,
+  res: Response
+) => {
+  let result;
+  if (req.session!.admin) {
+    result = await apiGroupsServices.retrieveAllGroupCamerasDict();
+  } else {
+    result = await apiGroupsServices.retrieveUserGroupCamerasDict(
+      req.session!.userId
+    );
+  }
+  if (result === undefined) {
+    res.status(400).send('Unable to retrieve users group cameras');
+  } else {
+    res.status(200).json(result);
+  }
+};
+/**
  * Retrieves all cameraIds in groups a user is in
  */
 export const retrieveUserGroupCameras = async (req: Request, res: Response) => {
@@ -152,12 +175,25 @@ export const retrieveLiveGroupCameraStreamIds = async (
   req: Request,
   res: Response
 ) => {
-  const result = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
+  let groupResult;
+  if (req.session!.admin) {
+    groupResult = await apiGroupsServices.retrieveAllLiveGroupCameraStreamIds();
+  } else {
+    groupResult = await apiGroupsServices.retrieveLiveGroupCameraStreamIds(
+      req.session!.userId
+    );
+  }
+  const ownResult = await apiServices.retrieveLiveCameraStreamIds(
     req.session!.userId
   );
-  if (result === undefined) {
-    res.status(400).send('Unable to retrieve camera streams');
+  if (groupResult === undefined) {
+    if (ownResult === undefined) {
+      res.status(400).send('Unable to retrieve camera streams');
+    } else {
+      res.status(200).json(ownResult);
+    }
   } else {
-    res.status(200).json(result);
+    Object.assign(groupResult, ownResult);
+    res.status(200).json(groupResult);
   }
 };

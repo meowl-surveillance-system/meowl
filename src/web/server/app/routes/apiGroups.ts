@@ -85,6 +85,17 @@ app.get(
 );
 
 /**
+ * Sends a dictionary of groupId : streamIds[] in groups the user is in
+ */
+app.get(
+  '/getUserGroupCamerasDict',
+  isLoggedIn,
+  async (req: express.Request, res: express.Response) => {
+    apiGroupsController.retrieveUserGroupCamerasDict(req, res);
+  }
+);
+
+/**
  * Sends a dictionary of cameraId:streamId for all cameras in groups the user is in
  */
 app.get(

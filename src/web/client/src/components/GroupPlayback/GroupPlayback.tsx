@@ -9,53 +9,72 @@ import ResponsivePlayer from "../ResponsivePlayer/ResponsivePlayer";
 interface Props { }
 interface State {
   url: string;
-  cameraIds: Array<string>;
   cameraIdsDict: Record<string, Array<string>>;
+  groupIdsToCameraIdsDict: Record<string, Array<string>>;
 }
 
 /**
  * A component for playing back streams that have previously been recorded
+ * TODO: Write tests for this
  */
-export default class Playback extends Component<Props, State> {
+export default class GroupPlayback extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       url: "",
-      cameraIds: [],
       cameraIdsDict: {},
+      groupIdsToCameraIdsDict: {}
     };
   }
 
   /**
    * Fetch the cameraIds from the backend server and set the cameraId to streamIds dictionary
    */
-  componentDidMount() {
-    fetch(`/api/getCameraIds`)
-      .then((res) => res.json())
-      .then((cameraIds) => this.setState({ cameraIds: cameraIds }))
-      .then(() =>
-        this.state.cameraIds.map((cameraId, index) => {
-          return fetch(`/api/getStreamIds/${cameraId}`)
-            .then((res) => res.json())
-            .then((streamIds) =>
-              this.setState({
-                cameraIdsDict: {
-                  ...this.state.cameraIdsDict,
-                  [cameraId]: streamIds,
-                },
-              }),
-            )
-            .catch((e) => console.error(e));
-        }),
-      )
-      .catch((e) => console.error(e));
+  async componentDidMount() {
+    try {
+      const res: Response = await fetch(`/api/getUserGroupCamerasDict`);
+      const groupIdsToCameraIdsDict: Record<string, Array<string>> = await res.json();
+      const cameraIdsDict: Record<string, Array<string>> = {};
+      await Promise.all(Object.keys(groupIdsToCameraIdsDict).map((groupId: string) => {
+        return Promise.all(groupIdsToCameraIdsDict[groupId].map(async (cameraId: string) => {
+          const res: Response = await fetch(`/api/getStreamIdsGroups/${cameraId}`);
+          const streamIds: string[] = await res.json();
+          cameraIdsDict[cameraId] = streamIds;
+        }));
+      }));
+      this.setState({ groupIdsToCameraIdsDict, cameraIdsDict });
+    }
+    catch (e) {
+      console.error(e);
+    }
   }
 
   /**
-   * Renders the nested list of cameraIds and streamIds
+   * Renders the nested list of groupIds to cameraIds to streamIds
    */
   renderList = () => {
-    return Object.keys(this.state.cameraIdsDict).map((cameraId, index) => {
+    return Object.keys(this.state.groupIdsToCameraIdsDict).map((groupId, index) => {
+      return (
+        <List
+          key={index}
+          subheader={
+            <ListSubheader color="inherit">
+              <Typography variant="inherit">{groupId}</Typography>
+            </ListSubheader>
+          }
+        >
+          {this.renderCameraIds(this.state.groupIdsToCameraIdsDict[groupId])}
+        </List>
+      );
+    });
+  };
+
+  /**
+   * Renders a list of cameraIds to streamIds
+   * @params cameraIds - A list of camera IDs
+   */
+  renderCameraIds = (cameraIds: Array<string>) => {
+    return cameraIds.map((cameraId, index) => {
       return (
         <List
           key={index}
@@ -67,9 +86,9 @@ export default class Playback extends Component<Props, State> {
         >
           {this.renderStreamIds(this.state.cameraIdsDict[cameraId])}
         </List>
-      );
-    });
-  };
+      )
+    })
+  }
 
   /**
    * Renders a list of stream IDs which is a sublist of the nested list
@@ -112,7 +131,7 @@ export default class Playback extends Component<Props, State> {
         <List
           subheader={
             <ListSubheader color="inherit">
-              <Typography variant="inherit">My Streams</Typography>
+              <Typography variant="inherit">Group Streams</Typography>
             </ListSubheader>
           }
         >
