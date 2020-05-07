@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GroupPlayback component should render the GroupPlayback component 1`] = `
+<div
+  class="MuiContainer-root MuiContainer-maxWidthLg"
+>
+  <ul
+    class="MuiList-root MuiList-padding MuiList-subheader"
+  >
+    <li
+      class="MuiListSubheader-root MuiListSubheader-colorInherit MuiListSubheader-sticky MuiListSubheader-gutters"
+    >
+      <span
+        class="MuiTypography-root"
+      >
+        Group Streams
+      </span>
+    </li>
+  </ul>
+  <div
+    class="player-wrapper"
+  >
+    <div
+      class="react-player"
+      style="width: 100%; height: 100%;"
+    />
+  </div>
+</div>
+`;
