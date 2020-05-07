@@ -46,9 +46,11 @@ export default class NotificationList extends Component<Props, State> {
               tmp.name = element.name;
               tmp.img = result.frame.data;
               this.setState({ list: [...this.state.list, tmp] });
-            });
+            })
+            .catch((e) => console.error(e));
         });
-      });
+      })
+      .catch((e) => console.error(e));
   }
 
   /*
