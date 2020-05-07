@@ -68,6 +68,12 @@ export default class Navbar extends Component<Props, State> {
           UploadTrainingData
         </RouterLink>
         <RouterLink
+          to="/blacklist"
+          style={{ paddingLeft: "10px", color: "inherit", textDecoration: "none" }}
+        >
+          Blacklist
+        </RouterLink>
+        <RouterLink
           to="/liveStreams"
           style={{ paddingLeft: "10px", color: "inherit", textDecoration: "none" }}
         >
