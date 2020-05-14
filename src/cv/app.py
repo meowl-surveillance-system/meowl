@@ -1,5 +1,6 @@
 from flask import Flask, request
 from werkzeug.utils import secure_filename
+from threading import Thread, Lock
 import os
 import requests
 import cv2
@@ -15,6 +16,10 @@ import settings
 import utils
 
 app = Flask(__name__)
+app.training_mutex = Lock()
+app.folder_num_mutex = Lock()
+app.training_vid_count = 0
+app.folder_num = 0
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER_PATH
 
 @app.route('/')
@@ -70,30 +75,42 @@ def process_detections():
 @app.route('/upload_training_data', methods=['PUT'])
 def upload_training_data():
     """ Uploads data to train the models """
+    app.training_vid_count += 1
+    app.folder_num_mutex.acquire()
+    app.folder_num += 1
+    dir_num = app.folder_num
+    app.folder_num_mutex.release()
     files = dict(request.files)
     user_name = request.headers.get('User-Name')
     for key in files:
         file = files[key]
         file_name = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+        print(file_name, file_path)
         file.save(file_path)
         print("Extracting resources of", file_name)
-        extract_resources(file_path, user_name)
-    print("Retrieve dataset from database...")
-    retrieve_dataset_res(0)
-    print("Extracting embeddings...")
-    extract_embeddings()
-    print("Training face recognition...")
-    train_face_rec()
-    print("Done.")
-    return 'Successfully processed the training data'
+        extract_resources(settings.TRAINING_DATA + str(dir_num), file_path, user_name)
+    app.training_mutex.acquire()
+    try:
+        if app.training_vid_count <= 1:
+            print("Retrieve dataset from database...")
+            retrieve_dataset_res(0)
+            print("Extracting embeddings...")
+            extract_embeddings()
+            print("Training face recognition...")
+            train_face_rec()
+            print("Done.")
+    finally:
+        app.training_vid_count -= 1
+        app.training_mutex.release()
+        return 'Successfully processed the training data'
 
 # TODO(mli): Organize these methods below in another file
 # and make a structured project directory.
-def extract_resources(file_name, class_name):
+def extract_resources(folder_name, file_name, class_name):
     """ Extracts resources from video """
-    add_data.extract_resources(file_name, -1)
-    insert_frame.store_training_data(class_name)    
+    add_data.extract_resources(folder_name, file_name, -1)
+    insert_frame.store_training_data(folder_name, class_name)    
     return "Finishing extracting resources"
 
 def retrieve_dataset_res(start_time):

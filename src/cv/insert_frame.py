@@ -26,9 +26,9 @@ def insert_frame(camera_id, stream_id, frame_id, frame, objs):
     """)
     stmt_results = session.execute(stmt, [camera_id, stream_id, frame_id, frame, objs])
 
-def store_training_data(class_name):
+def store_training_data(folder_path, class_name):
     """ Inserts images into database """
-    training_data_paths = list(paths.list_images(settings.TRAINING_DATA))
+    training_data_paths = list(paths.list_images(folder_path))
     prepared_training_paths = prepare_images(training_data_paths)
     for img_path in prepared_training_paths:
         with open(img_path, 'rb') as file_data:
@@ -38,11 +38,14 @@ def store_training_data(class_name):
             """)
             stmt_results = session.execute(stmt,
                 [uuid.uuid4(), class_name, time.time(), file_data.read()])
-    os.system("rm -rf " + settings.TRAINING_DATA)
+    os.system("rm -rf " + folder_path)
 
 def retrieve_training_data(start_time):
     """ Obtains the training data from database """
     if not os.path.exists(settings.DATASET):
+        os.system('mkdir ' + settings.DATASET)
+    else:
+        os.system('rm -rf ' + settings.DATASET)
         os.system('mkdir ' + settings.DATASET)
     stmt = session.prepare("""
         SELECT class_name, data from streams.training_data where insert_date > ?
