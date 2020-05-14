@@ -9,6 +9,7 @@ import NotificationList from "./components/Notification/NotificationList";
 import Navbar from "./components/Navbar/Navbar";
 import LiveStream from "./components/LiveStream/LiveStream";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import BlackList from "./components/BlackList/BlackList";
 import TrainingDataUploader from "./components/TrainingDataUploader/TrainingDataUploader";
 import AdminRoute from "./components/AdminRoute/AdminRoute";
 import PendingAccounts from "./components/PendingAccounts/PendingAccounts";
@@ -123,6 +124,13 @@ class App extends Component<Props, State> {
                 render={(props) => (
                   <Register {...props} isLoggedIn={this.state.isLoggedIn} />
                 )}
+              />
+              <ProtectedRoute
+                exact
+                path="/blacklist"
+                component={BlackList}
+                isLoggedIn={this.state.isLoggedIn}
+                redirectPath="/"
               />
               <ProtectedRoute
                 exact

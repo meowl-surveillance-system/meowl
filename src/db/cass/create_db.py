@@ -58,6 +58,9 @@ cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS training_data (
 # Table for storing Notifications
 cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS notif (date timestamp, type text, email text, name text, frame_id text, stream_id text, PRIMARY KEY(date))')
 
+# Table for Blacklist
+cluster_services.create_table_schema('CREATE TABLE IF NOT EXISTS blacklist (name text, PRIMARY KEY(name))')
+
 # Add admin credentials
 userId = str(uuid4())
 hashed = bcrypt.hashpw(PASSWORD.encode(), bcrypt.gensalt()).decode('utf-8')
